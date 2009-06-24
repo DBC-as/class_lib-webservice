@@ -104,8 +104,7 @@ class verbose {
           fclose($fp);
         } else
           die("FATAL: Cannot open " . $this->verbose_file_name);
-      } else
-        echo $vtext . " " . $str . "<br/>";
+      }
     }
   }
 }
