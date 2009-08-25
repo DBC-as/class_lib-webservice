@@ -1,5 +1,5 @@
 <?php
-require_once("../sak_42/tokenizer_class.php");
+require_once("tokenizer_class.php");
 
 class cql2solr extends tokenizer {
 
