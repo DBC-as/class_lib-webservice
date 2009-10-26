@@ -87,42 +87,53 @@ abstract class webServiceServer {
   */
 	private function soap_request($xml) {
 
-		if($this->config->get_value('xsd')) {
-			if(!$this->validate_xml($xml,$this->config->get_value('xsd'))) {
-				$error=1;
-				// return error.
-			}
-		}
+    // validate request
+    $validate = $this->config->get_value('validate');
 
-		if(!$error) {
-      // parse til objekt
+		if($validate["request"] && !$this->validate_xml($xml,$validate["request"]))
+			$error=1;
+
+		if(empty($error)) {
+      // parse to object
       $xmlconvert=new xmlconvert();
       $xmlobj=$xmlconvert->soap2obj($xml);
+
+      // handle request
 			$response_xmlobj=$this->call_xmlobj_function($xmlobj);
 
-      // Branch to outputType
+      // validate response
       $objconvert=new objconvert();
-      list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
-      switch ($req->_value->outputType->_value) {
-        case "json":
-          if ($callback=$req->_value->callback->_value)
-			      echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
-          else
-			      echo $objconvert->obj2json($response_xmlobj);
-          break;
-        case "phps":
-			    echo $objconvert->obj2phps($response_xmlobj);
-          break;
-        case "xml":
-			    echo $objconvert->obj2xmlNS($response_xmlobj);
-          break;
-        default: 
-			    echo $response_xml=$objconvert->obj2soap($response_xmlobj);
+		  if($validate["response"]) {
+			  $response_xml=$objconvert->obj2soap($response_xmlobj);
+        if (!$this->validate_xml($response_xml,$validate["response"]))
+				  $error=1;
       }
 
-		} else {
+		  if(empty($error)) {
+      // Branch to outputType
+        list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
+        switch ($req->_value->outputType->_value) {
+          case "json":
+            if ($callback=$req->_value->callback->_value)
+			        echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
+            else
+			        echo $objconvert->obj2json($response_xmlobj);
+            break;
+          case "phps":
+			      echo $objconvert->obj2phps($response_xmlobj);
+            break;
+          case "xml":
+			      echo $objconvert->obj2xmlNS($response_xmlobj);
+            break;
+          default: 
+            if (empty($response_xml))
+			        $response_xml =  $objconvert->obj2soap($response_xmlobj);
+			      echo $response_xml;
+        }
+		  } else
+			  echo "Error in validation.";
+		} else
 			echo "Error in validation.";
-		}
 	}
 
 	/** \brief Handles rest request, converts it to xml and calls soap_request()
