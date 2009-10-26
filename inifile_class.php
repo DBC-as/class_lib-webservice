@@ -46,6 +46,28 @@
 * true and false string are automatically converted in booleans.
 * Floats typecast to, well, floats.
 * null typecast to NULL.
+*
+* Example ini file:
+*
+* [Foo]
+* lastmodified = 2009-02-12
+* max_int = PHP_INT_MAX
+* not_integer = 9223372036854775808
+* integer = 9223372036854775807
+* float   = 42.7078083332
+* Bond = "007"
+*
+* [Multiples]
+* more_tests[0] = more_tests
+* more_tests[][] = this is a test too
+* more_tests[][][] = this is a test 3
+* more_tests[foo][bar][doh][dah] = this is a test 4
+*
+* [Using constants]
+* ; Constants can be concatenated with strings, but the string segments must be enclosed in quotes.
+* ; Note to users, no joining symbol is used:
+* output = "bla bla bla "TEST_TXT" bla bla bla"
+*
 */
 
 class inifile {
