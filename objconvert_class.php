@@ -78,13 +78,14 @@ class objconvert {
  	*/
 	public function obj2xml($obj) {
  	 $ret = "";
- 	 foreach ($obj as $tag => $o) {
- 	   if (is_array($o))
- 	     foreach ($o as $o_i)
- 	       $ret .= $this->build_xml($tag, $o_i, $this->namespaces);
- 	   else
- 	       $ret .= $this->build_xml($tag, $o, $this->namespaces);
- 	 }
+   if ($obj)
+ 	   foreach ($obj as $tag => $o) {
+ 	     if (is_array($o))
+ 	       foreach ($o as $o_i)
+ 	         $ret .= $this->build_xml($tag, $o_i, $this->namespaces);
+ 	     else
+ 	         $ret .= $this->build_xml($tag, $o, $this->namespaces);
+ 	   }
  	 return $ret;
 	}
 
