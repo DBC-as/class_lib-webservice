@@ -1,0 +1,69 @@
+<?php
+/**
+ *
+ * This file is part of OpenLibrary.
+ * Copyright © 2009, Dansk Bibliotekscenter a/s,
+ * Tempovej 7-11, DK-2750 Ballerup, Denmark. CVR: 15149043
+ *
+ * OpenLibrary is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenLibrary is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with OpenLibrary.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+class restconvert {
+
+	private $soap_header;
+	private $soap_footer;
+
+	public function __construct() {
+		$this->soap_header='<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body>';
+		$this->soap_footer='</SOAP-ENV:Body></SOAP-ENV:Envelope>';
+	}
+
+	/** \brief Transform REST parameters to SOAP-request
+	 *
+ 	*/
+	public function rest2soap(&$config) {
+ 	 $action_pars = $config->get_value("action", "rest");
+ 	 if (is_array($action_pars) && $_GET["action"] && $action_pars[$_GET["action"]]) {
+ 	   if ($node_value = $this->build_xml(&$action_pars[$_GET["action"]], explode("&", $_SERVER["QUERY_STRING"]))) {
+ 	     return $this->soap_header .  $this->tag_me($_GET["action"], $node_value) .  $this->soap_footer;
+			} 
+ 	 }
+	}
+
+	private function build_xml($action, $query) {
+ 	 foreach ($action as $key => $tag) {
+ 	   if (is_array($tag)) {
+ 	     $ret .= $this->tag_me($key, build_xml($tag, $query));
+ 	   } else {
+ 	     foreach ($query as $parval) {
+ 	       list($par, $val) = $this->par_split($parval);
+ 	       if ($tag == $par) $ret .= $this->tag_me($tag, $val);
+ 	     }
+ 	   }
+		}
+ 	 return $ret;
+	}
+
+	private function par_split($parval) {
+ 	 list($par, $val) = explode("=", $parval, 2);
+ 	 return array(preg_replace("/\[[^]]*\]/", "", urldecode($par)), $val);
+	}
+
+	function tag_me($tag, $val) {
+	  return "<$tag>$val</$tag>";
+	}
+}
+
+?>
