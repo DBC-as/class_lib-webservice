@@ -144,6 +144,8 @@ class oci {
      && is_numeric(OCI_NUM_CONNECT_ATTEMTS)
      && OCI_NUM_CONNECT_ATTEMTS < 20)
       $this->num_connect_attempts = OCI_NUM_CONNECT_ATTEMTS;
+
+    $this->charset = NULL;
   }
 
 	function destructor() {
@@ -191,6 +193,14 @@ class oci {
 
   function set_num_connect_attempts($num_connect_attempts) {
     return $this->num_connect_attempts=$num_connect_attempts;
+  }
+
+ /**
+  * \brief sets charset
+  */
+
+  function set_charset($charset) {
+    return $this->charset = $charset;
   }
 
  /**
@@ -264,9 +274,9 @@ class oci {
       $connect_count=$this->num_connect_attempts;
 
     if (version_compare(PHP_VERSION,'5','>='))
-       $this->connect=@oci_pconnect($this->username, $this->password, $this->database );
+       $this->connect=@oci_pconnect($this->username, $this->password, $this->database, $this->charset );
     else
-       $this->connect=@ociplogon($this->username, $this->password, $this->database );
+       $this->connect=@ociplogon($this->username, $this->password, $this->database, $this->charset );
 
     if (!is_resource($this->connect)) {
       if($connect_count>1) {
