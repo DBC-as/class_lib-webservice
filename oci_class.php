@@ -264,9 +264,9 @@ class oci {
       $connect_count=$this->num_connect_attempts;
 
     if (version_compare(PHP_VERSION,'5','>='))
-       $this->connect=oci_pconnect($this->username, $this->password, $this->database );
+       $this->connect=@oci_pconnect($this->username, $this->password, $this->database );
     else
-       $this->connect=ociplogon($this->username, $this->password, $this->database );
+       $this->connect=@ociplogon($this->username, $this->password, $this->database );
 
     if (!is_resource($this->connect)) {
       if($connect_count>1) {
