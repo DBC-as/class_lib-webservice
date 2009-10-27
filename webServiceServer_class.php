@@ -48,7 +48,7 @@ abstract class webServiceServer {
 	  // initialize config and verbose objects
     $this->config = new inifile($inifile); 
                                            
-    if( $this->config->error ) {                                    
+    if ($this->config->error) {                                    
         die("Error: ".$this->config->error );
       }                                                                
 
@@ -57,7 +57,7 @@ abstract class webServiceServer {
     $this->watch = new stopwatch("", " ", "", "%s:%01.3f");
     $this->watch->start($this->config->get_value("servicename","setup"));   
 
-		if($this->config->get_value('xmldir')) 
+		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
 	}
 
@@ -65,20 +65,18 @@ abstract class webServiceServer {
   *
   */
 	public function handle_request() {
-		  if( isset($_GET["HowRU"]) ) {                          
-        	$this->HowRU();          
-        	return;                  
-      }  elseif(!isset($HTTP_RAW_POST_DATA) && isset($_POST['xml'])) {                                            
-				$xml=trim(stripslashes($_POST['xml']));
-        $this->soap_request($xml);                    
-        return;                                    
-      }  elseif(!empty($_SERVER['QUERY_STRING']) ) {                                            
-        $this->rest_request();    
-        return;
-      } else {                                                
-			 $this->create_sample_forms();
-       exit;                                          
-      }    
+	  if (isset($_GET["HowRU"]) ) {                          
+     	$this->HowRU();          
+    } elseif (isset($HTTP_RAW_POST_DATA)) {
+      $this->soap_request($HTTP_RAW_POST_DATA);                    
+    } elseif (isset($_POST['xml'])) {
+			$xml=trim(stripslashes($_POST['xml']));
+      $this->soap_request($xml);                    
+    } elseif (!empty($_SERVER['QUERY_STRING']) ) {
+      $this->rest_request();    
+    } else {                                                
+			$this->create_sample_forms();
+    }    
 	}
 
   /** \brief Handles and validates soap request
@@ -90,10 +88,10 @@ abstract class webServiceServer {
     // validate request
     $validate = $this->config->get_value('validate');
 
-		if($validate["request"] && !$this->validate_xml($xml,$validate["request"]))
+		if ($validate["request"] && !$this->validate_xml($xml,$validate["request"]))
 			$error=1;
 
-		if(empty($error)) {
+		if (empty($error)) {
       // parse to object
       $xmlconvert=new xmlconvert();
       $xmlobj=$xmlconvert->soap2obj($xml);
@@ -103,13 +101,13 @@ abstract class webServiceServer {
 
       // validate response
       $objconvert=new objconvert();
-		  if($validate["response"]) {
+		  if ($validate["response"]) {
 			  $response_xml=$objconvert->obj2soap($response_xmlobj);
         if (!$this->validate_xml($response_xml,$validate["response"]))
 				  $error=1;
       }
 
-		  if(empty($error)) {
+		  if (empty($error)) {
       // Branch to outputType
         list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
         switch ($req->_value->outputType->_value) {
@@ -158,7 +156,7 @@ abstract class webServiceServer {
 			$reply=$curl->get($this->config->get_value('ws_url')."?action=".$v);
 			$m=$this->config->get_value('preg_match');
 			$preg_match=$m[$k];
-			if(preg_match("/$preg_match/",$reply)) {
+			if (preg_match("/$preg_match/",$reply)) {
 				$r=$this->config->get_value('ok_response');
 				echo $r[$k];
 			} else {
@@ -210,16 +208,16 @@ abstract class webServiceServer {
 
     echo "<html><body>";
 
-    if(!isset($HTTP_RAW_POST_DATA)) {
+    if (!isset($HTTP_RAW_POST_DATA)) {
 
     // Open a known directory, and proceed to read its contents
     if (is_dir($this->xmldir."/request")) {
       if ($dh = opendir($this->xmldir."/request")) {
         chdir($this->xmldir."/request");
         while (($file = readdir($dh)) !== false) {
-          if(!is_dir($file)) {
+          if (!is_dir($file)) {
             $fp=fopen($file,'r');
-            if(preg_match('/xml$/',$file,$matches)) {
+            if (preg_match('/xml$/',$file,$matches)) {
               $found_files=1;
               $contents = fread($fp, filesize($file));
               $ext=$matches[0];
@@ -235,7 +233,7 @@ abstract class webServiceServer {
         }
         closedir($dh);
 
-        if($found_files) {
+        if ($found_files) {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
           echo '<form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=140>';
