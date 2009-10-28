@@ -134,9 +134,9 @@ abstract class webServiceServer {
 			      echo $response_xml;
         }
 		  } else
-			  echo "Error in validation.";
+			  echo "Error in response validation.";
 		} else
-			echo "Error in validation.";
+			echo "Error in request validation.";
 	}
 
 	/** \brief Handles rest request, converts it to xml and calls soap_request()
