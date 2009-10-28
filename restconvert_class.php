@@ -45,7 +45,7 @@ class restconvert {
 	private function build_xml($action, $query) {
  	 foreach ($action as $key => $tag) {
  	   if (is_array($tag)) {
- 	     $ret .= $this->tag_me($key, build_xml($tag, $query));
+ 	     $ret .= $this->tag_me($key, $this->build_xml($tag, $query));
  	   } else {
  	     foreach ($query as $parval) {
  	       list($par, $val) = $this->par_split($parval);
