@@ -63,7 +63,7 @@ class objconvert {
 	public function obj2soap($obj) {
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
-      $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '"' . $ns . '"';
+      $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
   }
   private function xml_header() {
