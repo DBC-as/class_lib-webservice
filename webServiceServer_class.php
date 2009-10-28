@@ -101,6 +101,11 @@ abstract class webServiceServer {
 
       // validate response
       $objconvert=new objconvert();
+		  foreach ($this->config->get_value('xmlns') as $prefix => $ns) {
+        if ($prefix == "NONE")
+          $prefix = "";
+        $objconvert->add_namespace($ns, $prefix);
+      }
 		  if ($validate["response"]) {
 			  $response_xml=$objconvert->obj2soap($response_xmlobj);
         if (!$this->validate_xml($response_xml,$validate["response"]))
