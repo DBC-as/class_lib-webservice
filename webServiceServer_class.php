@@ -209,11 +209,9 @@ abstract class webServiceServer {
   */
 
 	private function create_sample_forms() {
-    $i=0;
+    if (isset($HTTP_RAW_POST_DATA)) return;
 
     echo "<html><body>";
-
-    if (!isset($HTTP_RAW_POST_DATA)) {
 
     // Open a known directory, and proceed to read its contents
     if (is_dir($this->xmldir."/request")) {
@@ -222,14 +220,15 @@ abstract class webServiceServer {
         while (($file = readdir($dh)) !== false) {
           if (!is_dir($file)) {
             $fp=fopen($file,'r');
+            if (preg_match('/html$/',$file,$matches)) {
+              $info .= fread($fp, filesize($file));
+              $found_files=1;
+            }
             if (preg_match('/xml$/',$file,$matches)) {
               $found_files=1;
               $contents = fread($fp, filesize($file));
-              $ext=$matches[0];
-              $reqs[]=str_replace("\n","\\n",addcslashes(html_entity_decode($contents),'"'));
+              $reqs[]=str_replace("\n","\\n",addcslashes($contents,'"'));
               $names[]=$file;
-
-              $i++;
             }
             echo '</form>';
 
@@ -241,7 +240,7 @@ abstract class webServiceServer {
         if ($found_files) {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
-          echo '<form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=140>';
+          echo '<form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=90>';
           echo stripslashes($_REQUEST["xml"]);
           echo '</textarea><br><br>';
           echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
@@ -250,13 +249,13 @@ abstract class webServiceServer {
             echo '<option value="' . $key . '">'.$names[$key].'</option>';
           echo '</select> &nbsp; <input type="submit" name="subm" value="Try me">';
           echo '</form>';
+          echo $info;
         } else {
           echo "No example xml files found...";
         }
       }
     }
     echo "</body></html>";
-    }
   }
 
 }
