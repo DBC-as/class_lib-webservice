@@ -117,20 +117,24 @@ abstract class webServiceServer {
         list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
         switch ($req->_value->outputType->_value) {
           case "json":
+            header("Content-Type: application/json");
             if ($callback=$req->_value->callback->_value)
 			        echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
             else
 			        echo $objconvert->obj2json($response_xmlobj);
             break;
           case "phps":
+            header("Content-Type: application/phps");
 			      echo $objconvert->obj2phps($response_xmlobj);
             break;
           case "xml":
+            header("Content-Type: text/xml");
 			      echo $objconvert->obj2xmlNS($response_xmlobj);
             break;
           default: 
             if (empty($response_xml))
 			        $response_xml =  $objconvert->obj2soap($response_xmlobj);
+            header("Content-Type: text/xml");
 			      echo $response_xml;
         }
 		  } else
