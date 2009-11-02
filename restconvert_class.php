@@ -37,7 +37,7 @@ class restconvert {
  	 $action_pars = $config->get_value("action", "rest");
  	 if (is_array($action_pars) && $_GET["action"] && $action_pars[$_GET["action"]]) {
  	   if ($node_value = $this->build_xml(&$action_pars[$_GET["action"]], explode("&", $_SERVER["QUERY_STRING"]))) {
- 	     return $this->soap_header .  $this->tag_me($_GET["action"], $node_value) .  $this->soap_footer;
+ 	     return $this->soap_header .  $this->rest_tag_me($_GET["action"], $node_value) .  $this->soap_footer;
 			} 
  	 }
 	}
@@ -45,11 +45,11 @@ class restconvert {
 	private function build_xml($action, $query) {
  	 foreach ($action as $key => $tag) {
  	   if (is_array($tag)) {
- 	     $ret .= $this->tag_me($key, $this->build_xml($tag, $query));
+ 	     $ret .= $this->rest_tag_me($key, $this->build_xml($tag, $query));
  	   } else {
  	     foreach ($query as $parval) {
  	       list($par, $val) = $this->par_split($parval);
- 	       if ($tag == $par) $ret .= $this->tag_me($tag, $val);
+ 	       if ($tag == $par) $ret .= $this->rest_tag_me($tag, $val);
  	     }
  	   }
 		}
@@ -61,7 +61,9 @@ class restconvert {
  	 return array(preg_replace("/\[[^]]*\]/", "", urldecode($par)), $val);
 	}
 
-	function tag_me($tag, $val) {
+	function rest_tag_me($tag, $val) {
+    if ($i = strrpos($tag, "."))
+      $tag = substr($tag, $i+1);
 	  return "<$tag>$val</$tag>";
 	}
 }
