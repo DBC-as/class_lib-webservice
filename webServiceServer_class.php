@@ -84,7 +84,6 @@ abstract class webServiceServer {
   * @param xml <string>
   */
 	private function soap_request($xml) {
-
     // validate request
     $validate = $this->config->get_value('validate');
 
@@ -118,7 +117,8 @@ abstract class webServiceServer {
         switch ($req->_value->outputType->_value) {
           case "json":
             header("Content-Type: application/json");
-            if ($callback=$req->_value->callback->_value)
+            $callback = &$req->_value->callback->_value;
+            if ($callback && preg_match("/^\w+$/", $callback))
 			        echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
             else
 			        echo $objconvert->obj2json($response_xmlobj);
