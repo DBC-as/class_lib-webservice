@@ -137,8 +137,8 @@ abstract class webServiceServer {
             header("Content-Type: text/xml");
 			      echo $response_xml;
         }
-		  } else
-			  echo "Error in response validation.";
+			} else
+				echo "Error in response validation.";
 		} else
 			echo "Error in request validation.";
 	}
@@ -155,25 +155,29 @@ abstract class webServiceServer {
 			$this->soap_request($xml);
 	}
 
-  /** \brief HowRU tests the webservice and answers back if things went OK. The test cases resides in the inifile.
+  /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
   * 
   */
 	private function HowRU() {
 		$curl = new curl();
 		$curl->set_option(CURLOPT_POST, 1);
-		foreach ($this->config->get_value('test') as $k=>$v) {
-			$reply=$curl->get($this->config->get_value('ws_url')."?action=".$v);
-			$m=$this->config->get_value('preg_match');
-			$preg_match=$m[$k];
-			if (preg_match("/$preg_match/",$reply)) {
-				$r=$this->config->get_value('ok_response');
-				echo $r[$k];
-			} else {
-				$e=$this->config->get_value('error');
-				echo $e[$k];
-			}
+    $tests = $this->config->get_value('test', "howru");
+    if ($tests) {
+      $reg_match = $this->config->get_value('preg_match', "howru");
+      $reg_error = $this->config->get_value('error', "howru");
+      $url = $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"];
+		  foreach ($tests as $k=>$v) {
+			  $reply=$curl->get($url."?action=".$v);
+			  $preg_match=$reg_match[$k];
+			  if (!preg_match("/$preg_match/",$reply)) {
+				  echo $reg_error[$k];
+          die();
+			  }
+		  }
+		  $curl->close();
 		}
-		$curl->close();
+    echo "Gr8";
+    die();
 	}
 
   /** \brief Validates xml
