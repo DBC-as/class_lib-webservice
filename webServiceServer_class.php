@@ -67,8 +67,8 @@ abstract class webServiceServer {
 	public function handle_request() {
 	  if (isset($_GET["HowRU"]) ) {                          
      	$this->HowRU();          
-    } elseif (isset($HTTP_RAW_POST_DATA)) {
-      $this->soap_request($HTTP_RAW_POST_DATA);                    
+    } elseif (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
+      $this->soap_request($GLOBALS["HTTP_RAW_POST_DATA"]);                    
     } elseif (isset($_POST['xml'])) {
 			$xml=trim(stripslashes($_POST['xml']));
       $this->soap_request($xml);                    
@@ -84,6 +84,8 @@ abstract class webServiceServer {
   * @param xml <string>
   */
 	private function soap_request($xml) {
+    // Debug $this->verbose->log(TRACE, "Request " . $xml);
+
     // validate request
     $validate = $this->config->get_value('validate');
 
