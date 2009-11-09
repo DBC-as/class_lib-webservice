@@ -55,7 +55,6 @@ abstract class webServiceServer {
     $this->verbose=new verbose($this->config->get_value("logfile", "setup"),
                                $this->config->get_value("verbose", "setup"));    
     $this->watch = new stopwatch("", " ", "", "%s:%01.3f");
-    $this->watch->start($this->config->get_value("servicename","setup"));   
 
 		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
