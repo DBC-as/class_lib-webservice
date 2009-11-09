@@ -29,6 +29,8 @@ class xmlconvert {
 	*
  	*/
 	public function soap2obj(&$request) {
+   if (empty($request)) return FALSE;
+
  	 $dom = new DomDocument();
  	 $dom->preserveWhiteSpace = false;
  	 if ($dom->loadXML($request))
