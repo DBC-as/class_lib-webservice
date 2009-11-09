@@ -97,49 +97,50 @@ abstract class webServiceServer {
       $xmlobj=$xmlconvert->soap2obj($xml);
 
       // handle request
-			$response_xmlobj=$this->call_xmlobj_function($xmlobj);
-
-      // validate response
-      $objconvert=new objconvert();
-		  foreach ($this->config->get_value('xmlns') as $prefix => $ns) {
-        if ($prefix == "NONE")
-          $prefix = "";
-        $objconvert->add_namespace($ns, $prefix);
-      }
-		  if ($validate["response"]) {
-			  $response_xml=$objconvert->obj2soap($response_xmlobj);
-        if (!$this->validate_xml($response_xml,$validate["response"]))
-				  $error=1;
-      }
-
-		  if (empty($error)) {
-      // Branch to outputType
-        list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
-        switch ($req->_value->outputType->_value) {
-          case "json":
-            header("Content-Type: application/json");
-            $callback = &$req->_value->callback->_value;
-            if ($callback && preg_match("/^\w+$/", $callback))
-			        echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
-            else
-			        echo $objconvert->obj2json($response_xmlobj);
-            break;
-          case "phps":
-            header("Content-Type: application/phps");
-			      echo $objconvert->obj2phps($response_xmlobj);
-            break;
-          case "xml":
-            header("Content-Type: text/xml");
-			      echo $objconvert->obj2xmlNS($response_xmlobj);
-            break;
-          default: 
-            if (empty($response_xml))
-			        $response_xml =  $objconvert->obj2soap($response_xmlobj);
-            header("Content-Type: text/xml");
-			      echo $response_xml;
+			if ($response_xmlobj=$this->call_xmlobj_function($xmlobj)) {
+        // validate response
+        $objconvert=new objconvert();
+		    foreach ($this->config->get_value('xmlns') as $prefix => $ns) {
+          if ($prefix == "NONE")
+            $prefix = "";
+          $objconvert->add_namespace($ns, $prefix);
         }
+		    if ($validate["response"]) {
+			    $response_xml=$objconvert->obj2soap($response_xmlobj);
+          if (!$this->validate_xml($response_xml,$validate["response"]))
+				    $error=1;
+        }
+
+		    if (empty($error)) {
+        // Branch to outputType
+          list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
+          switch ($req->_value->outputType->_value) {
+            case "json":
+              header("Content-Type: application/json");
+              $callback = &$req->_value->callback->_value;
+              if ($callback && preg_match("/^\w+$/", $callback))
+			          echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
+              else
+			          echo $objconvert->obj2json($response_xmlobj);
+              break;
+            case "phps":
+              header("Content-Type: application/phps");
+			        echo $objconvert->obj2phps($response_xmlobj);
+              break;
+            case "xml":
+              header("Content-Type: text/xml");
+			        echo $objconvert->obj2xmlNS($response_xmlobj);
+              break;
+            default: 
+              if (empty($response_xml))
+			          $response_xml =  $objconvert->obj2soap($response_xmlobj);
+              header("Content-Type: text/xml");
+			        echo $response_xml;
+          }
+			  } else
+				  echo "Error in response validation.";
 			} else
-				echo "Error in response validation.";
+				echo "Error in request validation.";
 		} else
 			echo "Error in request validation.";
 	}
@@ -206,10 +207,17 @@ abstract class webServiceServer {
   *
   */
   private function call_xmlobj_function($xmlobj) {
-    $function=key($xmlobj->Envelope->_value->Body->_value);
-    $params=$xmlobj->Envelope->_value->Body->_value->$function->_value;
-		$handle_function="handle_".$function;
-    return $this->$handle_function($params);
+    if ($xmlobj) {
+      $soapAction = $this->config->get_value("soapAction", "setup");
+      $request=key($xmlobj->Envelope->_value->Body->_value);
+      if ($function = array_search($request, $soapAction)) {
+        $params=$xmlobj->Envelope->_value->Body->_value->$request->_value;
+        if (method_exists($this, $function))
+          return $this->$function($params);
+      }
+    }
+
+    return FALSE;
   }
 
   /** \brief Create sample form for testing webservice. This is called of no request is send via browser.
