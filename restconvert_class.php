@@ -36,10 +36,12 @@ class restconvert {
 	public function rest2soap(&$config) {
  	 $soap_actions = $config->get_value("soapAction", "setup");
  	 $action_pars = $config->get_value("action", "rest");
+   if (!$all_actions = $action_pars["ALL"])
+     $all_actions = array();
  	 if (is_array($soap_actions) && is_array($action_pars) 
     && $_GET["action"]
     && $soap_actions[$_GET["action"]] && $action_pars[$_GET["action"]]) {
- 	   if ($node_value = $this->build_xml(&$action_pars[$_GET["action"]], explode("&", $_SERVER["QUERY_STRING"]))) {
+ 	   if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$_GET["action"]]), explode("&", $_SERVER["QUERY_STRING"]))) {
  	     return $this->soap_header .  $this->rest_tag_me($soap_actions[$_GET["action"]], $node_value) .  $this->soap_footer;
 			} 
  	 }
