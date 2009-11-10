@@ -124,8 +124,8 @@ abstract class webServiceServer {
               else
 			          echo $objconvert->obj2json($response_xmlobj);
               break;
-            case "phps":
-              header("Content-Type: application/phps");
+            case "php":
+              header("Content-Type: application/php");
 			        echo $objconvert->obj2phps($response_xmlobj);
               break;
             case "xml":
