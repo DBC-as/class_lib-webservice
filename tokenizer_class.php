@@ -93,39 +93,57 @@ class tokenizer {
 		foreach($this->operators as $k=>$v)	 { $this->operators[$k]=strtolower($v); }
 	}
 
-   $last_token_index=count($tokens)-1;
+   foreach($tokens as $k=>$v) {
+     if ($v[0] == '"') $spos = $k;
+     elseif (isset($spos)) {
+       $tokens[$spos] .= $v;
+       if (strpos('"', $v)) unset($spos);
+       unset($tokens[$k]);
+     }
+     $last_token_index=$k;
+   }
 
    //Read a token
    foreach($tokens as $k=>$v) {
-     $this->token=$v;
-			$tokens=array();
+			$token=array();
 
 	  //If the token is a index token
-     if($this->is_index($this->token)) {
-				$tokens["type"]="INDEX";
-				$tokens["value"]=$this->token;
+     if($this->is_index($v)) {
+				$token["type"]="INDEX";
+        if (strtolower(substr($v, 0, 6) == "facet.")) {
+				  $token["value"]='_query_:"{!raw f=' . $v . '}';
+          $in_facet = TRUE;
+        } else 
+				  $token["value"]=$v;
      
-			} else if($this->is_operator($this->token)) {
-				$tokens["type"]="OPERATOR";
-				$tokens["value"]=$this->token;
+			} else if($this->is_operator($v)) {
+				$token["type"]="OPERATOR";
+        if ($in_facet && $v == '=')
+				  $token["value"]='';
+        else
+				  $token["value"]=$v;
 
 			} else {
 
 				$ignore=FALSE;
 
-				foreach($this->ignore as $k=>$v) {
-					if(preg_match($v, $this->token)) {
+				foreach($this->ignore as $ign) {
+					if(preg_match($ign, $v)) {
 						$ignore=TRUE;
 					}
 				}
 
 				if(!$ignore) {
-					$tokens["type"]="OPERAND";
-					$tokens["value"]=$this->token;
+					$token["type"]="OPERAND";
+          if ($in_facet) {
+					  $token["value"]=str_replace('"', '', $v) . '"';
+            $in_facet = FALSE;
+          } else
+					  $token["value"]=$v;
 				} 
 			}
 
-		if(!empty($tokens)) $tokenlist[]=$tokens;
+		if(!empty($token)) $tokenlist[]=$token;
 
 		}
 	return $tokenlist;
