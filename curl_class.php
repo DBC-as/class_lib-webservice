@@ -376,7 +376,7 @@ class cURL {
    */
 
   public function set_authentication($user, $passwd, $handle_no=null) {
-      return $this->set_option(CURLOPT_USERPWD, '['.$user.']:['.$passwd.']', $handle_no);
+      return $this->set_option(CURLOPT_USERPWD, $user.':'.$passwd, $handle_no);
   }
 
 
