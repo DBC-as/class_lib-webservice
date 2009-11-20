@@ -369,6 +369,19 @@ class cURL {
 
 
   /**
+   * Set HTTP authentication value(s).
+   * @param $user       - HTTP user
+   * @param $passwd     - HTTP password
+   * @param $handle_no  - Handle number. Default all handle numbers. (integer)
+   */
+
+  public function set_authentication($user, $passwd, $handle_no=null) {
+      return $this->set_option(CURLOPT_USERPWD, '['.$user.']:['.$passwd.']', $handle_no);
+  }
+
+
+
+  /**
    * Set HTTP proxy authentication value(s).
    * @param $user       - HTTP proxy user
    * @param $passwd     - HTTP proxy password
