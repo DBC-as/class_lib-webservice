@@ -402,6 +402,14 @@ class oci {
   }
 
 
+ /**
+  * \brief Creates an empty OCI lob
+  * @return OCI lob
+  */
+  function create_lob() {
+    return oci_new_descriptor($this->connect, OCI_D_LOB);
+  }
+
 
   function bind($name, $value, $maxlength=-1, $type=SQLT_CHR) {
     $bind_array["name"]=($name[0] == ":"? $name : ":".$name);
