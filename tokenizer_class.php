@@ -53,6 +53,9 @@ class tokenizer {
 	/// Sets weather operators and indexes are case insensitive <bool>
 	var $case_insensitive=FALSE;
 
+  // indexes which shold be searched as raw
+  var $raw_index=array();
+
  /** \brief Check if token is operator.
   *
   * @param token (string)
@@ -97,6 +100,14 @@ class tokenizer {
     return FALSE;
   }
 
+  function is_raw_index($idx) {
+    foreach ($this->raw_index as $i)
+      if (substr($idx, 0, strlen($i)) == $i) 
+        return TRUE;
+
+    return FALSE;
+  }
+
  /** \brief Tokenize string
   *
   * @param string (string)
@@ -130,15 +141,15 @@ class tokenizer {
 	  //If the token is a index token
      if($this->is_index($v)) {
 				$token["type"]="INDEX";
-        if (strtolower(substr($v, 0, 6) == "facet.")) {
+        if ($this->is_raw_index($v)) {
 				  $token["value"]='_query_:"{!raw f=' . $v . '}';
-          $in_facet = TRUE;
+          $use_raw = TRUE;
         } else 
 				  $token["value"]=$v;
      
 			} else if($this->is_operator($v)) {
 				$token["type"]="OPERATOR";
-        if ($in_facet && $v == '=')
+        if ($use_raw && $v == '=')
 				  $token["value"]='';
         else
 				  $token["value"]=$v;
@@ -155,9 +166,9 @@ class tokenizer {
 
 				if(!$ignore) {
 					$token["type"]="OPERAND";
-          if ($in_facet) {
+          if ($use_raw) {
 					  $token["value"]=str_replace('"', '', $v) . '"';
-            $in_facet = FALSE;
+            $use_raw = FALSE;
           } else
 					  $token["value"]=$v;
 				} 
