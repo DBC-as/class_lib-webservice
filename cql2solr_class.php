@@ -27,7 +27,7 @@ class cql2solr extends tokenizer {
 	var $dom;
 	var $map;
 
-  function cql2solr($xml) {
+  function cql2solr($xml, $config="") {
 		$this->dom=new DomDocument();
 		$this->dom->Load($xml);
 
@@ -38,11 +38,13 @@ class cql2solr extends tokenizer {
     $this->ignore=array("/^prox\//");
 
 		$this->map=array(
-		"and"=>"AND",
-		"not"=>"NOT",
-		"or"=>"OR",
-		"="=>":"
+		  "and"=>"AND",
+		  "not"=>"NOT",
+		  "or"=>"OR",
+		  "="=>":"
 		);
+    if ($config)
+      $this->raw_index = $config->get_value("raw_index", "setup");
 	}
 
 
