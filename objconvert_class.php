@@ -24,7 +24,13 @@ class objconvert {
 
 	private $namespaces=array();
 
-	public function __construct() {
+	public function __construct($xmlns="") {
+    if ($xmlns)
+      foreach ($xmlns as $prefix => $ns) {
+        if ($prefix == "NONE")
+          $prefix = "";
+        $this->add_namespace($ns, $prefix);
+      }
 	}
 
  /** \brief Convert ols-object to json

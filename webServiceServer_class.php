@@ -40,6 +40,7 @@ abstract class webServiceServer {
   protected $watch; /// timer object
 	protected $xmldir="./"; /// xml directory
 	protected $validate= array(); /// xml validate schemas
+  protected $objconvert; /// OLS object to xml object
 
 	/** \brief Webservice constructer
  	*
@@ -98,18 +99,14 @@ abstract class webServiceServer {
       $xmlconvert=new xmlconvert();
       $xmlobj=$xmlconvert->soap2obj($xml);
 
+      // initialize objconvert and load namespaces
+      $this->objconvert=new objconvert($this->config->get_value('xmlns', 'setup'));
+
       // handle request
 			if ($response_xmlobj=$this->call_xmlobj_function($xmlobj)) {
         // validate response
-        $objconvert=new objconvert();
-		    if ($xmlns = $this->config->get_value('xmlns', 'setup'))
-          foreach ($xmlns as $prefix => $ns) {
-            if ($prefix == "NONE")
-              $prefix = "";
-            $objconvert->add_namespace($ns, $prefix);
-          }
 		    if ($this->validate["response"]) {
-			    $response_xml=$objconvert->obj2soap($response_xmlobj);
+			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
           if (!$this->validate_xml($response_xml,$this->validate["response"]))
 				    $error=1;
         }
@@ -122,21 +119,21 @@ abstract class webServiceServer {
               header("Content-Type: application/json");
               $callback = &$req->_value->callback->_value;
               if ($callback && preg_match("/^\w+$/", $callback))
-			          echo $callback . ' && ' . $callback . '(' . $objconvert->obj2json($response_xmlobj) . ')';
+			          echo $callback . ' && ' . $callback . '(' . $this->objconvert->obj2json($response_xmlobj) . ')';
               else
-			          echo $objconvert->obj2json($response_xmlobj);
+			          echo $this->objconvert->obj2json($response_xmlobj);
               break;
             case "php":
               header("Content-Type: application/php");
-			        echo $objconvert->obj2phps($response_xmlobj);
+			        echo $this->objconvert->obj2phps($response_xmlobj);
               break;
             case "xml":
               header("Content-Type: text/xml");
-			        echo $objconvert->obj2xmlNS($response_xmlobj);
+			        echo $this->objconvert->obj2xmlNS($response_xmlobj);
               break;
             default: 
               if (empty($response_xml))
-			          $response_xml =  $objconvert->obj2soap($response_xmlobj);
+			          $response_xml =  $this->objconvert->obj2soap($response_xmlobj);
               header("Content-Type: text/xml");
 			        echo $response_xml;
           }
