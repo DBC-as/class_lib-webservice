@@ -39,6 +39,7 @@ abstract class webServiceServer {
   protected $verbose;  /// verbose object for logging
   protected $watch; /// timer object
 	protected $xmldir="./"; /// xml directory
+	protected $validate= array(); /// xml validate schemas
 
 	/** \brief Webservice constructer
  	*
@@ -87,9 +88,9 @@ abstract class webServiceServer {
     // Debug $this->verbose->log(TRACE, "Request " . $xml);
 
     // validate request
-    $validate = $this->config->get_value('validate');
+    $this->validate = $this->config->get_value('validate');
 
-		if ($validate["request"] && !$this->validate_xml($xml,$validate["request"]))
+		if ($this->validate["request"] && !$this->validate_xml($xml,$this->validate["request"]))
 			$error=1;
 
 		if (empty($error)) {
@@ -107,9 +108,9 @@ abstract class webServiceServer {
               $prefix = "";
             $objconvert->add_namespace($ns, $prefix);
           }
-		    if ($validate["response"]) {
+		    if ($this->validate["response"]) {
 			    $response_xml=$objconvert->obj2soap($response_xmlobj);
-          if (!$this->validate_xml($response_xml,$validate["response"]))
+          if (!$this->validate_xml($response_xml,$this->validate["response"]))
 				    $error=1;
         }
 
@@ -192,11 +193,11 @@ abstract class webServiceServer {
 	*
   */
 
-  private function validate_xml($xml, $schema_filename, $resolve_externals='FALSE') {
+  protected function validate_xml($xml, $schema_filename, $resolve_externals='FALSE') {
 		$validateXml = new DomDocument;
     $validateXml->resolveExternals = $resolve_externals;
     $validateXml->loadXml($xml);
-    if ($validateXml->schemaValidate($schema_filename)) {
+    if (@ $validateXml->schemaValidate($schema_filename)) {
       return TRUE;
     } else {
       return FALSE;
