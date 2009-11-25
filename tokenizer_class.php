@@ -129,7 +129,7 @@ class tokenizer {
        $spos = $k;
      elseif (isset($spos)) {
        $tokens[$spos] .= $v;
-       if (strpos($v, '"')) unset($spos);
+       if (strpos(" ".$v, '"')) unset($spos);
        unset($tokens[$k]);
      }
      $last_token_index=$k;
