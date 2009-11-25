@@ -125,7 +125,8 @@ class tokenizer {
 	}
 
    foreach($tokens as $k=>$v) {
-     if ($v[0] == '"' && substr_count($v, '"') == 1) $spos = $k;
+     if (empty($spos) && $v[0] == '"' && substr_count($v, '"') == 1)
+       $spos = $k;
      elseif (isset($spos)) {
        $tokens[$spos] .= $v;
        if (strpos($v, '"')) unset($spos);
