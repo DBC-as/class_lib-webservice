@@ -40,7 +40,8 @@ abstract class webServiceServer {
   protected $watch; /// timer object
 	protected $xmldir="./"; /// xml directory
 	protected $validate= array(); /// xml validate schemas
-  protected $objconvert; /// OLS object to xml object
+  protected $objconvert; /// OLS object to xml convert
+  protected $xmlconvert; /// xml to OLS object convert
 
 	/** \brief Webservice constructer
  	*
@@ -96,8 +97,8 @@ abstract class webServiceServer {
 
 		if (empty($error)) {
       // parse to object
-      $xmlconvert=new xmlconvert();
-      $xmlobj=$xmlconvert->soap2obj($xml);
+      $this->xmlconvert=new xmlconvert();
+      $xmlobj=$this->xmlconvert->soap2obj($xml);
 
       // initialize objconvert and load namespaces
       $this->objconvert=new objconvert($this->config->get_value('xmlns', 'setup'));
