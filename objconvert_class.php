@@ -23,6 +23,7 @@
 class objconvert {
 
 	private $namespaces=array();
+	private $used_namespaces=array();
 
 	public function __construct($xmlns="") {
     if ($xmlns)
@@ -83,9 +84,11 @@ class objconvert {
  /** \brief Convert ols-object to xml with namespaces
  	*/
 	public function obj2xmlNs($obj) {
+    $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
-      $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
+      if ($this->used_namespaces[$ns])
+        $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     if ($used_ns && $i = strpos($xml, ">"))
       $xml = substr($xml, 0, $i) . $used_ns . substr($xml, $i);
     return $this->xml_header() . $xml;
@@ -94,9 +97,11 @@ class objconvert {
  /** \brief Convert ols-object to soap
  	*/
 	public function obj2soap($obj) {
+    $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
-      $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
+      if ($this->used_namespaces[$ns])
+        $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
   }
 
@@ -153,6 +158,7 @@ class objconvert {
  	   while (in_array("ns".$i, $this->namespaces)) $i++;
  	   $this->namespaces[$ns] = "ns".$i;
  	 }
+   $this->used_namespaces[$ns] = TRUE;
  	 return $this->namespaces[$ns];
 	}
 
