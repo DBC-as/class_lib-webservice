@@ -64,7 +64,7 @@ class objconvert {
  	*/
   private function build_json_obj($obj) {
     if (is_scalar($obj->_value))
-      $ret->{'$'} = $obj->_value;
+      $ret->{'$'} = html_entity_decode($obj->_value);
     else
       $ret = $this->obj2badgerfish_obj($obj->_value);
     if ($obj->_attributes)
