@@ -87,7 +87,7 @@ class objconvert {
     $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
-      if ($this->used_namespaces[$ns])
+      if ($this->used_namespaces[$ns] || empty($prefix))
         $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     if ($used_ns && $i = strpos($xml, ">"))
       $xml = substr($xml, 0, $i) . $used_ns . substr($xml, $i);
@@ -100,7 +100,7 @@ class objconvert {
     $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
-      if ($this->used_namespaces[$ns])
+      if ($this->used_namespaces[$ns] || empty($prefix))
         $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
   }
