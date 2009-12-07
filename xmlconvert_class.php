@@ -45,7 +45,9 @@ class xmlconvert {
 
 	public function xml2obj($domobj) {
  	 foreach ($domobj->childNodes as $node) {
- 	   if ($node->nodeName == "#text")
+ 	   if ($node->nodeName == "#comment")
+ 	     continue;
+ 	   elseif ($node->nodeName == "#text")
  	     $ret = $node->nodeValue;
  	   else {
  	     $i = strpos($node->nodeName, ":");
