@@ -101,12 +101,17 @@ abstract class webServiceServer {
       // parse to object
       $this->xmlconvert=new xmlconvert();
       $xmlobj=$this->xmlconvert->soap2obj($xml);
+      // soap envelope?
+      if ($xmlobj->Envelope)
+        $xmlobj_request = &$xmlobj->Envelope->_value->Body->_value;
+      else
+        $xmlobj_request = &$xmlobj;
 
       // initialize objconvert and load namespaces
       $this->objconvert=new objconvert($this->xmlns);
 
       // handle request
-			if ($response_xmlobj=$this->call_xmlobj_function($xmlobj)) {
+			if ($response_xmlobj=$this->call_xmlobj_function($xmlobj_request)) {
         // validate response
 		    if ($this->validate["response"]) {
 			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
@@ -116,7 +121,7 @@ abstract class webServiceServer {
 
 		    if (empty($error)) {
         // Branch to outputType
-          list($service, $req) = each($xmlobj->Envelope->_value->Body->_value);
+          list($service, $req) = each($xmlobj_request);
           switch ($req->_value->outputType->_value) {
             case "json":
               header("Content-Type: application/json");
@@ -212,9 +217,9 @@ abstract class webServiceServer {
   private function call_xmlobj_function($xmlobj) {
     if ($xmlobj) {
       $soapAction = $this->config->get_value("soapAction", "setup");
-      $request=key($xmlobj->Envelope->_value->Body->_value);
+      $request=key($xmlobj);
       if ($function = array_search($request, $soapAction)) {
-        $params=$xmlobj->Envelope->_value->Body->_value->$request->_value;
+        $params=$xmlobj->$request->_value;
         if (method_exists($this, $function))
           return $this->$function($params);
       }
