@@ -35,14 +35,16 @@ require_once("OLS_class_lib/objconvert_class.php");
 
 abstract class webServiceServer {
 
-  protected $config; /// inifile object
-  protected $verbose;  /// verbose object for logging
-  protected $watch; /// timer object
-	protected $xmldir="./"; /// xml directory
-	protected $validate= array(); /// xml validate schemas
-  protected $objconvert; /// OLS object to xml convert
-  protected $xmlconvert; /// xml to OLS object convert
-  protected $xmlns; /// xml to OLS object convert
+  protected $config; // inifile object
+  protected $verbose;  // verbose object for logging
+  protected $watch; // timer object
+	protected $xmldir="./"; // xml directory
+	protected $validate= array(); // xml validate schemas
+  protected $objconvert; // OLS object to xml convert
+  protected $xmlconvert; // xml to OLS object convert
+  protected $xmlns; // namespaces and prefixes 
+  protected $output_type=""; 
+
 
 	/** \brief Webservice constructer
  	*
@@ -64,6 +66,7 @@ abstract class webServiceServer {
 		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
     $this->xmlns = $this->config->get_value('xmlns', 'setup');
+    $this->output_type = $this->config->get_value('default_output_type', 'setup');
 	}
 
   /** \brief Handles request from webservice client
@@ -103,15 +106,15 @@ abstract class webServiceServer {
       $xmlobj=$this->xmlconvert->soap2obj($xml);
       // soap envelope?
       if ($xmlobj->Envelope)
-        $xmlobj_request = &$xmlobj->Envelope->_value->Body->_value;
+        $request_xmlobj = &$xmlobj->Envelope->_value->Body->_value;
       else
-        $xmlobj_request = &$xmlobj;
+        $request_xmlobj = &$xmlobj;
 
       // initialize objconvert and load namespaces
       $this->objconvert=new objconvert($this->xmlns);
 
       // handle request
-			if ($response_xmlobj=$this->call_xmlobj_function($xmlobj_request)) {
+			if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
         // validate response
 		    if ($this->validate["response"]) {
 			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
@@ -121,8 +124,10 @@ abstract class webServiceServer {
 
 		    if (empty($error)) {
         // Branch to outputType
-          list($service, $req) = each($xmlobj_request);
-          switch ($req->_value->outputType->_value) {
+          list($service, $req) = each($request_xmlobj);
+          if (empty($this->output_type) || $req->_value->outputType->_value)
+            $this->output_type = $req->_value->outputType->_value;
+          switch ($this->output_type) {
             case "json":
               header("Content-Type: application/json");
               $callback = &$req->_value->callback->_value;
