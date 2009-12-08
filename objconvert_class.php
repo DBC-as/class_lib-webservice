@@ -133,22 +133,35 @@ class objconvert {
  /** \brief handles one node
  	*/
 	private function build_xml($tag, $obj) {
- 	 $ret = "";
- 	 if ($obj->_attributes)
- 	   foreach ($obj->_attributes as $a_name => $a_val) {
- 	     if ($a_val->_namespace)
- 	       $a_prefix = $this->set_prefix_separator($this->get_namespace_prefix($a_val->_namespace));
-       else 
-         $a_prefix = "";
- 	     $attr .= ' ' . $a_prefix . $a_name . '="' . $a_val->_value . '"';
- 	   }
- 	 if ($obj->_namespace)
- 	   $prefix = $this->set_prefix_separator($this->get_namespace_prefix($obj->_namespace));
- 	 if (is_scalar($obj->_value))  
- 	 	return $this->tag_me($prefix.$tag, $attr, $obj->_value);
- 	 else
- 	   return $this->tag_me($prefix.$tag, $attr, $this->obj2xml($obj->_value));
+ 	  $ret = "";
+ 	  if ($obj->_attributes)
+ 	    foreach ($obj->_attributes as $a_name => $a_val) {
+ 	      if ($a_val->_namespace)
+ 	        $a_prefix = $this->set_prefix_separator($this->get_namespace_prefix($a_val->_namespace));
+        else 
+          $a_prefix = "";
+ 	      $attr .= ' ' . $a_prefix . $a_name . '="' . $a_val->_value . '"';
+// prefix in value hack
+        $this->set_used_prefix($a_val->_value);
+ 	    }
+ 	  if ($obj->_namespace)
+ 	    $prefix = $this->set_prefix_separator($this->get_namespace_prefix($obj->_namespace));
+ 	  if (is_scalar($obj->_value))  
+ 	 	 return $this->tag_me($prefix.$tag, $attr, $obj->_value);
+ 	  else
+ 	    return $this->tag_me($prefix.$tag, $attr, $this->obj2xml($obj->_value));
 	}
+
+ /** \brief returns prefixes and store namespaces 
+ 	*/
+	private function set_used_prefix($val) {
+    if ($p = strpos($val, ":"))
+      foreach ($this->namespaces as $ns => $prefix)
+        if ($prefix == substr($val, 0, $p)) {
+          $this->used_namespaces[$ns] = TRUE;
+          break;
+        }
+  }
 
  /** \brief returns prefixes and store namespaces 
  	*/
