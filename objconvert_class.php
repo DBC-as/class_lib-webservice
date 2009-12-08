@@ -152,7 +152,7 @@ class objconvert {
  	    return $this->tag_me($prefix.$tag, $attr, $this->obj2xml($obj->_value));
 	}
 
- /** \brief returns prefixes and store namespaces 
+ /** \brief Updates used_namespaces from prefix in $val
  	*/
 	private function set_used_prefix($val) {
     if ($p = strpos($val, ":"))
