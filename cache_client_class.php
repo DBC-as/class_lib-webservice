@@ -60,8 +60,8 @@ class cache_log
     //exit;
     $data = fread($this->file,$size); 
 
-    //echo $data;
-    //exit;
+    echo $data;
+    exit;
 
     $this->content=unserialize($data);
   }
