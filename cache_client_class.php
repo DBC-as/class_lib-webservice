@@ -60,7 +60,7 @@ class cache_log
   
   public function hit()
   {
-    
+    fwrite($this->file,"testhest");
   }
 
   public function miss()
