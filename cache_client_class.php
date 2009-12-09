@@ -25,7 +25,13 @@ class cache
 	self::$_memcache=new Memcache();
 	self::$_memcache->connect(HOST,PORT);
       }
-    return self::$_memcache;
+
+    var_dump(self::$_memcache);
+    exit;
+    
+return self::$_memcache;
+
+    
   }
 
   public static function get($key)
