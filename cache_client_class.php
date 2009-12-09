@@ -51,7 +51,7 @@ class cache_log
 
   public function __construct($servicename)
   {
-    if( file_exists((LOGPATH.$servicename."_".CACHEFILE) )
+    if( file_exists(LOGPATH.$servicename."_".CACHEFILE) )
       {
 	$size=filesize(LOGPATH.$servicename."_".CACHEFILE);
 	$file = fopen(LOGPATH.$servicename."_".CACHEFILE,"r");
