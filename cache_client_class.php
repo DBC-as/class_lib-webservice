@@ -2,12 +2,13 @@
 
 /**
    
-   wrapper for memcache class.
+   thin wrapper for memcache class.
 
 */
 
 define( HOST,"localhost" );
 define( PORT,"11211" );
+define( CACHEFILE,"cache_log.log" );
 
 class cache
 {
@@ -40,6 +41,38 @@ class cache
   public static function flush()
   {
     return self::client()->flush();
+  } 
+}
+
+class cache_log
+{
+  private $file;
+  private $content;
+
+  public function __construct()
+  {
+    $this->file = fopen(CACHEFILE,"w+");
+    
+    if( $data = fread($this->file,filesize($this->file) )
+      $this->content=userialize($data);
+         
+  }
+  
+  public function hit()
+  {
+    
+  }
+
+  public function miss()
+  {
+  }
+  
+  public function hitratio()
+  {
+  }
+
+  public function read()
+  {
   }
 }
 
