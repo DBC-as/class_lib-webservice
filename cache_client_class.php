@@ -53,6 +53,9 @@ class cache_log
   {
     $this->file = fopen(CACHEFILE,"w+");
     
+    var_dump($this->file);
+    exit;
+
     if( $data = fread($this->file,filesize($this->file) ) )
       $this->content=userialize($data);
          
