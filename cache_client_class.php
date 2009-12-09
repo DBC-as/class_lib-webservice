@@ -64,7 +64,7 @@ class cache_log
     $data['hits']++;
  
     $file = fopen(CACHEFILE,"w");
-    fwrite($this->file,serialize($data));
+    fwrite($file,serialize($data));
   }
 
   public function miss()
