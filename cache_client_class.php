@@ -33,7 +33,7 @@ class cache
 
   public static function set($key,$data)
   {   
-    self::client()->set("mykey", "testhest", false, 600);
+    self::client()->set($key, $data, false, 600);
   }
 }
 
