@@ -62,11 +62,8 @@ class cache_log
     if(! $data=$this->content )
       $data=array("hits"=>0,"miss"=>0);
 
-    $data['hits']++;
- 
-    $file = fopen(CACHEFILE,"w");
-    fwrite($file,serialize($data));
-    fclose($file);
+    $data['hits']++; 
+    $this->write($data);
   }
 
   public function miss()
@@ -74,9 +71,15 @@ class cache_log
     if(! $data=$this->content )
       $data=array("hits"=>0,"miss"=>0);
 
-    $data['miss']++;
- 
-    fwrite($this->file,serialize($data));
+    $data['miss']++;    
+    $this->write($data);
+  }
+
+  private function write($data)
+  {
+    $file = fopen(CACHEFILE,"w");
+    fwrite($file,serialize($data));
+    fclose($file);
   }
   
   public function hitratio()
