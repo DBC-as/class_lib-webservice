@@ -56,6 +56,10 @@ class cache_log
     //exit;
     $this->file = fopen(CACHEFILE,"w+");
     $data = fread($this->file,$size); 
+
+    echo $data;
+    exit;
+
     $this->content=unserialize($data);
   }
   
