@@ -48,10 +48,10 @@ class cache_log
 {
   private $content;
 
-  public function __construct()
+  public function __construct($servicename)
   {
-    $size=filesize(CACHEFILE);
-    $file = fopen(CACHEFILE,"r");
+    $size=filesize($servicename."_".CACHEFILE);
+    $file = fopen($servicename."_"CACHEFILE,"r");
     $data = fread($file,$size); 
     $this->content=unserialize($data);
     fclose($file);
@@ -77,7 +77,7 @@ class cache_log
 
   private function write($data)
   {
-    $file = fopen(CACHEFILE,"w");
+    $file = fopen($servicename."_"CACHEFILE,"w");
     fwrite($file,serialize($data));
     fclose($file);
   }
