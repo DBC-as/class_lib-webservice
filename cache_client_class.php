@@ -31,7 +31,8 @@ class cache
 
   public static function get($key)
   {
-   
+    var_dump( self::$_memcache );
+    exit;
     if( self::$_memcache )
       {
 	echo "TUTTELUT";
