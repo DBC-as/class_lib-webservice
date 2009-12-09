@@ -22,7 +22,7 @@ class cache
     if( self::$_memcache==null )
       {
 	self::$_memcache=new Memcache();
-	if(!self::$_memcache->connect(HOST,PORT) )
+	if(!@self::$_memcache->connect(HOST,PORT) )
 	  self::$_memcache=null;
       }
 
@@ -33,7 +33,7 @@ class cache
   {
     var_dump( self::$_memcache );
     exit;
-    if( self::$_memcache )
+    if( self::$clint() )
       {
 	echo "TUTTELUT";
 	exit;
@@ -44,7 +44,7 @@ class cache
 
   public static function set($key,$data)
   {   
-     if( self::$_memcache )
+    if( self::$client() )
        self::client()->set($key, $data, false, 600);
      return false;
   }
@@ -52,7 +52,7 @@ class cache
   /** mark all items in cache as expired*/
   public static function flush()
   {
-    if( self::$_memcache )
+    if( self::$client() )
       return self::client()->flush();
     return false;
   } 
