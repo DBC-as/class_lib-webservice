@@ -34,6 +34,8 @@ class cache
 
   public static function set($key,$data)
   {   
+    echo $key." : ".$data;
+    exit;
     self::client()->set($key, $data, false, 600);
   }
 
