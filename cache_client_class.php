@@ -6,7 +6,7 @@
 
 */
 
-define( HOST,"localhost" );
+define( HOST,"localhostyyyy" );
 define( PORT,"11211-11" );
 define( LOGPATH,"/tmp/nypunkt_pjo/");
 define( CACHEFILE,"cache_log.log" );
