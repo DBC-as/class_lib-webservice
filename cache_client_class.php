@@ -53,14 +53,16 @@ class cache_log
   {
     $this->file = fopen(CACHEFILE,"w+");
     
-    if( $this->file )
-      if( $data = @fread($this->file,filesize($this->file) ) )
-	$this->content=unserialize($data);
+
+    if( $data = @fread($this->file,filesize($this->file) ) )
+      $this->content=unserialize($data);
          
   }
   
   public function hit()
   {
+    print_r($this->content);
+
     if(! $data=$this->content )
       $data=array("hits"=>0,"miss"=>0);
 
