@@ -35,6 +35,12 @@ class cache
   {   
     self::client()->set($key, $data, false, 600);
   }
+
+  /** mark all items in cache as expired*/
+  public static function flush()
+  {
+    return self::client()->flush();
+  }
 }
 
 
