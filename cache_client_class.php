@@ -55,6 +55,7 @@ class cache_log
     // echo $size;
     //exit;
     $this->file = fopen(CACHEFILE,"w+");
+    var_dump($this->file);
     $data = fread($this->file,$size); 
 
     echo $data;
