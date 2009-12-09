@@ -23,7 +23,7 @@ class cache
       {
 	self::$_memcache=new Memcache();
 	if(!@self::$_memcache->connect(HOST,PORT) )
-	  $self::$_memcache=null;
+	  self::$_memcache=null;
       }
 
     return self::$_memcache;
