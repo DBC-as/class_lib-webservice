@@ -8,6 +8,7 @@
 
 define( HOST,"localhost" );
 define( PORT,"11211" );
+define( LOGPATH,"/tmp/nypunkt_pjo/");
 define( CACHEFILE,"cache_log.log" );
 
 class cache
@@ -50,8 +51,8 @@ class cache_log
 
   public function __construct($servicename)
   {
-    $size=filesize($servicename."_".CACHEFILE);
-    $file = fopen($servicename."_".CACHEFILE,"r");
+    $size=filesize(LOGPATH.$servicename."_".CACHEFILE);
+    $file = fopen(LOGPATH.$servicename."_".CACHEFILE,"r");
     $data = fread($file,$size); 
     $this->content=unserialize($data);
     fclose($file);
@@ -77,7 +78,7 @@ class cache_log
 
   private function write($data)
   {
-    $file = fopen($servicename."_".CACHEFILE,"w");
+    $file = fopen(LOGPATH.$servicename."_".CACHEFILE,"w");
     fwrite($file,serialize($data));
     fclose($file);
   }
