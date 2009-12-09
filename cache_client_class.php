@@ -16,7 +16,7 @@ class cache
   // private constructor to avoid abuse( new() ) of class
   private function __construct(){}
   
-  public static function client()
+  private static function client()
   {
     if( self::$_memcache==null )
       {
@@ -26,14 +26,17 @@ class cache
     return self::$_memcache;
   }
 
-  public function get($key)
+  public static function get($key)
   {
-    return self::$_memcache->get("mykey");
+    echo $key;
+    exit;
+    return self::$client()->get("mykey");
   }
 
-  public function set($key,$data)
+  public static function set($key,$data)
   {
-    self::$_memcache->set("mykey", "testhest", false, 600);
+   
+    self::$client()->set("mykey", "testhest", false, 600);
   }
 }
 
