@@ -29,8 +29,6 @@ class cache
 
   public static function get($key)
   {
-    echo "TUTELUT";
-   
     return self::client()->get("mykey");
   }
 
