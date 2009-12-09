@@ -31,7 +31,7 @@ class cache
 
   public static function get($key)
   {
-    var_dump( self::$client() );
+    var_dump( self::client() );
     exit;
     if( self::$clint() )
       {
@@ -44,7 +44,7 @@ class cache
 
   public static function set($key,$data)
   {   
-    if( self::$client() )
+    if( self::client() )
        self::client()->set($key, $data, false, 600);
      return false;
   }
@@ -52,7 +52,7 @@ class cache
   /** mark all items in cache as expired*/
   public static function flush()
   {
-    if( self::$client() )
+    if( self::client() )
       return self::client()->flush();
     return false;
   } 
