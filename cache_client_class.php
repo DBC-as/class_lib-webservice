@@ -28,8 +28,6 @@ class cache
 
   public static function get($key)
   {
-    echo $key;
-    exit;
     return self::$client()->get("mykey");
   }
 
