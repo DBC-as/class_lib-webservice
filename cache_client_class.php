@@ -29,13 +29,11 @@ class cache
 
   public static function get($key)
   {
-    return self::client()->get("mykey");
+    return self::client()->get($key);
   }
 
   public static function set($key,$data)
   {   
-    echo $key." : ".print_r($data);
-    exit;
     self::client()->set($key, $data, false, 600);
   }
 
