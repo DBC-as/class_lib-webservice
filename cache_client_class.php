@@ -28,13 +28,12 @@ class cache
 
   public static function get($key)
   {
-    return self::$client()->get("mykey");
+    return self::client()->get("mykey");
   }
 
   public static function set($key,$data)
-  {
-   
-    self::$client()->set("mykey", "testhest", false, 600);
+  {   
+    self::client()->set("mykey", "testhest", false, 600);
   }
 }
 
