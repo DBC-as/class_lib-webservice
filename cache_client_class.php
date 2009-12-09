@@ -13,7 +13,6 @@ define( CACHEFILE,"cache_log.log" );
 
 class cache
 {
-  
   private static $_memcache=null;
   // private constructor to avoid abuse( new() ) of class
   private function __construct(){}
@@ -23,31 +22,33 @@ class cache
     if( self::$_memcache==null )
       {
 	self::$_memcache=new Memcache();
-	@self::$_memcache->connect(HOST,PORT);
+	if(!@self::$_memcache->connect(HOST,PORT) )
+	  $self::$_memcache=null;
       }
 
-    // var_dump(self::$_memcache);
-    //exit;
-    
-return self::$_memcache;
-
-    
+    return self::$_memcache;
   }
 
   public static function get($key)
   {
-    return self::client()->get($key);
+    if( self::$_memcache )
+      return self::client()->get($key);
+    return false;
   }
 
   public static function set($key,$data)
   {   
-    self::client()->set($key, $data, false, 600);
+     if( self::$_memcache )
+       self::client()->set($key, $data, false, 600);
+     return false;
   }
 
   /** mark all items in cache as expired*/
   public static function flush()
   {
-    return self::client()->flush();
+    if( self::$_memcache )
+      return self::client()->flush();
+    return false;
   } 
 }
 
