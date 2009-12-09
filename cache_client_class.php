@@ -53,17 +53,19 @@ class cache_log
   {
     $this->file = fopen(CACHEFILE,"w+");
     
-    var_dump($this->file);
-    exit;
-
     if( $data = fread($this->file,filesize($this->file) ) )
-      $this->content=userialize($data);
+      $this->content=unserialize($data);
          
   }
   
   public function hit()
   {
-    fwrite($this->file,"testhest");
+    if(! $data=$this->content )
+      $data=array("hits"=>0,"miss"=>0);
+
+    print_r($data);
+
+    fwrite($this->file,serialize($data));
   }
 
   public function miss()
