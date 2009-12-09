@@ -26,8 +26,8 @@ class cache
 	@self::$_memcache->connect(HOST,PORT);
       }
 
-    var_dump(self::$_memcache);
-    exit;
+    // var_dump(self::$_memcache);
+    //exit;
     
 return self::$_memcache;
 
