@@ -54,14 +54,14 @@ class cache_log
     $size=filesize(CACHEFILE);
     // echo $size;
     //exit;
-    $this->file = fopen(CACHEFILE,"w+");
+    $this->file = fopen(CACHEFILE,"r+");
     //  var_dump($this->file);
     //echo "SIZE: ".$size;
     //exit;
     $data = fread($this->file,$size); 
 
-    echo $data;
-    exit;
+    //echo $data;
+    //exit;
 
     $this->content=unserialize($data);
   }
