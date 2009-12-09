@@ -52,8 +52,8 @@ class cache_log
   public function __construct()
   {
     $size=filesize(CACHEFILE);
-    echo $size;
-    exit;
+    // echo $size;
+    //exit;
     $this->file = fopen(CACHEFILE,"w+");
     $data = fread($this->file,$size); 
     $this->content=unserialize($data);
