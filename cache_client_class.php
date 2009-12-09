@@ -52,17 +52,12 @@ class cache_log
   public function __construct()
   {
     $this->file = fopen(CACHEFILE,"w+");
-    
-
     if( $data = @fread($this->file,filesize($this->file) ) )
       $this->content=unserialize($data);
-         
   }
   
   public function hit()
   {
-    print_r($this->content);
-
     if(! $data=$this->content )
       $data=array("hits"=>0,"miss"=>0);
 
@@ -73,14 +68,23 @@ class cache_log
 
   public function miss()
   {
+    if(! $data=$this->content )
+      $data=array("hits"=>0,"miss"=>0);
+
+    $data['miss']++;
+ 
+    fwrite($this->file,serialize($data));
   }
   
   public function hitratio()
   {
+    $data=$this->content;
+    return $data['hits']."/".count($data);
   }
 
   public function read()
   {
+    print_r($this->content);
   }
 }
 
