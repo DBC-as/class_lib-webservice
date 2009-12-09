@@ -54,6 +54,7 @@ class cache_log
     $file = fopen(CACHEFILE,"r");
     $data = fread($file,$size); 
     $this->content=unserialize($data);
+    fclose($file);
   }
   
   public function hit()
@@ -65,6 +66,7 @@ class cache_log
  
     $file = fopen(CACHEFILE,"w");
     fwrite($file,serialize($data));
+    fclose($file);
   }
 
   public function miss()
