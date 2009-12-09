@@ -51,11 +51,13 @@ class cache_log
 
   public function __construct($servicename)
   {
-    $size=filesize(LOGPATH.$servicename."_".CACHEFILE);
-    $file = fopen(LOGPATH.$servicename."_".CACHEFILE,"r");
-    $data = fread($file,$size); 
-    $this->content=unserialize($data);
-    fclose($file);
+    if($size=filesize(LOGPATH.$servicename."_".CACHEFILE))
+      {
+	$file = fopen(LOGPATH.$servicename."_".CACHEFILE,"r");
+	$data = fread($file,$size); 
+	$this->content=unserialize($data);
+	fclose($file);
+      }
   }
   
   public function hit()
