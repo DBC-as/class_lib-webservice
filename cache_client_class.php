@@ -51,9 +51,12 @@ class cache_log
 
   public function __construct()
   {
+    $size=filesize(CACHEFILE);
     $this->file = fopen(CACHEFILE,"w+");
-    if( $data = fread($this->file,65000) )
-      $this->content=unserialize($data);
+    if( $data = fread($this->file,$size) )
+      {
+	$this->content=unserialize($data);
+      }
   }
   
   public function hit()
