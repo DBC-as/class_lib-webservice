@@ -66,8 +66,8 @@ class cache_log
     if(! $data=$this->content )
       $data=array("hits"=>0,"miss"=>0);
 
-    print_r($data);
-
+    $data['hits']++;
+ 
     fwrite($this->file,serialize($data));
   }
 
