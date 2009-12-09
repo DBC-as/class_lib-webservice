@@ -31,8 +31,6 @@ class cache
 
   public static function get($key)
   {
-    var_dump( self::client() );
-    exit;
     if( self::$clint() )
       {
 	echo "TUTTELUT";
