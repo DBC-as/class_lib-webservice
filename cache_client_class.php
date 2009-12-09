@@ -48,13 +48,16 @@ class cache
 class cache_log
 {
   private $content;
+  private $filepath;
 
   public function __construct($servicename)
   {
-    if( file_exists(LOGPATH.$servicename."_".CACHEFILE) )
+    $this->filepath=LOGPATH.$servicename."_".CACHEFILE;
+
+    if( file_exists($this->filepath) )
       {
-	$size=filesize(LOGPATH.$servicename."_".CACHEFILE);
-	$file = fopen(LOGPATH.$servicename."_".CACHEFILE,"r");
+	$size=filesize($this->filepath);
+	$file = fopen($this->filepath,"r");
 	$data = fread($file,$size); 
 	$this->content=unserialize($data);
 	fclose($file);
@@ -81,7 +84,7 @@ class cache_log
 
   private function write($data)
   {
-    $file = fopen(LOGPATH.$servicename."_".CACHEFILE,"w");
+    $file = fopen($this->filepath,"w");
     fwrite($file,serialize($data));
     fclose($file);
   }
