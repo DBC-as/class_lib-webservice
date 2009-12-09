@@ -46,23 +46,13 @@ class cache
 
 class cache_log
 {
-  private $file;
   private $content;
 
   public function __construct()
   {
     $size=filesize(CACHEFILE);
-    // echo $size;
-    //exit;
-    $this->file = fopen(CACHEFILE,"r+");
-    //  var_dump($this->file);
-    //echo "SIZE: ".$size;
-    //exit;
-    $data = fread($this->file,$size); 
-
-    echo $data;
-    exit;
-
+    $file = fopen(CACHEFILE,"r");
+    $data = fread($file,$size); 
     $this->content=unserialize($data);
   }
   
@@ -73,6 +63,7 @@ class cache_log
 
     $data['hits']++;
  
+    $file = fopen(CACHEFILE,"w");
     fwrite($this->file,serialize($data));
   }
 
