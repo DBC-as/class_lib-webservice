@@ -32,11 +32,8 @@ class cache
   public static function get($key)
   {
     if( self::client() )
-      {
-	echo "TUTTELUT";
-	exit;
-	return self::client()->get($key);
-      }
+      return self::client()->get($key);
+
     return false;
   }
 
