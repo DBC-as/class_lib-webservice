@@ -31,10 +31,13 @@ class cache
 
   public static function get($key)
   {
-    echo "TUTTELUT";
-    exit;
+   
     if( self::$_memcache )
-      return self::client()->get($key);
+      {
+	echo "TUTTELUT";
+	exit;
+	return self::client()->get($key);
+      }
     return false;
   }
 
