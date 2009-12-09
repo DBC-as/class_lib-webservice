@@ -53,10 +53,8 @@ class cache_log
   {
     $size=filesize(CACHEFILE);
     $this->file = fopen(CACHEFILE,"w+");
-    if( $data = fread($this->file,$size) )
-      {
-	$this->content=unserialize($data);
-      }
+    $data = fread($this->file,$size) )
+    $this->content=unserialize($data);
   }
   
   public function hit()
