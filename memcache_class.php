@@ -27,8 +27,8 @@
 
 class cache
 {
-  private static $_memcache=null;
-  private static $expire=600;
+  private $memcache=null;
+  private $expire=600;
 
  /**
   * \brief constructor
@@ -38,9 +38,9 @@ class cache
   **/
 
   function __construct($host, $port, $expire=0) {
-		$_memcache=new Memcache();
-		if(!@$_memcache->connect($host,$port) )
-	  	$_memcache=null;
+		$this->memcache=new Memcache();
+		if(!@$this->memcache->connect($host,$port) )
+	  	$this->memcache=null;
     if ($expire) $this->expire = $expire;
   }
 
@@ -52,9 +52,9 @@ class cache
   * @param key (string)
   **/
 
-  public static function get($key) {
-    if(is_object($_memcache))
-      return $_memcache->get($key);
+  public function get($key) {
+    if(is_object($this->memcache))
+      return $this->memcache->get($key);
     return FALSE;
   }
 
@@ -64,9 +64,9 @@ class cache
   * @param data (string)
   **/
 
-  public static function set($key,$data) {   
-    if(is_object($_memcache))
-       return $_memcache->set($key, $data, FALSE, $this->expire);
+  public function set($key,$data) {   
+    if(is_object($this->memcache))
+       return $this->memcache->set($key, $data, FALSE, $this->expire);
      return FALSE;
   }
 
@@ -74,9 +74,9 @@ class cache
   * \brief mark all items in cache as expired
   **/
 
-  public static function flush() {
-    if(is_object($_memcache))
-      return $_memcache->flush();
+  public function flush() {
+    if(is_object($this->memcache))
+      return $this->memcache->flush();
     return FALSE;
   } 
 }
