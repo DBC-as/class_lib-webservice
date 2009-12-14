@@ -1,6 +1,6 @@
 <?php
 
-require_once("../oci_class.php");
+require_once("OLS_class_lib/oci_class.php");
 
 /** \brief Handles user login and user creation.
 *
