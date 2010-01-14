@@ -66,6 +66,7 @@ abstract class webServiceServer {
 		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
     $this->xmlns = $this->config->get_value('xmlns', 'setup');
+    $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
 	}
 
@@ -73,7 +74,9 @@ abstract class webServiceServer {
   *
   */
 	public function handle_request() {
-	  if (isset($_GET["HowRU"]) ) {                          
+	  if (isset($_GET["version"]) ) {                          
+      die($this->version);
+	  } elseif (isset($_GET["HowRU"]) ) {                          
      	$this->HowRU();          
     } elseif (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
       $this->soap_request($GLOBALS["HTTP_RAW_POST_DATA"]);                    
