@@ -286,6 +286,7 @@ abstract class webServiceServer {
         } else {
           echo "No example xml files found...";
         }
+        echo '<p style="font-size:0.6em">Version: ' . $this->version . '</p>';
       }
     }
     echo "</body></html>";
