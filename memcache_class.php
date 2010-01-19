@@ -39,6 +39,8 @@ class cache
 
   function __construct($host, $port, $expire=0) {
 		$this->memcache=new Memcache();
+    if (empty($port) && strpos($host, ":"))
+      list($host, $port) = explode(":", $host, 2);
 		if(!@$this->memcache->connect($host,$port) )
 	  	$this->memcache=null;
     if ($expire) $this->expire = $expire;
