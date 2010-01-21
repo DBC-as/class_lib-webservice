@@ -355,12 +355,14 @@ class oci {
 
     if($this->commit_enabled) {
       $success = ociexecute($this->statement, OCI_COMMIT_ON_SUCCESS);
+      $this->set_OCI_error(ocierror($this->statement));
       if (version_compare(PHP_VERSION,'5','>='))
         $this->num_rows=oci_num_rows($this->statement);
       else
         $this->num_rows=ocirowcount($this->statement);
     } else {
       $success = ociexecute($this->statement, OCI_DEFAULT);
+      $this->set_OCI_error(ocierror($this->statement));
       if (version_compare(PHP_VERSION,'5','>='))
         $this->num_rows=oci_num_rows($this->statement);
       else
