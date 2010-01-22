@@ -21,26 +21,23 @@
 
 
 /**
- * \brief Verbose class for loggin to a file or screen
+ * \brief Verbose singleton class for loggin to a file or screen
  *
  * Usage: \n
- * $v=new verbose(logfile_name, log_mask); \n
- * $v->log(FATAL,"could not find value x")\n
+ * verbose::open(logfile_name, log_mask); \n
+ * verbose::log(FATAL,"could not find value x")\n
  *  
  * Example:
- * $verbose = new verbose("my_trace_file.log", "WARNING+FATAL+TIMER"); \n
- * $verbose->log(FATAL, "Cannot find database");\n
+ * verbose::open("my_trace_file.log", "WARNING+FATAL+TIMER"); \n
+ * verbose::bose->log(FATAL, "Cannot find database");\n
  * 
+ * Example:
+ * verbose::open("my_trace_file.log", WARNING+FATAL+TIMER); \n
+ * verbose::bose->log(FATAL, "Cannot find database");\n
  *  
  * Example:
- * 
- * $verbose = new verbose("my_trace_file.log", WARNING+FATAL+TIMER); \n
- * $verbose->log(FATAL, "Cannot find database");\n
- *  
- * Example:
- * 
- * $verbose = new verbose("my_trace_file.log", 77); \n
- * $verbose->log(TRACE, "db::look_up_user()");\n
+ * verbose::open("my_trace_file.log", 77); \n
+ * verbose::bose->log(TRACE, "db::look_up_user()");\n
  */
 
 @ define("WARNING",0x01);
@@ -59,22 +56,23 @@ class verbose {
   private $verbose_mask;
   public $date_format="H:i:s-d/m/y";
 
+  function __construct() { }
+
+  function __destruct() { }
+
  /**
-  * \brief constructor
+  * \brief Sets loglevel and logfile
   * @param verbose_file_name (string)
   * @param verbose_mask (string or integer)
   **/
 
-  function __construct($verbose_file_name, $verbose_mask) {
+  function open($verbose_file_name, $verbose_mask) {
     $this->verbose_file_name=$verbose_file_name;
     if (!is_string($verbose_mask))
       $this->verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
     else
       foreach (explode('+', $verbose_mask) as $vm)
         if (defined(trim($vm))) $this->verbose_mask |= constant(trim($vm));
-  }
-
-  function __destruct() {
   }
 
  /**
@@ -84,7 +82,7 @@ class verbose {
   */
 
   function log($verbose_level, $str) {
-    if ($verbose_level & $this->verbose_mask) {
+    if ($this->verbose_file_name && $verbose_level & $this->verbose_mask) {
       switch ($verbose_level) {
         case WARNING : $vtext = "WARNING"; break;
         case ERROR :   $vtext = "ERROR"; break;
@@ -98,14 +96,12 @@ class verbose {
         default :      $vtext = "UNKNOWN"; break;
       }
 
-      if (!empty($this->verbose_file_name)) {
-        if ($fp = @ fopen($this->verbose_file_name,"a")) {
-          if(!ereg("\n\$", $str)) $str .= "\n";
-          fwrite($fp, $vtext . " " . date($this->date_format) . ": " . $str);
-          fclose($fp);
-        } else
-          die("FATAL: Cannot open " . $this->verbose_file_name);
-      }
+      if ($fp = @ fopen($this->verbose_file_name,"a")) {
+        if(!ereg("\n\$", $str)) $str .= "\n";
+        fwrite($fp, $vtext . " " . date($this->date_format) . ": " . $str);
+        fclose($fp);
+      } else
+        die("FATAL: Cannot open " . $this->verbose_file_name);
     }
   }
 }

@@ -20,8 +20,6 @@
 */
 
 
-require_once("verbose_class.php");
-
 /**
  * \brief Class for handling OCI
  *
@@ -108,9 +106,6 @@ class oci {
   /// Stores updated rows number <int>
   var $num_rows;
 
-	/// verbose object
-	var $verbose;
-
   ////////////////////
   // PUBLIC METHODS //
   ////////////////////
@@ -123,9 +118,6 @@ class oci {
   */
 
   function oci($username,$password="",$database="") {
-	global $TRACEFILE;
-
-	$this->verbose = new verbose($TRACEFILE, "WARNING+ERROR+FATAL");
 
     if($password=="" && $database=="") {
 
@@ -267,7 +259,7 @@ class oci {
     $this->clear_OCI_error();
 
     if (is_resource($this->connect)) {
-      // $this->verbose->log(OCI, "oci_pconnect:: " . $this->username . "@" . $this->database . " reuse connection");
+      // $this->oci_log(OCI, "oci_pconnect:: " . $this->username . "@" . $this->database . " reuse connection");
       return true;
     }
 
@@ -281,16 +273,16 @@ class oci {
 
     if (!is_resource($this->connect)) {
       if($connect_count>1) {
-        $this->verbose->log(WARNING, "oci_pconnect:: " . $this->username . "@" . $this->database . " reconnect (" . $connect_count . ") with error: " . $this->get_error_string());
+        $this->oci_log(WARNING, "oci_pconnect:: " . $this->username . "@" . $this->database . " reconnect (" . $connect_count . ") with error: " . $this->get_error_string());
         return $this->connect($connect_count-1);
       }
 
       $this->set_OCI_error(ocierror());
-      $this->verbose->log(ERROR, "oci_pconnect:: " . $this->username . "@" . $this->database . " failed with error: " . $this->get_error_string());
+      $this->oci_log(ERROR, "oci_pconnect:: " . $this->username . "@" . $this->database . " failed with error: " . $this->get_error_string());
       return false;
     } else {
       $this->set_OCI_error(ocierror());
-      // $this->verbose->log(OCI, "oci_pconnect:: " . $this->username . "@" . $this->database . " success with no error: " . $this->get_error_string());
+      // $this->oci_log(OCI, "oci_pconnect:: " . $this->username . "@" . $this->database . " success with no error: " . $this->get_error_string());
       return true;
     }
   }
@@ -336,7 +328,7 @@ class oci {
     $this->statement = ociparse($this->connect, $this->query);
     $this->set_OCI_error(ocierror($this->connect));
     if (!is_resource($this->statement))
-      $this->verbose->log(ERROR, "ociparse:: failed on " . $this->query . " with error: " . $this->get_error_string());
+      $this->oci_log(ERROR, "ociparse:: failed on " . $this->query . " with error: " . $this->get_error_string());
 
     if(!empty($this->bind_list)) {
       foreach($this->bind_list as $k=>$v) {
@@ -346,7 +338,7 @@ class oci {
           $success = ocibindbyname($this->statement, $v["name"], $v["value"]);
         $this->set_OCI_error(ocierror($this->statement));
         if (!$success) {
-          $this->verbose->log(ERROR, "ocibindbyname:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
+          $this->oci_log(ERROR, "ocibindbyname:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
           }
       }
       $this->bind_list = array();
@@ -371,11 +363,11 @@ class oci {
     $this->set_OCI_error(ocierror($this->statement));
 
     if (!$success) {
-      $this->verbose->log(ERROR, "ociexecute:: failed on " . $this->query . " with error: " . $this->get_error_string());
+      $this->oci_log(ERROR, "ociexecute:: failed on " . $this->query . " with error: " . $this->get_error_string());
       return FALSE;
     }
     else {
-      $this->verbose->log(OCI, "ociexecute:: " . $this->query . " success with no error: " . $this->get_error_string());
+      $this->oci_log(OCI, "ociexecute:: " . $this->query . " success with no error: " . $this->get_error_string());
       return TRUE;
     }
   }
@@ -521,5 +513,9 @@ class oci {
     $this->persistent_connect=true;
   }
 
+  private function oci_log($log_level, $msg) {
+    if (method_exists("verbose","log"))
+      verbose::log($log_level, $msg);
+  }
 }
 ?>

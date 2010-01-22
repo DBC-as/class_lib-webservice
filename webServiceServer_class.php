@@ -59,8 +59,8 @@ abstract class webServiceServer {
         die("Error: ".$this->config->error );
       }                                                                
 
-    $this->verbose=new verbose($this->config->get_value("logfile", "setup"),
-                               $this->config->get_value("verbose", "setup"));    
+    verbose::open($this->config->get_value("logfile", "setup"),
+                  $this->config->get_value("verbose", "setup"));    
     $this->watch = new stopwatch("", " ", "", "%s:%01.3f");
 
 		if ($this->config->get_value('xmldir')) 

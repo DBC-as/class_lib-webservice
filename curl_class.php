@@ -165,16 +165,16 @@ class cURL {
     $this->curl_status = null;
 
     if ( !function_exists('curl_init') ) {
-      if (is_object($GLOBALS["verbose"]))
-        $GLOBALS["verbose"]->log(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
+      if (method_exists('verbose','log'))
+        verbose::log(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
       elseif (function_exists('verbose'))
         verbose(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
       return false;
     }
 
     if ( !isset($curl_default_options) ) {
-      if (is_object($GLOBALS["verbose"]))
-        $GLOBALS["verbose"]->log(ERROR, '$curl_default_options is not defined. See the class description for usage');
+      if (method_exists('verbose','log'))
+        verbose::log(ERROR, '$curl_default_options is not defined. See the class description for usage');
       elseif (function_exists('verbose'))
         verbose(ERROR, '$curl_default_options is not defined. See the class description for usage');
       return false;
