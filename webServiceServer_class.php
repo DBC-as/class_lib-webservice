@@ -36,7 +36,6 @@ require_once("OLS_class_lib/objconvert_class.php");
 abstract class webServiceServer {
 
   protected $config; // inifile object
-  protected $verbose;  // verbose object for logging
   protected $watch; // timer object
 	protected $xmldir="./"; // xml directory
 	protected $validate= array(); // xml validate schemas
