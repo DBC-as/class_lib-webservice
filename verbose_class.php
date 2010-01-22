@@ -56,9 +56,9 @@ class verbose {
   private $verbose_mask;
   public $date_format="H:i:s-d/m/y";
 
-  function __construct() { }
-
-  function __destruct() { }
+  private function __construct() {}
+  private function __destruct() {}
+  private function __clone() {}
 
  /**
   * \brief Sets loglevel and logfile
