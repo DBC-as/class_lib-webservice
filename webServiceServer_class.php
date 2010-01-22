@@ -73,6 +73,8 @@ abstract class webServiceServer {
   *
   */
 	public function handle_request() {
+	  if (isset($_GET["ShowInfo"]) )
+      $this->ShowInfo();
 	  if (isset($_GET["version"]) ) {                          
       die($this->version);
 	  } elseif (isset($_GET["HowRU"]) ) {                          
@@ -171,6 +173,21 @@ abstract class webServiceServer {
 			$xml=$rest->rest2soap(&$this->config);
 			$this->soap_request($xml);
 	}
+
+  /** \brief 
+  * 
+  */
+	private function ShowInfo() {
+    $show_func = "show_info";
+    if (method_exists($this, $show_func)) {
+      @ $remote = gethostbyaddr($_SERVER["REMOTE_ADDR"]);
+      $homie = (strpos($remote, ".dbc.dk") + 7 == strlen($remote));
+      if ($homie)
+        $homie = (gethostbyname($remote) == $_SERVER["REMOTE_ADDR"]); // paranoia check
+      if ($homie)
+        $this->$show_func();
+    }
+  }
 
   /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
   * 
