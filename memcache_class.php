@@ -20,9 +20,19 @@
 */
 
 /**
-   
-   thin wrapper for memcache class.
-
+ *  
+ * Wrapper for memcache
+ * 
+ * Information about memcache and the corresponding server, can be
+ * found at http://dk.php.net/manual/en/book.memcache.php
+ *
+ * ex.
+ *   $cache = new cache("localhost", "11211", 1200);
+ *   $my_settings = $cache->get("my_settings");
+ *   .
+ *   .
+ *   $cache->set("my_settings", $my_settings);
+ *
 */
 
 class cache
@@ -37,7 +47,7 @@ class cache
   * @param expire (integer)
   **/
 
-  function __construct($host, $port, $expire=0) {
+  function __construct($host, $port=null, $expire=null) {
 		$this->memcache=new Memcache();
     if (empty($port) && strpos($host, ":"))
       list($host, $port) = explode(":", $host, 2);
