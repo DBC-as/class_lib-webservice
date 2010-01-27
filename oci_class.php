@@ -47,6 +47,39 @@
  *
  * ?>
  *
+ * Example of how to use insert_BLOB
+ *
+ * Data is retrieved from xml with "minixml"
+ *
+ * Please notice that you should replace the name of the BLOB column with "EMPTY_BLBO()"
+ * and instead give the name as the second parameter.
+ *
+ *for($cnt = 0; $cnt < $Pro->numChildren(); $cnt++ ) {
+ *  $id = $AllProducts[$cnt]->getElement('Id')->getValue();
+ *  echo "Id:$id\n";
+ *
+ *  // check whether the record is in the database;
+ *  $idno = $oci->fetch_into_assoc("select id from xmldata where id = $id");
+ *  if ( $oci->get_error() ) {
+ *    print_web($oci->get_error(),"get_error: \n");
+ *    exit;
+ *  }
+ *
+ *  if ( $idno['ID'] == $id ) continue;
+ *  $strng = $AllProducts[$cnt]->toString();
+ *
+ *  $oci->insert_BLOB("insert into xmldata ( id,createdate,data ) values( $id,sysdate,EMPTY_BLOB() )","data",$strng);
+ *  if ( $oci->get_error() ) {
+ *    print_web($oci->get_error(),"get_error: \n");
+ *    exit;
+ *  }
+ *  $oci->commit();
+ *  if ( $oci->get_error() ) {
+ *    print_web($oci->get_error(),"get_error: \n");
+ *    exit;
+ *  }
+ *}
+ *
  */
 
 class oci {
@@ -352,7 +385,8 @@ class oci {
         $this->num_rows=oci_num_rows($this->statement);
       else
         $this->num_rows=ocirowcount($this->statement);
-    } else {
+    } 
+    else {
       $success = ociexecute($this->statement, OCI_DEFAULT);
       $this->set_OCI_error(ocierror($this->statement));
       if (version_compare(PHP_VERSION,'5','>='))
@@ -372,6 +406,72 @@ class oci {
     }
   }
 
+ /**
+  * \brief Insert data including a BLOB into a row in a database
+  * @param insert string in sql 
+  * @param is the name of the column name of the BLOB 
+  * @param a ref. to the data
+  * @return int
+  *
+  * Ex. "insert into xmldata (id, createdate, xmldata) values ($id, sysdate, EMPTY_BLOB() )" 
+  */
+
+    function insert_BLOB($sql,$name,&$data) {
+   
+      $this->query = $sql . " returning data into :data_loc \n";
+      $this->statement = @ociparse($this->connect, $this->query);
+      $this->set_OCI_error(ocierror($this->connect));
+      if (!is_resource($this->statement)) {
+	$this->oci_log->log(ERROR, "ociparse:: failed on " . $this->query . " with error: " . $this->get_error_string());
+	return(false);
+      }
+
+      if(!empty($this->bind_list)) {
+	foreach($this->bind_list as $k=>$v) {
+	  $success = @oci_bind_by_name($this->statement, $v["name"], $v["value"], $v["maxlength"], $v["type"]);
+	  $this->set_OCI_error(ocierror($this->statement));
+	  if (!$success) {
+	    $this->oci_log(ERROR, "oci_bind_by_name:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
+          }
+	}
+	$this->bind_list = array();
+      }
+      
+      // Creates an "empty" OCI-Lob object to bind to the locator
+      if ( ! $dataLOB = @oci_new_descriptor($this->connect, OCI_D_LOB) ) {
+	$this->set_OCI_error(ocierror($this->statement));
+	$this->oci_log->log(ERROR, "oci_new_descriptor:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+	return (false);
+      }	
+
+      // Bind the returned Oracle LOB locator to the PHP LOB object
+      if ( ! @oci_bind_by_name($this->statement, ":data_loc", $dataLOB, strlen($data), OCI_B_BLOB) ) {
+	$this->set_OCI_error(ocierror($this->statement));
+	$this->oci_log->log(ERROR, "oci_bind_by_name:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+	return (false);
+      }
+
+      if ( ! @ociexecute($this->statement, OCI_DEFAULT) ) {
+	$this->set_OCI_error(ocierror($this->statement));
+	$this->oci_log->log(ERROR, "ociexecute:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+	return (false);
+      }
+      
+      // Now import a file to the LOB
+      if ( !$dataLOB->save($data) ) {
+	$this->set_OCI_error(ocierror($this->statement));
+	$this->oci_log->log(ERROR, "save:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+	return (false);
+      }
+
+
+      // Free resources
+      ociFreestatement($this->statement);
+      $dataLOB->free();
+
+      return true;
+    }
+      
 
  /**
   * \brief Commits outstanding statements
@@ -424,11 +524,38 @@ class oci {
   }
 
  /**
+  * \brief Fetches current blob and return it. There must be only one element (the BLOB) to be fetched.
+  * @param query SQL string
+  * @return string | bool
+  */
+
+  function fetch_BLOB($sql = "") {
+
+
+    if ( $sql ) {
+      $this->set_query($sql);
+      if ( $this->error ) return (false);
+    }
+
+    $res =oci_fetch_row($this->statement);
+    $this->set_OCI_error(ocierror($this->statement));
+    $this->num_fetched_rows++;
+    $this->result = $res[0]->load();
+
+    return $this->result;
+  }
+
+ /**
   * \brief Fetches current data into an associative array (use while loop around this function  to get all)
   * @return array | bool
   */
 
-  function fetch_into_assoc() {
+  function fetch_into_assoc($sql = "") {
+
+    if ( $sql ) {
+      $this->set_query($sql);
+      if ( $this->error ) return (false);
+    }
 
     if (version_compare(PHP_VERSION,'5','>='))
       #$this->result=oci_fetch_assoc($this->statement);
@@ -447,7 +574,12 @@ class oci {
   * @return array
   */
 
-  function fetch_all_into_assoc() {
+  function fetch_all_into_assoc($sql = "") {
+
+    if ( $sql ) {
+      $this->set_query($sql);
+      if ( $this->error ) return (false);
+    }
 
     if (version_compare(PHP_VERSION,'5','>='))
       #while($tmp_result=oci_fetch_assoc($this->statement)) {
