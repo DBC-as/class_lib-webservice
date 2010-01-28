@@ -23,11 +23,12 @@
 
 class restconvert {
 
+  private $charset = "ISO-8859-1";
 	private $soap_header;
 	private $soap_footer;
 
 	public function __construct() {
-		$this->soap_header='<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body>';
+		$this->soap_header='<?xml version="1.0" encoding="%s"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body>';
 		$this->soap_footer='</SOAP-ENV:Body></SOAP-ENV:Envelope>';
 	}
 
@@ -37,13 +38,16 @@ class restconvert {
 	public function rest2soap(&$config) {
  	 $soap_actions = $config->get_value("soapAction", "setup");
  	 $action_pars = $config->get_value("action", "rest");
-   if (!$all_actions = $action_pars["ALL"])
-     $all_actions = array();
+   if (!$all_actions = $action_pars["ALL"]) $all_actions = array();
  	 if (is_array($soap_actions) && is_array($action_pars) 
     && $_GET["action"]
     && $soap_actions[$_GET["action"]] && $action_pars[$_GET["action"]]) {
- 	   if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$_GET["action"]]), explode("&", $_SERVER["QUERY_STRING"]))) {
- 	     return $this->soap_header .  $this->rest_tag_me($soap_actions[$_GET["action"]], $node_value) .  $this->soap_footer;
+     if ($_GET["charset"]) $this->charset = $_GET["charset"];
+ 	   if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$_GET["action"]]), 
+                                        explode("&", $_SERVER["QUERY_STRING"]))) {
+ 	     return sprintf($this->soap_header, $this->charset) .
+              $this->rest_tag_me($soap_actions[$_GET["action"]], $node_value) .
+              $this->soap_footer;
 			} 
  	 }
 	}
@@ -64,7 +68,7 @@ class restconvert {
 
 	private function par_split($parval) {
  	 list($par, $val) = explode("=", $parval, 2);
- 	 return array(preg_replace("/\[[^]]*\]/", "", urldecode($par)), $val);
+ 	 return array(preg_replace("/\[[^]]*\]/", "", urldecode($par)), urldecode($val));
 	}
 
 	function rest_tag_me($tag, $val) {
