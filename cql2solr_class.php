@@ -102,6 +102,32 @@ class cql2solr extends tokenizer {
     }
 		return $string;
   }
+
+  function dismax($query, $rank) {
+    $qf = urlencode($this->make_boost($rank["word_boost"]));
+    $pf = urlencode($this->make_boost($rank["phrase_boost"]));
+    $this->tokenlist=$this->tokenize(str_replace('\"','"',$query));
+    foreach($this->tokenlist as $k=>$v) {
+      //var_dump($v);
+      if ($v["type"] == "OPERAND" && $v["value"] <> " ") $elem .= ($elem ? " " : "") . $v["value"];
+    }
+    if (empty($qf) && empty($pf)) return "";
+
+    return '+AND+_query_:"{!dismax+' .
+           ($qf ? 'qf=$q_f+' : '') .
+//           ($pf ? 'pf=$p_f' : '') .
+           '}' . urlencode($elem) . '"' . 
+           ($qf ? "&q_f=$qf" : '') . 
+           ($pf ? "&p_f=$pf" : '') . 
+           ($rank["tie"] ? "&tie=" . $rank["tie"] : "");
+  }
+
+  private function make_boost($boosts) {
+    foreach ($boosts as $idx => $val)
+      if ($idx && $val)
+        $ret .= ($ret ? " " : "") . $idx . "^" . $val;
+    return $ret;
+  }
 }
 
 ?>
