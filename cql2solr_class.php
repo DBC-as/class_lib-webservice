@@ -87,6 +87,9 @@ class cql2solr extends tokenizer {
 	}
 
 
+ /** \brief Parse a cql-query and build the solr search string
+  * @param query the cql-query
+  */
 	function convert($query) {
 
 		$return="";
@@ -103,25 +106,34 @@ class cql2solr extends tokenizer {
 		return $string;
   }
 
+ /** \brief Parse a cql-query and extract the operands. 
+  * Build a dismax-boost string setting the dismax parameters:
+  * - qf: QueryField - boost on words
+  * - pf: PhraseField - boost on phrases
+  * - tie: tiebreaker, less than 1
+  * @param query the cql-query
+  * @param rank the rank-settings
+  */
   function dismax($query, $rank) {
     $qf = urlencode($this->make_boost($rank["word_boost"]));
     $pf = urlencode($this->make_boost($rank["phrase_boost"]));
     $this->tokenlist=$this->tokenize(str_replace('\"','"',$query));
-    foreach($this->tokenlist as $k=>$v) {
-      //var_dump($v);
-      if ($v["type"] == "OPERAND" && $v["value"] <> " ") $elem .= ($elem ? " " : "") . $v["value"];
-    }
+    foreach($this->tokenlist as $k=>$v)
+      if ($v["type"] == "OPERAND" && $v["value"] <> " ") 
+        $elem .= ($elem ? " " : "") . $v["value"];
+
     if (empty($qf) && empty($pf)) return "";
 
-    return '+AND+_query_:"{!dismax+' .
-           ($qf ? 'qf=$q_f+' : '') .
-//           ($pf ? 'pf=$p_f' : '') .
-           '}' . urlencode($elem) . '"' . 
-           ($qf ? "&q_f=$qf" : '') . 
-           ($pf ? "&p_f=$pf" : '') . 
-           ($rank["tie"] ? "&tie=" . $rank["tie"] : "");
+    return '+AND+_query_:%22{!dismax' .
+           ($qf ? "+qf='" . $qf . "'" : '') .
+           ($pf ? "+pf='" . $pf . "'" : '') .
+           ($rank["tie"] ? "+tie=" . $rank["tie"] : "") .
+           '}' . urlencode($elem) . '%22';
   }
 
+ /** \brief build a boost string
+  * @param boosts boost registers and values
+  */
   private function make_boost($boosts) {
     foreach ($boosts as $idx => $val)
       if ($idx && $val)
