@@ -36,7 +36,7 @@
  * verbose::bose->log(FATAL, "Cannot find database");\n
  *  
  * Example:
- * verbose::open("my_trace_file.log", 77); \n
+ * verbose::open("my_trace_file.log", 77, "H:i:s d:m:y"); \n
  * verbose::bose->log(TRACE, "db::look_up_user()");\n
  */
 
@@ -54,7 +54,7 @@ class verbose {
 
   private $verbose_file_name;
   private $verbose_mask;
-  public $date_format="H:i:s-d/m/y";
+  public $date_format;
 
   private function __construct() {}
   private function __destruct() {}
@@ -66,7 +66,9 @@ class verbose {
   * @param verbose_mask (string or integer)
   **/
 
-  function open($verbose_file_name, $verbose_mask) {
+  function open($verbose_file_name, $verbose_mask, $date_format="") {
+    if (!$this->date_format = $date_format)
+      $this->date_format="H:i:s-d/m/y";
     $this->verbose_file_name=$verbose_file_name;
     if (!is_string($verbose_mask))
       $this->verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
