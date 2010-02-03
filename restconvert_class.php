@@ -23,7 +23,8 @@
 
 class restconvert {
 
-  private $charset = "ISO-8859-1";
+  //private $charset = "ISO-8859-1";
+  private $charset = "utf-8";
 	private $soap_header;
 	private $soap_footer;
 
