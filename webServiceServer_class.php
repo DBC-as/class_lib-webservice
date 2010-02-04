@@ -276,7 +276,7 @@ abstract class webServiceServer {
             if (preg_match('/xml$/',$file,$matches)) {
               $found_files=1;
               $contents = fread($fp, filesize($file));
-              $reqs[]=str_replace("\n","\\n",addcslashes($contents,'"'));
+              $reqs[]=str_replace("\n","\\n",addcslashes($contents,'"\\'));
               $names[]=$file;
             }
             echo '</form>';
@@ -290,7 +290,7 @@ abstract class webServiceServer {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
           echo '<form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=90>';
-          echo stripslashes($_REQUEST["xml"]);
+          echo $_REQUEST["xml"];
           echo '</textarea><br><br>';
           echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
           echo '<option>Pick a test-request</option>';
