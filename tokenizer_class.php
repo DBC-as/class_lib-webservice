@@ -169,6 +169,7 @@ class tokenizer {
 					$token["type"]="OPERAND";
           if ($use_raw) {
 					  $token["value"]=str_replace('"', '', $v) . '"';
+					  $token["raw_index"]=TRUE;
             $use_raw = FALSE;
           } else
 					  $token["value"]=$v;
