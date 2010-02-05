@@ -28,20 +28,20 @@ class cql2solr extends tokenizer {
 	var $map;
 
   function cql2solr($xml, $config="") {
-		$this->dom=new DomDocument();
+		$this->dom = new DomDocument();
 		$this->dom->Load($xml);
 
-    $this->case_insensitive=TRUE;
-    $this->split_expression="/([ ()=])/";
-    $this->operators=$this->get_operators();
-    $this->indexes=$this->get_indexes();
-    $this->ignore=array("/^prox\//");
+    $this->case_insensitive = TRUE;
+    $this->split_expression = "/([ ()=])/";
+    $this->operators = $this->get_operators();
+    $this->indexes = $this->get_indexes();
+    $this->ignore = array("/^prox\//");
 
-		$this->map=array(
-		  "and"=>"AND",
-		  "not"=>"NOT",
-		  "or"=>"OR",
-		  "="=>":"
+		$this->map = array(
+		  "and" => "AND",
+		  "not" => "NOT",
+		  "or" => "OR",
+		  "=" => ":"
 		);
     if ($config)
       $this->raw_index = $config->get_value("raw_index", "setup");
@@ -51,14 +51,14 @@ class cql2solr extends tokenizer {
 	function get_indexes() {
 		$indexInfo = $this->dom->getElementsByTagName('indexInfo');
 
-		$i=0;
+		$i = 0;
 		foreach ($indexInfo as $indexinfo_key) {
   		$index = $indexInfo->item($i)->getElementsByTagName('name');
 
   		// get set attribs
-  		$j=0;
+  		$j = 0;
   		foreach ($index as $index_key) {
-        $indexes[]=$index->item($j)->getAttribute('set').".".$index->item($j)->nodeValue;
+        $indexes[] = $index->item($j)->getAttribute('set').".".$index->item($j)->nodeValue;
     		$j++;
   		}
 
@@ -70,10 +70,10 @@ class cql2solr extends tokenizer {
 	function get_operators() {
 		$supports = $this->dom->getElementsByTagName('supports');
 
-    $i=0;
+    $i = 0;
     foreach ($supports as $support_key) {
-			$type=$supports->item($i)->getAttribute('type');
-			if($type=="booleanModifier" || $type=="relation")
+			$type = $supports->item($i)->getAttribute('type');
+			if($type == "booleanModifier" || $type == "relation")
       	$operators[] = $supports->item($i)->nodeValue;
     
 			$i++;
@@ -90,45 +90,70 @@ class cql2solr extends tokenizer {
  /** \brief Parse a cql-query and build the solr search string
   * @param query the cql-query
   */
-	function convert($query) {
+	function convert($query, $rank=NULL) {
 
-		$return="";
-    $this->tokenlist=$this->tokenize(str_replace('\"','"',$query));
+    $dismax_boost = $this->dismax($rank); 
+//var_dump($dismax_boost);
 
-    foreach($this->tokenlist as $k=>$v) {
+    $dismax_q = "%28";
+    $this->tokenlist = $this->tokenize(str_replace('\"','"',$query));
+//var_dump($this->tokenlist);
 
-      if($v["type"]=="OPERATOR") {
-      	$string.= $this->map[strtolower($v["value"])];
-      } else {
-				$string.=$v["value"];
-			}
+    foreach($this->tokenlist as $k => $v) {
+      $url_val = urlencode($v["value"]);
+      switch ($v["type"]) {
+        case "OPERATOR":
+          $op = $this->map[strtolower($v["value"])];
+      	  $solr_q .= $op;
+          if ($op == "OR" && $dismax_boost && $dismax_terms) {
+      	    $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms) . "%29+" . $op . "+%28";
+            unset($dismax_terms);
+          } else
+      	    $dismax_q .= $op;
+          break;
+        case "OPERAND":
+				  $solr_q .= $url_val;
+				  $dismax_q .= $url_val;
+          if (!$v["raw_index"]) $dismax_terms .= $url_val;
+          break;
+        case "INDEX":
+				  $solr_q .= $url_val;
+				  $dismax_q .= $url_val;
+          break;
+      }
     }
-		return $string;
+    if ($dismax_boost && $dismax_terms)
+      $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms);
+    $dismax_q .= "%29";
+//var_dump($dismax_terms);
+//var_dump($solr_q);
+//var_dump($dismax_q);
+		return array("solr" => $solr_q, "dismax" => $dismax_q);
   }
 
- /** \brief Parse a cql-query and extract the operands. 
-  * Build a dismax-boost string setting the dismax parameters:
+ /** \brief Build a dismax-boost string setting the dismax parameters:
   * - qf: QueryField - boost on words
   * - pf: PhraseField - boost on phrases
   * - tie: tiebreaker, less than 1
   * @param query the cql-query
   * @param rank the rank-settings
   */
-  function dismax($query, $rank) {
-    $qf = urlencode($this->make_boost($rank["word_boost"]));
-    $pf = urlencode($this->make_boost($rank["phrase_boost"]));
-    $this->tokenlist=$this->tokenize(str_replace('\"','"',$query));
-    foreach($this->tokenlist as $k=>$v)
-      if ($v["type"] == "OPERAND" && $v["value"] <> " ") 
-        $elem .= ($elem ? " " : "") . $v["value"];
+  function dismax($rank) {
+    if (!is_array($rank))
+      if ($boost = substr($rank, 12)) 
+        return '_query_:%%22{!dismax+' . $boost .  '}%s%%22';
+      else
+        return "";
 
+    $qf = str_replace("%", "%%", urlencode($this->make_boost($rank["word_boost"])));
+    $pf = str_replace("%", "%%", urlencode($this->make_boost($rank["phrase_boost"])));
     if (empty($qf) && empty($pf)) return "";
 
-    return '+AND+_query_:%22{!dismax' .
+    return '_query_:%%22{!dismax' .
            ($qf ? "+qf='" . $qf . "'" : '') .
            ($pf ? "+pf='" . $pf . "'" : '') .
            ($rank["tie"] ? "+tie=" . $rank["tie"] : "") .
-           '}' . urlencode($elem) . '%22';
+           '}%s%%22';
   }
 
  /** \brief build a boost string
