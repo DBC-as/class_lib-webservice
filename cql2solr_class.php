@@ -99,6 +99,7 @@ class cql2solr extends tokenizer {
     $this->tokenlist = $this->tokenize(str_replace('\"','"',$query));
 //var_dump($this->tokenlist);
 
+    $search_pid_index = FALSE;
     foreach($this->tokenlist as $k => $v) {
       $url_val = urlencode($v["value"]);
       switch ($v["type"]) {
@@ -110,13 +111,20 @@ class cql2solr extends tokenizer {
             unset($dismax_terms);
           } else
       	    $dismax_q .= $op;
+          if ($op != ":") 
+            $search_pid_index = FALSE;
           break;
         case "OPERAND":
+          if ($search_pid_index)
+            $url_val = str_replace("%3A", "_", $url_val);
 				  $solr_q .= $url_val;
 				  $dismax_q .= $url_val;
           if (!$v["raw_index"]) $dismax_terms .= $url_val;
           break;
         case "INDEX":
+          if (strtolower($v["value"]) == "rec.id")
+            $url_val = "fedoraNormPid";
+          $search_pid_index = $url_val == "fedoraNormPid";
 				  $solr_q .= $url_val;
 				  $dismax_q .= $url_val;
           break;
@@ -127,7 +135,7 @@ class cql2solr extends tokenizer {
     $dismax_q .= "%29";
 //var_dump($dismax_terms);
 //var_dump($solr_q);
-//var_dump($dismax_q);
+//var_dump($dismax_q); die();
 		return array("solr" => $solr_q, "dismax" => $dismax_q);
   }
 
