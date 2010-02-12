@@ -104,6 +104,7 @@ class bibdk_info {
     $favs = explode(ascii_US, $settings[COOKIE_FAVORIT]);
     if (is_array($favs))
       foreach ($favs as $bibno) {
+        if (empty($bibno)) continue;
         $info["favorit"][$bibno] = $this->_map_info(explode(ascii_US, $settings[COOKIE_NAME."_".$bibno]), explode(" ", COOKIE_BIB_VAR));
         $bib_info = self::get_bib_info($bibno);
         if (!empty($bib_info)) {
