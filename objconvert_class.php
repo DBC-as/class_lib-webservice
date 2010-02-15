@@ -140,7 +140,7 @@ class objconvert {
  	        $a_prefix = $this->set_prefix_separator($this->get_namespace_prefix($a_val->_namespace));
         else 
           $a_prefix = "";
- 	      $attr .= ' ' . $a_prefix . $a_name . '="' . $a_val->_value . '"';
+ 	      $attr .= ' ' . $a_prefix . $a_name . '="' . htmlspecialchars($a_val->_value) . '"';
 // prefix in value hack
         $this->set_used_prefix($a_val->_value);
  	    }
