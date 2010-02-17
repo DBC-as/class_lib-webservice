@@ -55,6 +55,7 @@ class bibdk_info {
 */
   public function __construct($oci_credentials) {
     $this->oci = new Oci($oci_credentials);
+    $this->oci->set_charset("UTF8");
     $this->oci->connect();
     $this->error = $this->oci->get_error_string();
   }

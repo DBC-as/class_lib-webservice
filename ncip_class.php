@@ -1072,12 +1072,12 @@ class ncip extends http_wrapper {
     if (isset($userOptionalFields)) {
       $structuredPersonalUserName = $userOptionalFields->getElementsByTagName("StructuredPersonalUserName")->item(0);
       if (isset($structuredPersonalUserName)) {
-        $user["GivenName"] = htmlentities($structuredPersonalUserName->getElementsByTagName("GivenName")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
-        $user["Surname"] = htmlentities($structuredPersonalUserName->getElementsByTagName("Surname")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $user["GivenName"] = $structuredPersonalUserName->getElementsByTagName("GivenName")->item(0)->nodeValue;
+        $user["Surname"] = $structuredPersonalUserName->getElementsByTagName("Surname")->item(0)->nodeValue;
       }
       $unstructuredPersonalUserName = $userOptionalFields->getElementsByTagName("UnstructuredPersonalUserName")->item(0);
       if (isset($unstructuredPersonalUserName)) {
-        $user["UnstructuredPersonalUserName"] = htmlentities($unstructuredPersonalUserName->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $user["UnstructuredPersonalUserName"] = $unstructuredPersonalUserName->nodeValue;
       }
     }
     return $user;
@@ -1333,43 +1333,43 @@ class ncip extends http_wrapper {
     if (isset($itemOptionalFields)) {
       $bibliographicDescription = $itemOptionalFields->getElementsByTagName("BibliographicDescription")->item(0);
       if (isset($bibliographicDescription)) {
-        $author = htmlentities($bibliographicDescription->getElementsByTagName("Author")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $author = $bibliographicDescription->getElementsByTagName("Author")->item(0)->nodeValue;
         if (isset($author)) $ret["Author"] = $author;
-        $authorOfComponent = htmlentities($bibliographicDescription->getElementsByTagName("AuthorOfComponent")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $authorOfComponent = $bibliographicDescription->getElementsByTagName("AuthorOfComponent")->item(0)->nodeValue;
         if (isset($authorOfComponent)) $ret["AuthorOfComponent"] = $authorOfComponent;
-        $bibliographicItemId = htmlentities($bibliographicDescription->getElementsByTagName("BibliographicItemId")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $bibliographicItemId = $bibliographicDescription->getElementsByTagName("BibliographicItemId")->item(0)->nodeValue;
         if (isset($bibliographicItemId)) $ret["BibliographicItemId"] = $bibliographicItemId;
-        $bibliographicRecordId = htmlentities($bibliographicDescription->getElementsByTagName("BibliographicRecordId")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $bibliographicRecordId = $bibliographicDescription->getElementsByTagName("BibliographicRecordId")->item(0)->nodeValue;
         if (isset($bibliographicRecordId)) $ret["BibliographicRecordId"] = $bibliographicRecordId;
         $componentId = $bibliographicDescription->getElementsByTagName("ComponentId")->item(0)->nodeValue;
         if (isset($componentId)) $ret["ComponentId"] = $componentId;
-        $edition = htmlentities($bibliographicDescription->getElementsByTagName("Edition")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $edition = $bibliographicDescription->getElementsByTagName("Edition")->item(0)->nodeValue;
         if (isset($edition)) $ret["Edition"] = $edition;
         $pagination = $bibliographicDescription->getElementsByTagName("Pagination")->item(0)->nodeValue;
         if (isset($pagination)) $ret["Pagination"] = $pagination;
-        $placeOfPublication = htmlentities($bibliographicDescription->getElementsByTagName("PlaceOfPublication")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $placeOfPublication = $bibliographicDescription->getElementsByTagName("PlaceOfPublication")->item(0)->nodeValue;
         if (isset($placeOfPublication)) $ret["PlaceOfPublication"] = $placeOfPublication;
         $publicationDate = $bibliographicDescription->getElementsByTagName("PublicationDate")->item(0)->nodeValue;
         if (isset($publicationDate)) $ret["PublicationDate"] = $publicationDate;
         $publicationDateOfComponent = $bibliographicDescription->getElementsByTagName("PublicationDateOfComponent")->item(0)->nodeValue;
         if (isset($publicationDateOfComponent)) $ret["PublicationDateOfComponent"] = $publicationDateOfComponent;
-        $publisher = htmlentities($bibliographicDescription->getElementsByTagName("Publisher")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $publisher = $bibliographicDescription->getElementsByTagName("Publisher")->item(0)->nodeValue;
         if (isset($publisher)) $ret["Publisher"] = $publisher;
-        $seriesTitleNumber = htmlentities($bibliographicDescription->getElementsByTagName("SeriesTitleNumber")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $seriesTitleNumber = $bibliographicDescription->getElementsByTagName("SeriesTitleNumber")->item(0)->nodeValue;
         if (isset($seriesTitleNumber)) $ret["SeriesTitleNumber"] = $seriesTitleNumber;
-        $title = htmlentities($bibliographicDescription->getElementsByTagName("Title")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $title = $bibliographicDescription->getElementsByTagName("Title")->item(0)->nodeValue;
         if (isset($title)) $ret["Title"] = $title;
-        $titleOfComponent = htmlentities($bibliographicDescription->getElementsByTagName("TitleOfComponent")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $titleOfComponent = $bibliographicDescription->getElementsByTagName("TitleOfComponent")->item(0)->nodeValue;
         if (isset($titleOfComponent)) $ret["TitleOfComponent"] = $titleOfComponent;
-        $bibliographicLevel = htmlentities($bibliographicDescription->getElementsByTagName("BibliographicLevel")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $bibliographicLevel = $bibliographicDescription->getElementsByTagName("BibliographicLevel")->item(0)->nodeValue;
         if (isset($bibliographicLevel)) $ret["BibliographicLevel"] = $bibliographicLevel;
-        $sponsoringBody = htmlentities($bibliographicDescription->getElementsByTagName("SponsoringBody")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $sponsoringBody = $bibliographicDescription->getElementsByTagName("SponsoringBody")->item(0)->nodeValue;
         if (isset($sponsoringBody)) $ret["SponsoringBody"] = $sponsoringBody;
         $electronicDataFormatType = $bibliographicDescription->getElementsByTagName("ElectronicDataFormatType")->item(0)->nodeValue;
         if (isset($electronicDataFormatType)) $ret["ElectronicDataFormatType"] = $electronicDataFormatType;
-        $language = htmlentities($bibliographicDescription->getElementsByTagName("Language")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $language = $bibliographicDescription->getElementsByTagName("Language")->item(0)->nodeValue;
         if (isset($language)) $ret["Language"] = $language;
-        $mediumType = htmlentities($bibliographicDescription->getElementsByTagName("MediumType")->item(0)->nodeValue, ENT_COMPAT, $this->dom->encoding);
+        $mediumType = $bibliographicDescription->getElementsByTagName("MediumType")->item(0)->nodeValue;
         if (isset($mediumType)) $ret["MediumType"] = $mediumType;
       }
       // Eneste understøttede tag i <ItemOptionalFields> er <BibliographicDescription>, alle resterende tags understøttes ikke i denne version
