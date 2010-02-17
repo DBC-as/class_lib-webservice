@@ -147,7 +147,10 @@ class objconvert {
  	  if ($obj->_namespace)
  	    $prefix = $this->set_prefix_separator($this->get_namespace_prefix($obj->_namespace));
  	  if (is_scalar($obj->_value))  
- 	 	 return $this->tag_me($prefix.$tag, $attr, htmlspecialchars($obj->_value));
+ 	    if ($obj->_cdata)  
+ 	 	    return $this->tag_me($prefix.$tag, $attr, '<![CDATA[' . $obj->_value . ']]>');
+      else
+ 	 	    return $this->tag_me($prefix.$tag, $attr, htmlspecialchars($obj->_value));
  	  else
  	    return $this->tag_me($prefix.$tag, $attr, $this->obj2xml($obj->_value));
 	}
