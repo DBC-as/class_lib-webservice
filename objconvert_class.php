@@ -20,6 +20,44 @@
 */
 
 
+ /** \brief Convert ols-object to json, xml, php
+  *
+  * An OLS object contains the data in _value
+  * It may have a namespace in _namespace
+  * and it may have attributes in _attributes
+  * and it may have a cdata-flag set in _cdata (only used in xml-output)
+  *
+  * Example:
+  *   $obj->tagname->_value = "A&A";
+  *   will convert to a xml doc like: <tagname>A&amp;A</tagname>
+  *                   json like: {"tagname":{"$":"A&A"},"@namespaces":null}
+  *
+  * Example:
+  *   $obj->tagname->_value = "A&A";
+  *   $obj->tagname->_namespace = "http://some.namespace.com/";
+  *   will convert to a xml doc like: <ns1:tagname xmlns:ns1="http://some.namespace.com/">A&amp;A</ns1:tagname>
+  *                   json like: {"tagname":{"$":"A&A","@":"ns1"},"@namespaces":{"ns1":"http:\/\/some.namespace.com\/"}}
+  *
+  * Example:
+  *   $obj->tagname->_value = "A&A";
+  *   $obj->tagname->_attributes->attr->_value = "ATTR";
+  *   will convert to a xml doc like: <tagname attr="ATTR">A&amp;A</tagname>
+  *                   json like: {"tagname":{"$":"A&A","@attr":{"$":"ATTR"}},"@namespaces":null}
+  *
+  * Example:
+  *   $obj->tagname->_value = "A&A";
+  *   $obj->tagname->_attributes->attr->_value = "ATTR";
+  *   $obj->tagname->_attributes->attr->_namespace = "http://some.namespace.com/";
+  *   will convert to a xml doc like: <tagname ns1:attr="ATTR" xmlns:ns1="http://some.namespace.com/">A&amp;A</tagname>
+  *                   json like: {"tagname":{"$":"A&A","@attr":{"$":"ATTR","@":"ns1"}},"@namespaces":{"ns1":"http:\/\/some.namespace.com\/"}}
+  *
+  * Example:
+  *   $obj->tagname->_value = "A&A";
+  *   $obj->tagname->_cdata = TRUE;
+  *   will convert to a xml doc like: <tagname><![CDATA[A&A]]></tagname>
+  *                   json like: {"tagname":{"$":"A&A"},"@namespaces":null}
+ 	*/
+
 class objconvert {
 
 	private $namespaces=array();
