@@ -230,11 +230,16 @@ abstract class webServiceServer {
       return FALSE;
 
     if ($sc = $schemas[$validate_schema]) {
-      $xml = &$validate_soap->getElementsByTagName("Body")->item(0)->firstChild;
-      $validate_xml = new DOMdocument;
-      @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
+      if ($validate_soap->firstChild->localName == "Envelope"
+        && $validate_soap->firstChild->firstChild->localName == "Body") {
+        $xml = &$validate_soap->firstChild->firstChild->firstChild;
+        $validate_xml = new DOMdocument;
+        @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
+      } else {
+        $validate_xml = &$validate_soap;
+      }
       if (! @ $validate_xml->schemaValidate($sc))
-      return FALSE;
+        return FALSE;
     }
 
     return TRUE;
