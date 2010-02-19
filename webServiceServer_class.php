@@ -73,11 +73,11 @@ abstract class webServiceServer {
   *
   */
 	public function handle_request() {
-	  if (isset($_GET["ShowInfo"]) )
+	  if ($_SERVER["QUERY_STRING"] == "ShowInfo")
       $this->ShowInfo();
-	  if (isset($_GET["version"]) ) {                          
+	  if ($_SERVER["QUERY_STRING"] == "Version") {
       die($this->version);
-	  } elseif (isset($_GET["HowRU"]) ) {                          
+	  } elseif ($_SERVER["QUERY_STRING"] == "HowRU") {
      	$this->HowRU();          
     } elseif (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
       $this->soap_request($GLOBALS["HTTP_RAW_POST_DATA"]);                    
