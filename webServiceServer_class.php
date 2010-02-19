@@ -101,8 +101,8 @@ abstract class webServiceServer {
     // validate request
     $this->validate = $this->config->get_value('validate');
 
-		if ($this->validate["request"] && !$this->validate_xml($xml,$this->validate["request"]))
-			$error=1;
+		if ($this->validate["soap_request"] || $this->validate["request"])
+      $error = ! $this->validate_soap($xml, $this->validate, "request");
 
 		if (empty($error)) {
       // parse to object
@@ -120,10 +120,9 @@ abstract class webServiceServer {
       // handle request
 			if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
         // validate response
-		    if ($this->validate["response"]) {
+		    if ($this->validate["soap_response"] || $this->validate["response"]) {
 			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
-          if (!$this->validate_xml($response_xml,$this->validate["response"]))
-				    $error=1;
+          $error = ! $this->validate_soap($response_xml, $this->validate, "response");
         }
 
 		    if (empty($error)) {
@@ -157,7 +156,7 @@ abstract class webServiceServer {
 			  } else
 				  echo "Error in response validation.";
 			} else
-				echo "Error in request validation.";
+				echo "Incorrect SOAP envelope";
 		} else
 			echo "Error in request validation.";
 	}
@@ -213,6 +212,32 @@ abstract class webServiceServer {
     echo "Gr8";
     die();
 	}
+
+  /** \brief Validates soap and xml
+  * 
+  * @param xml <string>
+  * @param schema filenames <array>
+  * @param validate name <string>
+	*
+  */
+
+  protected function validate_soap($soap, $schemas, $validate_schema) {
+		$validate_soap = new DomDocument;
+		$validate_soap->preserveWhiteSpace = FALSE;
+    $validate_soap->loadXml($soap);
+    if (($sc = $schemas["soap_".$validate_schema]) && ! @ $validate_soap->schemaValidate($sc))
+      return FALSE;
+
+    if ($sc = $schemas[$validate_schema]) {
+      $xml = &$validate_soap->getElementsByTagName("Body")->item(0)->firstChild;
+      $validate_xml = new DOMdocument;
+      @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
+      if (! @ $validate_xml->schemaValidate($sc))
+      return FALSE;
+    }
+
+    return TRUE;
+  }
 
   /** \brief Validates xml
   * 
