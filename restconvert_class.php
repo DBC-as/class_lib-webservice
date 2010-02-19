@@ -27,10 +27,13 @@ class restconvert {
   private $charset = "utf-8";
 	private $soap_header;
 	private $soap_footer;
+	private $default_namespace = "";
 
-	public function __construct() {
-		$this->soap_header='<?xml version="1.0" encoding="%s"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body>';
+	public function __construct($namespace="") {
+		$this->soap_header='<?xml version="1.0" encoding="%s"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"%s><SOAP-ENV:Body>';
 		$this->soap_footer='</SOAP-ENV:Body></SOAP-ENV:Envelope>';
+    if ($namespace)
+      $this->default_namespace = ' xmlns="' . $namespace . '"';
 	}
 
 	/** \brief Transform REST parameters to SOAP-request
@@ -46,7 +49,7 @@ class restconvert {
      if ($_GET["charset"]) $this->charset = $_GET["charset"];
  	   if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$_GET["action"]]), 
                                         explode("&", $_SERVER["QUERY_STRING"]))) {
- 	     return sprintf($this->soap_header, $this->charset) .
+ 	     return sprintf($this->soap_header, $this->charset, $this->default_namespace) .
               $this->rest_tag_me($soap_actions[$_GET["action"]], $node_value) .
               $this->soap_footer;
 			} 
