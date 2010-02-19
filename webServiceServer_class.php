@@ -168,7 +168,8 @@ abstract class webServiceServer {
   */
 	private function rest_request() {
 			// convert to soap
-			$rest = new restconvert($this->xmlns["NONE"]);
+      $xmlns = ($this->xmlns["NONE"] ? $this->xmlns["NONE"] : $this->xmlns["0"]);
+			$rest = new restconvert($xmlns);
 			$xml=$rest->rest2soap(&$this->config);
 			$this->soap_request($xml);
 	}

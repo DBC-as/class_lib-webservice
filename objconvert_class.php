@@ -66,7 +66,7 @@ class objconvert {
 	public function __construct($xmlns="") {
     if ($xmlns)
       foreach ($xmlns as $prefix => $ns) {
-        if ($prefix == "NONE")
+        if ($prefix == "NONE" || $prefix == "0")
           $prefix = "";
         $this->add_namespace($ns, $prefix);
       }
