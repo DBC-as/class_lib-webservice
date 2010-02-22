@@ -235,7 +235,7 @@ abstract class webServiceServer {
   protected function validate_soap($soap, $schemas, $validate_schema) {
 		$validate_soap = new DomDocument;
 		$validate_soap->preserveWhiteSpace = FALSE;
-    $validate_soap->loadXml($soap);
+    @ $validate_soap->loadXml($soap);
     if (($sc = $schemas["soap_".$validate_schema]) && ! @ $validate_soap->schemaValidate($sc))
       return FALSE;
 
