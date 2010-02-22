@@ -179,14 +179,24 @@ abstract class webServiceServer {
   */
 	private function ShowInfo() {
     $show_func = "show_info";
-    if (method_exists($this, $show_func)) {
+    if (method_exists($this, $show_func) && $this->in_house())
+      $this->$show_func();
+  }
+
+  /** \brief 
+  *  Return TRUE if the IP is in_house_domain
+  */
+  private function in_house() {
+    static $homie;
+    if (!isset($homie)) {
+      if (!$domain = $this->config->get_value('in_house_domain', "setup"))
+        $domain = ".dbc.dk";
       @ $remote = gethostbyaddr($_SERVER["REMOTE_ADDR"]);
-      $homie = (strpos($remote, ".dbc.dk") + 7 == strlen($remote));
+      $homie = (strpos($remote, $domain) + strlen($domain) == strlen($remote));
       if ($homie)
         $homie = (gethostbyname($remote) == $_SERVER["REMOTE_ADDR"]); // paranoia check
-      if ($homie)
-        $this->$show_func();
     }
+    return $homie;
   }
 
   /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
@@ -290,6 +300,7 @@ abstract class webServiceServer {
 
 	private function create_sample_forms() {
     if (isset($HTTP_RAW_POST_DATA)) return;
+    if (!$this->in_house() && !$this->config->get_value("show_samples", "setup")) return;
 
     echo "<html><body>";
 
