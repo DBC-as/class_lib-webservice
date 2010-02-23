@@ -29,15 +29,15 @@
  *  
  * Example:
  * verbose::open("my_trace_file.log", "WARNING+FATAL+TIMER"); \n
- * verbose::bose->log(FATAL, "Cannot find database");\n
+ * verbose::log(FATAL, "Cannot find database");\n
  * 
  * Example:
  * verbose::open("my_trace_file.log", WARNING+FATAL+TIMER); \n
- * verbose::bose->log(FATAL, "Cannot find database");\n
+ * verbose::log(FATAL, "Cannot find database");\n
  *  
  * Example:
  * verbose::open("my_trace_file.log", 77, "H:i:s d:m:y"); \n
- * verbose::bose->log(TRACE, "db::look_up_user()");\n
+ * verbose::log(TRACE, "db::look_up_user()");\n
  */
 
 @ define("WARNING",0x01);
