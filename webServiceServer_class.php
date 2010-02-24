@@ -154,11 +154,11 @@ abstract class webServiceServer {
 			        echo $response_xml;
           }
 			  } else
-				  echo "Error in response validation.";
+				  $this->soap_error("Error in response validation.");
 			} else
-				echo "Incorrect SOAP envelope";
+				$this->soap_error("Incorrect SOAP envelope");
 		} else
-			echo "Error in request validation.";
+			$this->soap_error("Error in request validation.");
 	}
 
 	/** \brief Handles rest request, converts it to xml and calls soap_request()
@@ -253,6 +253,25 @@ abstract class webServiceServer {
     }
 
     return TRUE;
+  }
+
+  /** \brief send an error header and soap fault
+  * 
+  * @param err <string>
+  * 
+  */
+  protected function soap_error($err) {
+    // should we send this???
+    // header('HTTP/1.0 500 Internal Server Error');
+    header('Content-Type: text/xml; charset="utf-8"');
+    echo '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+   <SOAP-ENV:Body>
+       <SOAP-ENV:Fault>
+           <faultcode>SOAP-ENV:Server</faultcode>
+           <faultstring>' . htmlspecialchars($err) . '</faultstring>
+       </SOAP-ENV:Fault>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>';
   }
 
   /** \brief Validates xml
