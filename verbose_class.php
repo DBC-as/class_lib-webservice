@@ -52,9 +52,9 @@
 
 class verbose {
 
-  private $verbose_file_name;
-  private $verbose_mask;
-  public $date_format;
+  static $verbose_file_name;
+  static $verbose_mask;
+  static $date_format;
 
   private function __construct() {}
   private function __destruct() {}
@@ -67,14 +67,14 @@ class verbose {
   **/
 
   function open($verbose_file_name, $verbose_mask, $date_format="") {
-    if (!$this->date_format = $date_format)
-      $this->date_format="H:i:s-d/m/y";
-    $this->verbose_file_name=$verbose_file_name;
+    if (!self::$date_format = $date_format)
+      self::$date_format="H:i:s-d/m/y";
+    self::$verbose_file_name=$verbose_file_name;
     if (!is_string($verbose_mask))
-      $this->verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
+      self::$verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
     else
       foreach (explode('+', $verbose_mask) as $vm)
-        if (defined(trim($vm))) $this->verbose_mask |= constant(trim($vm));
+        if (defined(trim($vm))) self::$verbose_mask |= constant(trim($vm));
   }
 
  /**
@@ -84,7 +84,7 @@ class verbose {
   */
 
   function log($verbose_level, $str) {
-    if ($this->verbose_file_name && $verbose_level & $this->verbose_mask) {
+    if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
       switch ($verbose_level) {
         case WARNING : $vtext = "WARNING"; break;
         case ERROR :   $vtext = "ERROR"; break;
@@ -98,12 +98,12 @@ class verbose {
         default :      $vtext = "UNKNOWN"; break;
       }
 
-      if ($fp = @ fopen($this->verbose_file_name,"a")) {
+      if ($fp = @ fopen(self::$verbose_file_name,"a")) {
         if(!ereg("\n\$", $str)) $str .= "\n";
-        fwrite($fp, $vtext . " " . date($this->date_format) . ": " . $str);
+        fwrite($fp, $vtext . " " . date(self::$date_format) . ": " . $str);
         fclose($fp);
       } else
-        die("FATAL: Cannot open " . $this->verbose_file_name);
+        die("FATAL: Cannot open " . self::$verbose_file_name);
     }
   }
 }
