@@ -261,8 +261,7 @@ abstract class webServiceServer {
   * 
   */
   protected function soap_error($err) {
-    // should we send this???
-    // header('HTTP/1.0 500 Internal Server Error');
+    header('HTTP/1.0 500 Internal Server Error');
     header('Content-Type: text/xml; charset="utf-8"');
     echo '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
    <SOAP-ENV:Body>
