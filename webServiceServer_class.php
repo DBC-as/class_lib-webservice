@@ -156,7 +156,7 @@ abstract class webServiceServer {
 			  } else
 				  $this->soap_error("Error in response validation.");
 			} else
-				$this->soap_error("Incorrect SOAP envelope");
+				$this->soap_error("Incorrect SOAP envelope or wrong/unsupported request");
 		} else
 			$this->soap_error("Error in request validation.");
 	}
