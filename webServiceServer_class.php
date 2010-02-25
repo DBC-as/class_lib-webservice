@@ -25,13 +25,13 @@
  *
  */
 
-require_once("OLS_class_lib/curl_class.php");
-require_once("OLS_class_lib/verbose_class.php");
-require_once("OLS_class_lib/inifile_class.php");
-require_once("OLS_class_lib/timer_class.php");
-require_once("OLS_class_lib/restconvert_class.php");
-require_once("OLS_class_lib/xmlconvert_class.php");
-require_once("OLS_class_lib/objconvert_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/curl_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/verbose_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/inifile_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/timer_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/restconvert_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/xmlconvert_class.php");
+require_once("../php/OpenLibrary/class_lib/trunk/objconvert_class.php");
 
 abstract class webServiceServer {
 
@@ -336,7 +336,9 @@ abstract class webServiceServer {
             if (preg_match('/xml$/',$file,$matches)) {
               $found_files=1;
               $contents = fread($fp, filesize($file));
-              $reqs[]=str_replace("\n","\\n",addcslashes($contents,'"\\'));
+							$contents=str_replace("\r\n","\n",$contents);
+              $contents=str_replace("\n","\\n",addcslashes($contents,'"\\'));
+              $reqs[]=$contents;
               $names[]=$file;
             }
             echo '</form>';
