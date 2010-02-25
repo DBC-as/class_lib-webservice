@@ -336,7 +336,6 @@ abstract class webServiceServer {
             if (preg_match('/xml$/',$file,$matches)) {
               $found_files=1;
               $contents = fread($fp, filesize($file));
-							$contents=str_replace("\r\n","\n",$contents);
               $contents=str_replace("\n","\\n",addcslashes($contents,'"\\'));
               $reqs[]=$contents;
               $names[]=$file;
