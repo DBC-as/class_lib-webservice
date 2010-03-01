@@ -49,10 +49,10 @@ interface IDatabase
   public function get_row();
   public function commit(); 
   public function rollback();
-  // public function open();
+  public function open();
   public function close();
 
-  /*method implemented in base class (general methods)*/
+  /*methods implemented in base class (general methods)*/
   public function insert($table,$record);
   public function update($table,$assign,$clause=null);
   public function delete($table,$clause=null);
