@@ -88,18 +88,23 @@ abstract class fet_database implements IDatabase
     $this->port=$port;
   }  
 
+
+  /** \brief
+      set the query.
+   */
   public function set_query($query)
   {
     $this->query=$query;
   }
 
-  /** 
-      These 4 functions are meant as pure sql-generators. Each of them calls extending class's execution() method.
-  */
+    
   /** \brief
-      Insert a row.
+      generate sql for inserting a row. call extending class's execute()-method
+      
       $table; the table to insert into
-      $record; an array of values or a sql-statement
+      $record; an array or a comma-seperated list of values
+
+      return nothing. throw fetException if execute fails.
    */
   public function insert($table,$record)
   {
@@ -128,6 +133,16 @@ abstract class fet_database implements IDatabase
     $this->execute();
   }
   
+   /** \brief
+      generate sql for updating a row. call extending class's execute()-method
+      
+      $table; the table to update
+      $record; an array or a comma-seperated list of key=value
+      $clause; an array of clauses (should always be set) 
+      // TODO should method abort if clause is not set
+
+      return nothing. throw fetException if execute fails.
+   */
   public function update($table,$assign,$clause=null)
   {
     $sql = "";
@@ -163,6 +178,15 @@ abstract class fet_database implements IDatabase
     $this->execute();
   }
   
+  /** \brief
+      generate sql for delete in a table. call extending class's execute()-method
+
+      $table; the table to delete in.
+      $clause; an array of clauses (should always be set) 
+      // TODO should method abort if clause is not set
+
+      return nothing. throw fetException if execute fails.
+   */
   public function delete($table,$clause=null)
   {
     $sql="";
@@ -177,12 +201,24 @@ abstract class fet_database implements IDatabase
     $this->execute();
   }
 
+  /** \brief
+      set pagination. - is only useable for selects
+      // TODO check if query is select - abort method if not
+
+      $offset; where should we start
+      $limit; how many rows in result     
+   */
   public function set_pagination($offset,$limit)
   {
     $this->offset=$start;
     $this->limit=$end;
   }
 
+  /** \brief
+     if transaction is set commit and rollback methods can be used.
+     
+     $bool; transaction=$bool
+   */
   public function set_transaction($bool)
   {
     $this->transaction=$bool;
@@ -191,6 +227,13 @@ abstract class fet_database implements IDatabase
   /* DEVELOPER NOTE */
   // mysql and postgres uses placeholders for preparing a sql.
   // oracle uses bind_by_name
+
+  /**
+     bind a variable.
+
+     $name; name of variable to bind
+     $value; value of variable.
+   */
   public function bind($name,$value,$maxlength=-1,$type=SQLT_CHR)
   {
     $bind_array["name"]=($name[0] == ":"? $name : ":".$name);
