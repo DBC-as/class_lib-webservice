@@ -44,15 +44,15 @@ Database interface. Common methods that a database-class MUST implement.
 */
 interface IDatabase
 {
-  /* methods to be implemented in extending classes (database-specific)*/
+  /* methods to be implemented in extending classes (database-specific methods)*/
   public function execute();
   public function get_row();
   public function commit(); 
   public function rollback();
-  public function open();
+  // public function open();
   public function close();
 
-  /*method implemented in base class*/
+  /*method implemented in base class (general methods)*/
   public function insert($table,$record);
   public function update($table,$assign,$clause=null);
   public function delete($table,$clause=null);
@@ -97,7 +97,6 @@ abstract class fet_database implements IDatabase
     $this->query=$query;
   }
 
-    
   /** \brief
       generate sql for inserting a row. call extending class's execute()-method
       
