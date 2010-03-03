@@ -101,7 +101,8 @@ class cql2solr extends tokenizer {
 
     $search_pid_index = FALSE;
     foreach($this->tokenlist as $k => $v) {
-      $url_val = urlencode($v["value"]);
+      //$url_val = urlencode($v["value"]);  // solr-url in utf-8
+      $url_val = urlencode(utf8_decode($v["value"]));  // solr-url in iso-latin-1
       switch ($v["type"]) {
         case "OPERATOR":
           $op = $this->map[strtolower($v["value"])];
