@@ -100,12 +100,16 @@ class cql2solr extends tokenizer {
 //var_dump($this->tokenlist);
 
     $search_pid_index = FALSE;
+    $and_or_part = TRUE;
     foreach($this->tokenlist as $k => $v) {
+      $space = !trim($v["value"]);
       //$url_val = urlencode($v["value"]);  // solr-url in utf-8
       $url_val = urlencode(utf8_decode($v["value"]));  // solr-url in iso-latin-1
       switch ($v["type"]) {
         case "OPERATOR":
           $op = $this->map[strtolower($v["value"])];
+          if (in_array($op, array("NOT", "AND", "OR")))
+            $and_or_part = $op <> "NOT";
       	  $solr_q .= $op;
           if ($op == "OR" && $dismax_boost && $dismax_terms) {
       	    $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms) . "%29+" . $op . "+%28";
@@ -120,7 +124,8 @@ class cql2solr extends tokenizer {
             $url_val = str_replace("%3A", "_", $url_val);
 				  $solr_q .= $url_val;
 				  $dismax_q .= $url_val;
-          if (!$v["raw_index"]) $dismax_terms .= $url_val;
+          if (!$v["raw_index"]) 
+            $dismax_terms .= ($and_or_part || $space ? "" : "-") . $url_val;
           break;
         case "INDEX":
           if (strtolower($v["value"]) == "rec.id")
