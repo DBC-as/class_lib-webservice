@@ -311,8 +311,16 @@ abstract class webServiceServer {
       $request=key($xmlobj);
       if ($function = array_search($request, $soapAction)) {
         $params=$xmlobj->$request->_value;
-        if (method_exists($this, $function))
+        if (method_exists($this, $function)) {
+          if (is_object($this->aaa)) {
+            $auth = &$params->authentication->_value;
+            $this->aaa->init_rights($auth->userIdAut->_value,
+                                    $auth->groupIdAut->_value,
+                                    $auth->passwordAut->_value,
+                                    $_SERVER["REMOTE_ADDR"]);
+          }
           return $this->$function($params);
+        }
       }
     }
 
