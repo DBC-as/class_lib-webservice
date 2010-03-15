@@ -35,13 +35,18 @@ require_once("OLS_class_lib/memcache_class.php");
 class aaa {
 
   private $aaa_cache;						// cache object
+  private $cache_seconds;				// number of seconds to cache
   private $fors_oci;						// oci connection
   private $fors_credentials;		// oci login credentiales
   private $rights;							// the rights
 
-  public function __construct($fors_credentials, $cache_addr = "") {
+  public function __construct($fors_credentials, $cache_addr = "", $cache_seconds = 0) {
     $this->fors_credentials = $fors_credentials;
-    if ($cache_addr) $this->aaa_cache = new cache($cache_addr);
+    if ($cache_addr) {
+      $this->aaa_cache = new cache($cache_addr);
+      if (!$this->cache_seconds = $cache_seconds)
+        $this->cache_seconds = 3600;
+    }
   }
   
   /**
@@ -114,7 +119,7 @@ class aaa {
         $this->rights = $this->fetch_rights_from_userid($userid);
     }
     if ($this->aaa_cache)
-      $this->aaa_cache->set($cache_key, $this->rights, strtotime("+1 day"));
+      $this->aaa_cache->set($cache_key, $this->rights, $this->cache_seconds);
     return !empty($this->rights);
   }
 
