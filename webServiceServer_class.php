@@ -29,6 +29,7 @@ require_once("OLS_class_lib/curl_class.php");
 require_once("OLS_class_lib/verbose_class.php");
 require_once("OLS_class_lib/inifile_class.php");
 require_once("OLS_class_lib/timer_class.php");
+require_once("OLS_class_lib/aaa_class.php");
 require_once("OLS_class_lib/restconvert_class.php");
 require_once("OLS_class_lib/xmlconvert_class.php");
 require_once("OLS_class_lib/objconvert_class.php");
@@ -37,6 +38,7 @@ abstract class webServiceServer {
 
   protected $config; // inifile object
   protected $watch; // timer object
+  protected $aaa; // Authentication, Access control and Accounting object
 	protected $xmldir="./"; // xml directory
 	protected $validate= array(); // xml validate schemas
   protected $objconvert; // OLS object to xml convert
@@ -67,6 +69,12 @@ abstract class webServiceServer {
     $this->xmlns = $this->config->get_value('xmlns', 'setup');
     $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
+   
+    if ($aaa_oci = $this->config->get_value("aaa_credentials", "setup")) {
+      $this->aaa = new aaa($aaa_oci,
+                           $this->config->get_value("aaa_cache_address", "setup"),
+                           $this->config->get_value("aaa_cache_seconds", "setup"));
+    }
 	}
 
   /** \brief Handles request from webservice client
