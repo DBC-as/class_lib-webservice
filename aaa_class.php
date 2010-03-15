@@ -93,10 +93,10 @@ class aaa {
         }
       }
       if ($state == "OK") 
-        $user_rights = $this->fetch_rights_from_userid($userid);
+        $this->rights = $this->fetch_rights_from_userid($userid);
     } 
   
-    if (!$user_rights && $user) {
+    if (!$this->rights && $user) {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       if (!$this->fors_oci->connect()) return FALSE;
       $this->fors_oci->bind("bind_username", &$user);
@@ -150,7 +150,7 @@ class aaa {
   }
 
   private function fetch_rights_from_userid($userid) {
-    $this->rights = new stdClass;
+    $rights = new stdClass;
     if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
     if ($this->fors_oci->connect()) {
       $this->fors_oci->bind("bind_userid", &$userid);
@@ -160,9 +160,9 @@ class aaa {
                     AND t.attr1id = map1.objecttypeattr2");
       $buf = $this->fors_oci->fetch_all_into_assoc();
       foreach ($buf as $val)
-        $this->rights->$val["OBJECTTYPENAME2"]->$val["FUNCTIONTYPEID"] = TRUE;
+        $rights->$val["OBJECTTYPENAME2"]->$val["FUNCTIONTYPEID"] = TRUE;
     }
-    return $this->rights;
+    return $rights;
   }
 
   private function ip2int($ip) {
