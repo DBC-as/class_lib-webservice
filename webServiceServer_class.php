@@ -70,10 +70,10 @@ abstract class webServiceServer {
     $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
    
-    if ($aaa_oci = $this->config->get_value("aaa_credentials", "setup")) {
+    if ($aaa_oci = $this->config->get_value("aaa_credentials", "aaa")) {
       $this->aaa = new aaa($aaa_oci,
-                           $this->config->get_value("aaa_cache_address", "setup"),
-                           $this->config->get_value("aaa_cache_seconds", "setup"));
+                           $this->config->get_value("aaa_cache_address", "aaa"),
+                           $this->config->get_value("aaa_cache_seconds", "aaa"));
     }
 	}
 
