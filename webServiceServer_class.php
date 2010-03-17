@@ -44,6 +44,7 @@ abstract class webServiceServer {
   protected $objconvert; // OLS object to xml convert
   protected $xmlconvert; // xml to OLS object convert
   protected $xmlns; // namespaces and prefixes 
+  protected $soap_action; 
   protected $output_type=""; 
 
 
@@ -161,6 +162,10 @@ abstract class webServiceServer {
               header("Content-Type: text/xml");
 			        echo $response_xml;
           }
+        // request done and response send, dump timer 
+          if ($dump_timer = $this->config->get_value('dump_timer', "setup"))
+            verbose::log(TIMER, sprintf($dump_timer, $this->soap_action) . 
+                                ":: " . $this->watch->dump());
 			  } else
 				  $this->soap_error("Error in response validation.");
 			} else
@@ -307,11 +312,11 @@ abstract class webServiceServer {
   */
   private function call_xmlobj_function($xmlobj) {
     if ($xmlobj) {
-      $soapAction = $this->config->get_value("soapAction", "setup");
+      $soapActions = $this->config->get_value("soapAction", "setup");
       $request=key($xmlobj);
-      if ($function = array_search($request, $soapAction)) {
+      if ($this->soap_action = array_search($request, $soapActions)) {
         $params=$xmlobj->$request->_value;
-        if (method_exists($this, $function)) {
+        if (method_exists($this, $this->soap_action)) {
           if (is_object($this->aaa)) {
             $auth = &$params->authentication->_value;
             $this->aaa->init_rights($auth->userIdAut->_value,
@@ -319,7 +324,7 @@ abstract class webServiceServer {
                                     $auth->passwordAut->_value,
                                     $_SERVER["REMOTE_ADDR"]);
           }
-          return $this->$function($params);
+          return $this->{$this->soap_action}($params);
         }
       }
     }
