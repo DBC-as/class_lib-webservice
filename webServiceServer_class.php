@@ -347,6 +347,7 @@ abstract class webServiceServer {
     if (is_dir($this->xmldir."/request")) {
       if ($dh = opendir($this->xmldir."/request")) {
         chdir($this->xmldir."/request");
+        $reqs = array();
         while (($file = readdir($dh)) !== false) {
           if (!is_dir($file)) {
             if (preg_match('/html$/',$file,$matches)) {
