@@ -236,7 +236,7 @@ class objconvert {
 
  /** \brief produce balanced xml
  	*/
-	private function tag_me($tag, $attr, $val) {
+	public function tag_me($tag, $attr, $val) {
    if ($attr && $attr[0] <> " ") $space = " ";
  	 return '<' . $tag . $space . $attr . '>' . $val . '</' . $tag . '>';
 	}
