@@ -24,6 +24,7 @@ class z3950 {
 
   private $target;
   private $database;
+  private $connect_options = array();
   private $syntax;
   private $element;
   private $schema;
@@ -43,8 +44,7 @@ class z3950 {
  	*
  	*/
 	public function z3950_search($wait_seconds = 15) {
-    $connect_opt = array();
-    if ($this->z_id = yaz_connect($this->target)) {
+    if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
       if ($this->database)
         yaz_database($this->z_id, $this->database);
       yaz_sort($this->z_id, "");
@@ -149,6 +149,17 @@ class z3950 {
  	*/
 	public function set_database($database) {
     $this->database = $database;
+	}
+
+	/** \brief set authentication
+ 	*
+ 	*/
+	public function set_authentication($authentication, $ip="") {
+    list($this->connect_options["user"],
+         $this->connect_options["group"]
+         $this->connect_options["password"]) = explode('/', $authentication);
+    if ($ip)
+      $this->connect_options["otherInfo0"] = '1.2.840.10003.10.1000.81.3:' . $ip;
 	}
 
 	/** \brief set syntax
