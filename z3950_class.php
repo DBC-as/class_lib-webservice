@@ -83,8 +83,8 @@ class z3950 {
 	/** \brief do a z3950 xml_update using extend service
  	*
  	*/
-	public function z3950_xml_itemorder($xml, $wait_seconds = 15) {
-    if ($this->z_id = yaz_connect($this->target)) {
+	public function z3950_xml_itemorder(&$xml, $wait_seconds = 15) {
+    if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
       if ($this->database)
         yaz_database($this->z_id, $this->database);
       $args = array("doc" => $xml, "itemorder-setname" => "", "syntax" => "xml");
