@@ -156,7 +156,7 @@ class z3950 {
  	*/
 	public function set_authentication($authentication, $ip="") {
     list($this->connect_options["user"],
-         $this->connect_options["group"]
+         $this->connect_options["group"],
          $this->connect_options["password"]) = explode('/', $authentication);
     if ($ip)
       $this->connect_options["otherInfo0"] = '1.2.840.10003.10.1000.81.3:' . $ip;
