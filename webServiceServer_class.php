@@ -74,7 +74,8 @@ abstract class webServiceServer {
     if ($aaa_oci = $this->config->get_value("aaa_credentials", "aaa")) {
       $this->aaa = new aaa($aaa_oci,
                            $this->config->get_value("aaa_cache_address", "aaa"),
-                           $this->config->get_value("aaa_cache_seconds", "aaa"));
+                           $this->config->get_value("aaa_cache_seconds", "aaa"),
+                           $this->config->get_value("aaa_ip_rights", "aaa"));
     }
 	}
 

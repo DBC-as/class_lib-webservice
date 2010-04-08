@@ -31,22 +31,25 @@
 require_once("OLS_class_lib/oci_class.php");
 //require_once("OLS_class_lib/memcachedb_class.php");
 require_once("OLS_class_lib/memcache_class.php");
+require_once("OLS_class_lib/ip_class.php");
 
 class aaa {
 
   private $aaa_cache;						// cache object
   private $cache_seconds;				// number of seconds to cache
+  private $ip_rights;				    // array with repeated elements: ip_list, ressource
   private $fors_oci;						// oci connection
   private $fors_credentials;		// oci login credentiales
   private $rights;							// the rights
 
-  public function __construct($fors_credentials, $cache_addr = "", $cache_seconds = 0) {
+  public function __construct($fors_credentials, $cache_addr = "", $cache_seconds = 0, $ip_rights="") {
     $this->fors_credentials = $fors_credentials;
     if ($cache_addr) {
       $this->aaa_cache = new cache($cache_addr);
       if (!$this->cache_seconds = $cache_seconds)
         $this->cache_seconds = 3600;
     }
+    $this->ip_rights = $ip_rights;
   }
   
   /**
@@ -66,7 +69,14 @@ class aaa {
         return !empty($this->rights);
     }
 
-    if ($ip) {
+    if ($ip && is_array($this->ip_rights)) {
+      foreach ($this->ip_rights as $rights)
+        if (ip_func::ip_in_interval($ip, $rights["ip_list"]))
+          foreach ($rights["ressource"] as $ressource => $right)
+            $this->rights->$ressource->$right = TRUE;
+    }
+
+    if (!$this->rights && $ip) {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       if (!$this->fors_oci->connect()) return FALSE;
       $int_ip = $this->ip2int($ip);
