@@ -180,8 +180,8 @@ class oci {
       $this->database=$database;
     }
     if (defined("OCI_NUM_CONNECT_ATTEMTS")
-	&& is_numeric(OCI_NUM_CONNECT_ATTEMTS)
-	&& OCI_NUM_CONNECT_ATTEMTS < 20)
+        && is_numeric(OCI_NUM_CONNECT_ATTEMTS)
+        && OCI_NUM_CONNECT_ATTEMTS < 20)
       $this->num_connect_attempts = OCI_NUM_CONNECT_ATTEMTS;
     
     $this->charset = NULL;
@@ -372,11 +372,11 @@ class oci {
     
     if(!empty($this->bind_list)) {
       foreach($this->bind_list as $k=>$v) {
-	if ( ! @oci_bind_by_name($this->statement, $v["name"], $v["value"], $v["maxlength"], $v["type"]) ) {
-	  $this->set_OCI_error(ocierror($this->statement));
-          $this->oci_log(ERROR, "ocibindbyname:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
-	  throw new ociException($this->error);
-	}
+        if ( ! @oci_bind_by_name($this->statement, $v["name"], $v["value"], $v["maxlength"], $v["type"]) ) {
+          $this->set_OCI_error(ocierror($this->statement));
+          $this->oci_log(ERROR, "oci_bind_by_name:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . " type: ". $v["type"] . " with error: " . $this->get_error_string());
+          throw new ociException($this->error);
+        }
       }
       $this->bind_list = array();
     }
@@ -412,47 +412,47 @@ class oci {
       $this->statement = @ociparse($this->connect, $this->query);
       $this->set_OCI_error(ocierror($this->connect));
       if (!is_resource($this->statement)) {
-	$this->oci_log(ERROR, "ociparse:: failed on " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
+        $this->oci_log(ERROR, "ociparse:: failed on " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
       }
 
       if(!empty($this->bind_list)) {
-	foreach($this->bind_list as $k=>$v) {
-	  $success = @oci_bind_by_name($this->statement, $v["name"], $v["value"], $v["maxlength"], $v["type"]);
-	  $this->set_OCI_error(ocierror($this->statement));
-	  if (!$success) {
-	    $this->oci_log(ERROR, "oci_bind_by_name:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
-	    throw new ociException($this->error);
+        foreach($this->bind_list as $k=>$v) {
+          $success = @oci_bind_by_name($this->statement, $v["name"], $v["value"], $v["maxlength"], $v["type"]);
+          $this->set_OCI_error(ocierror($this->statement));
+          if (!$success) {
+            $this->oci_log(ERROR, "oci_bind_by_name:: failed on " . $this->query . " binding " . $v["name"] . " to " . $v["value"] . "type: ". $v["type"] . " with error: " . $this->get_error_string());
+            throw new ociException($this->error);
           }
-	}
-	$this->bind_list = array();
+        }
+        $this->bind_list = array();
       }
       
       // Creates an "empty" OCI-Lob object to bind to the locator
       if ( ! $dataLOB = @oci_new_descriptor($this->connect, OCI_D_LOB) ) {
-	$this->set_OCI_error(ocierror($this->statement));
-	$this->oci_log(ERROR, "oci_new_descriptor:: failed on  " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
-      }	
+        $this->set_OCI_error(ocierror($this->statement));
+        $this->oci_log(ERROR, "oci_new_descriptor:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
+      }
 
       // Bind the returned Oracle LOB locator to the PHP LOB object
       if ( ! @oci_bind_by_name($this->statement, ":data_loc", $dataLOB, strlen($data), OCI_B_BLOB) ) {
-	$this->set_OCI_error(ocierror($this->statement));
-	$this->oci_log(ERROR, "oci_bind_by_name:: failed on  " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
+        $this->set_OCI_error(ocierror($this->statement));
+        $this->oci_log(ERROR, "oci_bind_by_name:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
       }
 
       if ( ! @ociexecute($this->statement, OCI_DEFAULT) ) {
-	$this->set_OCI_error(ocierror($this->statement));
-	$this->oci_log(ERROR, "ociexecute:: failed on  " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
+        $this->set_OCI_error(ocierror($this->statement));
+        $this->oci_log(ERROR, "ociexecute:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
       }
       
       // Now import a file to the LOB
       if ( !$dataLOB->save($data) ) {
-	$this->set_OCI_error(ocierror($this->statement));
-	$this->oci_log(ERROR, "save:: failed on  " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
+        $this->set_OCI_error(ocierror($this->statement));
+        $this->oci_log(ERROR, "save:: failed on  " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
       }
 
 
@@ -568,8 +568,8 @@ class oci {
     if ( ! $this->result=oci_fetch_array($this->statement, OCI_ASSOC+OCI_RETURN_NULLS)) {
       $this->set_OCI_error(ocierror($this->statement));
       if ( $this->error ) {
-	$this->oci_log(ERROR, "oci_fetch_array:: failed on " . $this->query . " with error: " . $this->get_error_string());
-	throw new ociException($this->error);
+        $this->oci_log(ERROR, "oci_fetch_array:: failed on " . $this->query . " with error: " . $this->get_error_string());
+        throw new ociException($this->error);
       }
     }
     $this->num_fetched_rows++;
