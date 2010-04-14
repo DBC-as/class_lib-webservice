@@ -500,13 +500,15 @@ class oci {
   * @return OCI lob
   */
   function create_lob() {
-    if ( ! oci_new_descriptor($this->connect, OCI_D_LOB)) {
+    if ($lob = oci_new_descriptor($this->connect, OCI_D_LOB))
+      return $lob
+    else {
       $this->set_OCI_error(ocierror($this->statement));
       $this->oci_log(ERROR, "create_lob:: failed on " . $this->query . " with error: " . $this->get_error_string());
       throw new ociException($this->error);
     }
 
-    return true; 
+    return false; 
   }
 
 
