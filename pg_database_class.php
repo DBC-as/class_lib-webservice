@@ -166,6 +166,18 @@ class pg_database extends fet_database
       @pg_query($this->connection,"COMMIT");
   }
 
+  public function query_params($query="",$params=array())
+  {
+    if( ($this->result=@pg_query_params($this->connection,$query,$params))===false)
+      {
+        $message=pg_last_error();
+        if( $this->transaction )
+          @pg_query($this->connection,"ROLLBACK");
+        throw new fetException($message);
+      }
+  }
+
+
   public function get_row()
   {
     return pg_fetch_assoc($this->result);
@@ -173,13 +185,15 @@ class pg_database extends fet_database
 
   public function commit()
   {
-    pg_query($this->connection,"COMMIT");   
+    if( $this->transaction )
+      pg_query($this->connection,"COMMIT");   
     // postgres has autocommit enabled by default
     // use only if TRANSACTIONS are used
   }
 
   public function rollback()
   {    
+    if( $this->transaction )
      pg_query($this->connection,"ROLLBACK");
     // use only if TRANSACTIONS are used
   } 
