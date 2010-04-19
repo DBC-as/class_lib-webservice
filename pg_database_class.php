@@ -87,7 +87,16 @@ class pg_database extends fet_database
 
   private function connectionstring()
   {
-    $ret="host=".$this->host." port=".$this->port." dbname=".$this->database." user=".$this->username." password=".$this->password;
+ if($this->host)
+      $ret.="host=".$this->host;
+    if( $this->port )
+      $ret.=" port=".$this->port;
+    if( $this->database )
+      $ret.=" dbname=".$this->database;
+    if( $this->username )
+      $ret.=" user=".$this->username;
+    if( $this->password )
+      $ret.=" password=".$this->password;
     return $ret;
   }
 
