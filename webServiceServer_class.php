@@ -342,7 +342,7 @@ abstract class webServiceServer {
     if (isset($HTTP_RAW_POST_DATA)) return;
     if (!$this->in_house() && !$this->config->get_value("show_samples", "setup")) return;
 
-    echo "<html><body>";
+    echo "<html><head>";
 
     // Open a known directory, and proceed to read its contents
     if (is_dir($this->xmldir."/request")) {
@@ -362,7 +362,6 @@ abstract class webServiceServer {
               $reqs[]=$contents;
               $names[]=$file;
             }
-            echo '</form>';
           }
         }
         closedir($dh);
@@ -370,7 +369,7 @@ abstract class webServiceServer {
         if ($found_files) {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
-          echo '<form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=90>';
+          echo '</head><body><form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=90>';
           echo $_REQUEST["xml"];
           echo '</textarea><br><br>';
           echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
@@ -381,7 +380,7 @@ abstract class webServiceServer {
           echo '</form>';
           echo $info;
         } else {
-          echo "No example xml files found...";
+          echo "</head><body>No example xml files found...";
         }
         echo '<p style="font-size:0.6em">Version: ' . $this->version . '</p>';
       }
