@@ -369,7 +369,7 @@ abstract class webServiceServer {
         if ($found_files) {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
-          echo '</head><body><form name="f" method="POST" enctype="text/html; charset=utf-8"><textarea name="xml" rows=20 cols=90>';
+          echo '</head><body><form name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
           echo $_REQUEST["xml"];
           echo '</textarea><br><br>';
           echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
