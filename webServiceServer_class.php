@@ -227,15 +227,12 @@ abstract class webServiceServer {
 		  foreach ($tests as $k=>$v) {
 			  $reply=$curl->get($url."?action=".$v);
 			  $preg_match=$reg_match[$k];
-			  if (!preg_match("/$preg_match/",$reply)) {
-				  echo $reg_error[$k];
-          die();
-			  }
+			  if (!preg_match("/$preg_match/",$reply))
+				  die($reg_error[$k]);
 		  }
 		  $curl->close();
 		}
-    echo "Gr8";
-    die();
+    die("Gr8");
 	}
 
   /** \brief Validates soap and xml
