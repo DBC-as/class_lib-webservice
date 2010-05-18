@@ -76,7 +76,7 @@ class aaa {
             $this->rights->$ressource->$right = TRUE;
     }
 
-    if (!$this->rights && $ip) {
+    if (!$this->rights && !empty($this->fors_credentials) && $ip) {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       if (!$this->fors_oci->connect()) return FALSE;
       $int_ip = $this->ip2int($ip);
@@ -106,7 +106,7 @@ class aaa {
         $this->rights = $this->fetch_rights_from_userid($userid);
     } 
   
-    if (!$this->rights && $user) {
+    if (!$this->rights && !empty($this->fors_credentials) && $user) {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       if (!$this->fors_oci->connect()) return FALSE;
       $this->fors_oci->bind("bind_username", &$user);
