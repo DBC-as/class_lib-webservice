@@ -96,9 +96,11 @@ abstract class webServiceServer {
       $this->soap_request($xml);                    
     } elseif (!empty($_SERVER['QUERY_STRING']) ) {
       $this->rest_request();    
-    } else {                                                
+    } elseif ($this->in_house() || $this->config->get_value("show_samples", "setup")) {
 			$this->create_sample_forms();
-    }    
+    } else {
+      header("HTTP/1.0 404 Not Found");
+    }
 	}
 
   /** \brief Handles and validates soap request
@@ -336,9 +338,6 @@ abstract class webServiceServer {
   */
 
 	private function create_sample_forms() {
-    if (isset($HTTP_RAW_POST_DATA)) return;
-    if (!$this->in_house() && !$this->config->get_value("show_samples", "setup")) return;
-
     echo "<html><head>";
 
     // Open a known directory, and proceed to read its contents
