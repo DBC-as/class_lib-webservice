@@ -147,7 +147,7 @@ class aaa {
         $userid = &$buf["USERID"];
         $crypttype = &$buf["CRYPTTYPE"];
         $pwd = &$buf["PASSWORD"];
-        $pwd = md5($passw);			// test
+        //$pwd = md5($passw);			// test
         $state = &$buf["STATE"];
         if ($userid 
          && $state == "OK" 
