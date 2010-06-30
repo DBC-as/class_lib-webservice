@@ -206,6 +206,24 @@ class pg_database extends fet_database
 
   }
 
+  public function fetch($sql,$arr="")
+  {
+    if ( $arr ) 
+      $this->query_params($sql,$arr);
+    else
+      $this->exe($sql);
+
+    $data_array = pg_fetch_all($this->result);
+    return $data_array;
+  }
+
+  public function exe($sql) {
+    if  ( ! $this->result = @pg_query($this->connection,$sql)) {
+      $message = pg_last_error();
+      throw new fetException("sql failed:$message \n $sql\n");
+    }
+  }
+
   public function __destruct()
   {    
   }

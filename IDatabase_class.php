@@ -31,7 +31,7 @@ class fetException extends Exception implements IException
   /* __toString-method can be used for custom messages */
   public function __toString()
   {
-    return parent::__toString()."\nTESTHEST";
+    return parent::__toString()."\n";
   }
   
   public function log($filename)
