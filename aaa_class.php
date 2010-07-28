@@ -88,7 +88,7 @@ class aaa {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       try { $this->fors_oci->connect(); }
       catch (ociException $e) {
-        verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $oci->get_error_string());
+        verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $this->fors_oci->get_error_string());
         return FALSE;
       }
       $int_ip = $this->ip2int($ip);
@@ -103,7 +103,7 @@ class aaa {
           if (empty($fors_userid) || $val["IPEND"])
             $fors_userid = $val["USERID"];
       } catch (ociException $e) {
-        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $oci->get_error_string());
+        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $this->fors_oci->get_error_string());
         $error = $this->fors_oci->get_error();
       }
 
@@ -120,7 +120,7 @@ class aaa {
             $group = $buf["GROUPNAME"];
           }
         } catch (ociException $e) {
-          verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $oci->get_error_string());
+          verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $this->fors_oci->get_error_string());
           $error = $this->fors_oci->get_error();
         }
       }
@@ -132,7 +132,7 @@ class aaa {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       try { $this->fors_oci->connect(); }
       catch (ociException $e) {
-        verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $oci->get_error_string());
+        verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $this->fors_oci->get_error_string());
         return FALSE;
       }
       try {
@@ -156,7 +156,7 @@ class aaa {
           || ($crypttype == 2 && $pwd == md5($passw))))
           $this->rights = $this->fetch_rights_from_userid($userid, $group);
       } catch (ociException $e) {
-        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $oci->get_error_string());
+        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $this->fors_oci->get_error_string());
         $error = $this->fors_oci->get_error();
       }
     }
@@ -196,7 +196,7 @@ class aaa {
     if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
     try { $this->fors_oci->connect(); }
     catch (ociException $e) {
-      verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $oci->get_error_string());
+      verbose::log(FATAL, "AAA(".__LINE__."):: OCI connect error: " . $this->fors_oci->get_error_string());
       return $rights;
     }
     try {
@@ -216,10 +216,10 @@ class aaa {
         foreach ($buf as $val)
           $rights->vipInfo->subAgencyId->$val["BIB_NR"] = TRUE;
       } catch (ociException $e) {
-        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $oci->get_error_string());
+        verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $this->fors_oci->get_error_string());
       }
     } catch (ociException $e) {
-      verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $oci->get_error_string());
+      verbose::log(FATAL, "AAA(".__LINE__."):: OCI select error: " . $this->fors_oci->get_error_string());
     }
 
     return $rights;
