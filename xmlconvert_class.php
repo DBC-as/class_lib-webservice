@@ -34,7 +34,7 @@ class xmlconvert {
 
  	 $dom = new DomDocument();
  	 $dom->preserveWhiteSpace = false;
- 	 if ($dom->loadXML($request))
+ 	 if (@ $dom->loadXML($request))
  	   return $this->xml2obj($dom);
 	}
 
