@@ -64,20 +64,15 @@ class objconvert {
 	private $namespaces=array();
 	private $used_namespaces=array();
 
-	public function __construct($xmlns="") {
+	public function __construct($xmlns="", $tag_seq="") {
     if ($xmlns)
       foreach ($xmlns as $prefix => $ns) {
         if ($prefix == "NONE" || $prefix == "0")
           $prefix = "";
         $this->add_namespace($ns, $prefix);
       }
+    $this->tag_sequence = $tag_seq;
 	}
-
- /** \brief Convert set tag_sequence for obj2xml
- 	*/
-	public function set_tag_sequence($seq) {  
-    $tag_sequence = $seq;
-  }
 
  /** \brief Convert ols-object to json
  	*/
@@ -163,6 +158,7 @@ class objconvert {
  	*
  	*/
 	public function obj2xml($obj) {
+    $this->check_tag_sequence();
     $ret = "";
     if ($obj)
       foreach ($obj as $tag => $o) {
@@ -227,6 +223,16 @@ class objconvert {
  	*/
   private function set_prefix_separator($prefix) {
     if ($prefix) return $prefix . ':'; else return $prefix;
+  }
+
+ /** \brief get or use tag_sequence
+ 	*/
+	private function check_tag_sequence() {
+    if ($this->tag_sequence && is_scalar($this->tag_sequence)) {
+      require_once("OLS_class_lib/schema_class.php");
+      $schema_parser = new schema_something();
+      $this->tag_sequence = $schema_parser->parse($this->tag_sequence);
+    }
   }
 
  /** \brief Adds known namespaces

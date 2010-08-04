@@ -44,6 +44,7 @@ abstract class webServiceServer {
   protected $objconvert; // OLS object to xml convert
   protected $xmlconvert; // xml to OLS object convert
   protected $xmlns; // namespaces and prefixes 
+  protected $tag_sequence; // tag sequence according to XSD or noame of XSD
   protected $soap_action; 
   protected $output_type=""; 
 
@@ -68,6 +69,7 @@ abstract class webServiceServer {
 		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
     $this->xmlns = $this->config->get_value('xmlns', 'setup');
+    $this->tag_sequence = $this->config->get_value('tag_sequence', 'setup');
     $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
    
@@ -127,7 +129,7 @@ abstract class webServiceServer {
         $request_xmlobj = &$xmlobj;
 
       // initialize objconvert and load namespaces
-      $this->objconvert=new objconvert($this->xmlns);
+      $this->objconvert=new objconvert($this->xmlns, $this->tag_sequence);
 
       // handle request
 			if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
