@@ -60,6 +60,7 @@
 
 class objconvert {
 
+	private $tag_sequence=array();
 	private $namespaces=array();
 	private $used_namespaces=array();
 
@@ -71,6 +72,12 @@ class objconvert {
         $this->add_namespace($ns, $prefix);
       }
 	}
+
+ /** \brief Convert set tag_sequence for obj2xml
+ 	*/
+	public function set_tag_sequence($seq) {  
+    $tag_sequence = $seq;
+  }
 
  /** \brief Convert ols-object to json
  	*/
