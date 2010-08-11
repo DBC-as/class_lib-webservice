@@ -74,7 +74,7 @@ class aaa {
     if ($ip && is_array($this->ip_rights)) {
       foreach ($this->ip_rights as $rights)
         if (ip_func::ip_in_interval($ip, $rights["ip_list"]))
-          if (isset($rights["ressource"]))
+          if (isset($rights["ressource"])) {
             foreach ($rights["ressource"] as $ressource => $right) {
               $rights = explode(",", $right);
               foreach ($rights as $r) {
@@ -82,6 +82,8 @@ class aaa {
                 $this->rights->$ressource->$r = TRUE;
               }
             }
+      if ($this->rights)
+        return TRUE;   // do no cache when found in ip-rights (ini-file)
     }
 
     if (!$this->rights && !empty($this->fors_credentials) && $ip) {
