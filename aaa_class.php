@@ -86,7 +86,10 @@ class aaa {
         return TRUE;   // do no cache when found in ip-rights (ini-file)
     }
 
-    if (!$this->rights && !empty($this->fors_credentials) && $ip) {
+    if (!strpos($this->fors_credentials, "/") || !strpos($this->fors_credentials, "@"))
+      return FALSE;
+
+    if (!empty($this->fors_credentials) && $ip) {
       if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
       try { $this->fors_oci->connect(); }
       catch (ociException $e) {
