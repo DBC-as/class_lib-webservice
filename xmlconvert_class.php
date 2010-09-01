@@ -43,7 +43,7 @@ class xmlconvert {
   *
   */
 
-	public function xml2obj($domobj) {
+	public function xml2obj($domobj, $force_NS="") {
  	 foreach ($domobj->childNodes as $node) {
  	   if ($node->nodeName == "#comment")
  	     continue;
@@ -52,9 +52,11 @@ class xmlconvert {
  	   else {
  	     $i = strpos($node->nodeName, ":");
  	     $nodename = ($i ? substr($node->nodeName, $i+1) : $node->nodeName);
- 	     if ($node->namespaceURI)
+       if ($force_NS)
+ 	       $help->_namespace = $force_NS;
+ 	     elseif ($node->namespaceURI)
  	       $help->_namespace = $node->namespaceURI;
- 	     $help->_value = $this->xml2obj($node);
+ 	     $help->_value = $this->xml2obj($node, $force_NS);
  	     if ($node->hasAttributes())
  	       foreach ($node->attributes as $attr) {
  	         $i = strpos($attr->nodeName, ":");
