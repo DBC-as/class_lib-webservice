@@ -76,6 +76,8 @@ class restconvert {
 	}
 
 	function rest_tag_me($tag, $val) {
+    if (empty($val)) return;
+
     if ($i = strrpos($tag, "."))
       $tag = substr($tag, $i+1);
 	  return "<$tag>$val</$tag>";
