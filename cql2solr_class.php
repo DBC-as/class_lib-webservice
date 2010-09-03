@@ -213,9 +213,10 @@ function build_tree($tl) {
   * @param boosts boost registers and values
   */
   private function make_boost($boosts) {
-    foreach ($boosts as $idx => $val)
-      if ($idx && $val)
-        $ret .= ($ret ? " " : "") . $idx . "^" . $val;
+    if (is_array($boosts))
+      foreach ($boosts as $idx => $val)
+        if ($idx && $val)
+          $ret .= ($ret ? " " : "") . $idx . "^" . $val;
     return $ret;
   }
 }
