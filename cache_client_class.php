@@ -40,7 +40,8 @@ class cache
   public static function set($key,$data)
   {   
     if( self::client() )
-       self::client()->set($key, $data, false, 600);
+	return self::client()->set($key, $data, false, 600);
+
      return false;
   }
 
