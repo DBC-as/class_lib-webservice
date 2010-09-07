@@ -80,15 +80,29 @@ class z3950 {
       return FALSE;
   }
 
-	/** \brief do a z3950 xml_update using extend service
+	/** \brief do a z3950 xml_itemorder using extend service
  	*
  	*/
 	public function z3950_xml_itemorder(&$xml, $wait_seconds = 15) {
+    return $this->z3950_es($xml, "itemorder", $wait_seconds);
+  }
+
+	/** \brief do a z3950 xml_update using extend service
+ 	*
+ 	*/
+	public function z3950_xml_update(&$xml, $wait_seconds = 15) {
+    return $this->z3950_es($xml, "xmlupdate", $wait_seconds);
+  }
+
+	/** \brief do a z3950 xml_update using extend service
+ 	*
+ 	*/
+	private function z3950_es(&$xml, $op, $wait_seconds = 15) {
     if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
       if ($this->database)
         yaz_database($this->z_id, $this->database);
       $args = array("doc" => $xml, "itemorder-setname" => "", "syntax" => "xml");
-      yaz_es($this->z_id, "itemorder", $args);
+      yaz_es($this->z_id, $op, $args);
       $wait = array("timeout" => $wait_seconds);
       yaz_wait($this->z_id, $wait);
       $this->set_error($this->z_id);
