@@ -349,22 +349,20 @@ abstract class webServiceServer {
         $reqs = array();
         while (($file = readdir($dh)) !== false) {
           if (!is_dir($file)) {
-            if (preg_match('/html$/',$file,$matches)) {
-              $info = file_get_contents($file);
-              $found_files=1;
-            }
-            if (preg_match('/xml$/',$file,$matches)) {
-              $found_files=1;
-              $contents = str_replace("\r\n", PHP_EOL, file_get_contents($file));
-              $contents=addcslashes(str_replace("\n",'\n',$contents), '"');
-              $reqs[]=$contents;
-              $names[]=$file;
-            }
+            if (preg_match('/html$/',$file,$matches)) $info = file_get_contents($file);
+            if (preg_match('/xml$/',$file,$matches)) $fnames[] = $file;
           }
         }
         closedir($dh);
+        asort($fnames);
 
-        if ($found_files) {
+        if ($info || count($fnames)) {
+          foreach ($fnames as $fname) {
+            $contents = str_replace("\r\n", PHP_EOL, file_get_contents($fname));
+            $contents=addcslashes(str_replace("\n",'\n',$contents), '"');
+            $reqs[]=$contents;
+            $names[]=$fname;
+          }
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
           echo '</head><body><form target="_blank" name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
