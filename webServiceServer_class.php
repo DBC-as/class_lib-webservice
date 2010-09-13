@@ -204,7 +204,7 @@ abstract class webServiceServer {
   /** \brief 
   *  Return TRUE if the IP is in_house_domain
   */
-  private function in_house() {
+  protected function in_house() {
     static $homie;
     if (!isset($homie)) {
       if (!$domain = $this->config->get_value('in_house_domain', "setup"))
