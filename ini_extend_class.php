@@ -61,9 +61,6 @@ class ini_extend extends inifile
 
   private function cache_get()
   {
-    var_dump($this->cache);
-    exit;
-
     if( $ret = $this->cache->get( $this->cache_key()) )
       return $ret;
 
