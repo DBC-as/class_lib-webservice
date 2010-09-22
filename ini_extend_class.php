@@ -52,7 +52,7 @@ class ini_extend extends inifile
     else
       $this->cache=null;
     
-       $this->import();
+    $this->import();
        //  foreach( $this->ini_files as $key=>$val )
 	     //      echo $key."\n";
        // print_r($this->ini_files);
@@ -61,6 +61,9 @@ class ini_extend extends inifile
 
   private function cache_get()
   {
+    var_dump($this->cache);
+    exit;
+
     if( $ret = $this->cache->get( $this->cache_key()) )
       return $ret;
 
@@ -85,9 +88,6 @@ class ini_extend extends inifile
       {
 	reset($this->ini_files);
 	$inifile = key($this->ini_files);
-
-	//	echo "INIFILE: ".$inifile."\n";
-		//exit;
       }
 
     return $this->ini_files[$inifile]->get_section($section,$inifile);
@@ -100,7 +100,6 @@ class ini_extend extends inifile
 	reset($this->ini_files);
 	$inifile = key($this->ini_files);
       }
-    
   
     return $this->ini_files[$inifile]->get_value($section,$value);
   }
@@ -147,7 +146,7 @@ class ini_extend extends inifile
 	  if( !$file = $this->cache_get() )
 	    {
 	      $file = $this->get_xml($key,key($imp));
-	      $this->cache_set($file);	    
+	      $this->cache_set($file); 
 	    }
 	  
 	  $ini = new inifile($file);
