@@ -84,6 +84,7 @@ class ini_extend extends inifile
 
   public function get_section( $section,$inifile=NULL ) 
   {
+ 
     if( !$inifile )
       {
 	reset($this->ini_files);
