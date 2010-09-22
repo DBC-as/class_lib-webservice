@@ -146,6 +146,8 @@ class ini_extend extends inifile
 	      $file = $this->get_xml($key,key($imp));
 	      $this->cache_set($file); 
 	    }
+	  else
+	    die("YES");
 	  
 	  $ini = new inifile($file);
 	  $this->ini_files[$imp[key($imp)][0]]=$ini;
