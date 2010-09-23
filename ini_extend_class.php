@@ -32,16 +32,19 @@ class ini_extend extends inifile
   private $use_cache;
   private $cache;
   private $ini_files = array();
+  
+  private $cache_name;
+  private $mother;
 
   const ws_file="http://vision.dbc.dk/~pjo/OpenLibrary/OpenFile/trunk/server.php/?";
 
-  public function __construct($inifile, $use_cache=true)
+  public function __construct($inifile, $use_cache=false)
   {
-    //$this->ini_files[$inifile] = new inifile($inifile);
     parent::__construct($inifile);
     
-    $this->ini_files[$inifile] = parent::_clone();
-   
+    // hold the original ini-file
+    $this->ini_files[trim($inifile)] = parent::_clone();
+ 
     if( $use_cache )
       {
 	$this->cache=new cache($this->get_value("cache_host", "setup"),
@@ -49,57 +52,73 @@ class ini_extend extends inifile
 			       $this->get_value("cache_expire", "setup"));
 
       }
-    else
-      $this->cache=null;
+    else // an empty object is needed.
+      $this->cache=new cache(" ");
     
-    $this->import();
-       //  foreach( $this->ini_files as $key=>$val )
-	     //      echo $key."\n";
-       // print_r($this->ini_files);
+    // print_r($this->ini_files);
 
+    $this->import(); 
   }
 
+  //mini wrappers for memcache_class. 
   private function cache_get()
   {
-    if( $ret = $this->cache->get( $this->cache_key()) )
-      return $ret;
-
-    return false;
+    return $this->cache->get($this->cache_key());
   }
 
   private function cache_set($value)
   {
-    if( $this->cache->set($this->cache_key(),$value) )
-      return true;
-
-    return false;	
+    return $this->cache->set($this->cache_key(),$value);
   }
 
-  /***** overwritten methods from parent_class (inifile_class) *********/
+   // cache key for this class
+  private function cache_key()
+  {
+    $key = "ini_";
+    $key .= "_";
+    $key .= $this->cache_name;
+
+    return $key;
+  }
+
+  /***** overwritten methods; get_section & get_value from parent_class (inifile_class) *********/
 
   // TODO error-check
 
   public function get_section( $section,$inifile=NULL ) 
   {
- 
+    // TODO fixme. This is not a good solution.    
     if( !$inifile )
       {
+	//look in first ini-file 
 	reset($this->ini_files);
 	$inifile = key($this->ini_files);
       }
+    
+    // look in mother ini-file
+    if( !$ret =$this->ini_files[$inifile]->get_section($section) )
+      if( $this->mother )
+	$ret = $this->ini_files[$this->mother]->get_section($section); 
 
-    return $this->ini_files[$inifile]->get_section($section,$inifile);
+    return $ret;
   }
 
-  public function get_value( $section, $value, $inifile=NULL )
+  public function get_value( $value, $section, $inifile=NULL )
   {
+    // TODO fixme. This is not a good solution.
     if( !$inifile )
       {
+	//look in first ini-file 
 	reset($this->ini_files);
 	$inifile = key($this->ini_files);
       }
-  
-    return $this->ini_files[$inifile]->get_value($section,$value);
+
+    // look in mother ini-file
+    if( !$ret = $this->ini_files[$inifile]->get_value($value,$section) )
+      if( $this->mother )
+	$ret = $this->ini_files[$this->mother]->get_value($value,$section);
+
+    return $ret;
   }
 
 
@@ -109,82 +128,44 @@ class ini_extend extends inifile
   public function dump($inifile=NULL)
   {
     if( !$inifile )
-      {
-	 reset($this->ini_files);
-	 $inifile =  key($this->ini_files);
+      {	
+	//look in first ini-file 
+	reset($this->ini_files);
+	$inifile = key($this->ini_files);
       }
 
-     print_r($this->ini_files[$inifile]->get());
-  }
-  /**
-     get or set the use_cache variable
-   */
-  public function use_cache($set = null)
-  {
-    if( !$set )
-      return $this->use_cache;
-    else
-      $this->use_cache = $set;    
+    // look in mother ini-file
+    if( !$ret = $this->ini_files[$inifile]->get() )
+      if( $this->mother )
+	$ret = $this->ini_files[$this->mother]->get();
+
+    print_r($ret);
   }
   
-  public function import()
+  
+  private function import()
   {
     // TODO error-check
     $import =  $this->get_section("import");
-    /*foreach( $import as $key=>$imp )
-	{
-     $file = $this->get_xml($key,key($imp));
-     $ini = new inifile($file);
-     $this->ini_files[$imp[key($imp)][0]]=$ini;
-     }*/
-     if( isset($import) )
+
+    if( isset($import) )
       foreach( $import as $key=>$imp )
 	{	
+	  // if mother ini-file is not yet set; set it as the first imported ini-file
+	  if( !$this->mother )
+	    $this->mother = $key;
+
+	  // set cache_name for get and set
 	  $this->cache_name = $key.key($imp);
 	  if( !$file = $this->cache_get() )
 	    {
 	      $file = $this->get_xml($key,key($imp));
 	      $this->cache_set($file); 
 	    }
-	  else
-	    die("YES");
 	  
 	  $ini = new inifile($file);
 	  $this->ini_files[$imp[key($imp)][0]]=$ini;
-	  }
-  }
-
-  private function r_implode( $glue, $pieces )
-  {
-    foreach( $pieces as $r_pieces )
-      {
-	if( is_array( $r_pieces ) )
-	  {
-	    $retVal[] = $this->r_implode( $glue, $r_pieces );
-	  }
-	else
-	  {
-	    $retVal[] = $r_pieces;
-	  }
-      }
-    return implode( $glue, $retVal );
-  } 
-
-  // cache key for this class
-  private function cache_key($inifile=NULL)
-  {
-    $key = "ini_";
-
-    $key .= $this->get_value("wsdl","setup",$inifile);
-    $key .= "_";
-    $key .= $this->get_value("version","setup",$inifile); 
-
-    return $key;
-  }
-
-  private function cache()
-  {
-    // TODO implement
+	}
   }
 
   /**
@@ -198,25 +179,23 @@ class ini_extend extends inifile
   
     $curl = new curl();
     $curl->set_url($url);
-
     $xml = $curl->get();
     
     $ret = $this->file_contents($xml);
-    
     return $ret;       
   }
 
   private function file_contents($xml)
   {
     // TODO error-check
-    //   echo $xml;
-    //exit;
+
     $dom = new DOMDocument();
     $dom->loadXML($xml);
+
     $xpath = new DOMXPath($dom);
     $query = "//types:content";
+
     $nodelist = $xpath->query($query);
-    
     return $nodelist->item(0)->nodeValue;
   }
 }
