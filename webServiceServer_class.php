@@ -98,7 +98,9 @@ abstract class webServiceServer {
       $this->soap_request($xml);                    
     } elseif (!empty($_SERVER['QUERY_STRING']) ) {
       $this->rest_request();    
-    } elseif ($this->in_house() || $this->config->get_value("show_samples", "setup")) {
+    } elseif ($this->in_house() 
+      || $this->config->get_value("show_samples", "setup")
+      || ip_func::ip_in_interval($_SERVER["REMOTE_ADDR"], $this->config->get_value("show_samples_ip_list", "setup"))) {
 			$this->create_sample_forms();
     } else {
       header("HTTP/1.0 404 Not Found");
