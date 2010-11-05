@@ -25,6 +25,7 @@
 
 require_once("verbose_class.php");
 require_once("oci_class.php");
+require_once("memcache_class.php");
 
 
 define("ascii_US", "\037");   // unit seperator
@@ -46,18 +47,25 @@ class bibdk_info {
 
   private $oci;
   private $error;
-
+  private static $memcache;
 
 /** \brief __construct
 *
 * Constructor - sætter oci credentials op
 * 
 */
-  public function __construct($oci_credentials) {
+  public function __construct($oci_credentials,$cache_settings=null) {
     $this->oci = new Oci($oci_credentials);
     $this->oci->set_charset("UTF8");
     $this->oci->connect();
     $this->error = $this->oci->get_error_string();
+
+    if( isset($cache_settings) && !is_object($this->memcache) )
+      {
+	$this->memcache = new cache($cache_settings['host'],$cache_settings['port'],$cache_settings['expire']);
+	if( !$this->memcache->check() )
+	  $this->memcache=null;	
+      }
   }
 
 
@@ -73,6 +81,14 @@ class bibdk_info {
   public function get_bib_info($bibno) {
     if ($this->error) return null;
     if (empty($bibno)) return null;
+
+    if( isset($this->memcache) )
+      {
+	$cachekey = "bibdk_info_".$bibno;
+	if( $ret = $this->memcache->get($cachekey) )
+	  return $ret;
+      }
+
     $this->oci->bind("bind_bibno", &$bibno);
     $this->oci->set_query(
       "SELECT *
@@ -84,7 +100,12 @@ class bibdk_info {
           AND vip.bib_nr = vip_txt.bib_nr(+)");
     $buf = $this->oci->fetch_into_assoc();
     if (empty($buf)) return null;
-    return array_change_key_case($buf, CASE_LOWER);
+    $ret = array_change_key_case($buf, CASE_LOWER);
+    
+    if( isset($this->memcache) )
+      $this->memcache->set($cachekey,$ret);
+
+    return $ret;
   }
   
   
