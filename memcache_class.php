@@ -91,6 +91,11 @@ class cache
       return $this->memcache->flush();
     return FALSE;
   } 
+
+  public function check()
+  {
+    return isset($this->memcache);
+  }
 }
 
 
