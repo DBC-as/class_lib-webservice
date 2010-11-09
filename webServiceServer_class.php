@@ -81,6 +81,8 @@ abstract class webServiceServer {
     }
 	}
 
+  public function __destruct() { }
+
   /** \brief Handles request from webservice client
   *
   */
