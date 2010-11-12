@@ -68,6 +68,9 @@ require_once("IDatabase_class.php");
 */
 class pg_database extends fet_database
 {
+
+private $query_name;
+
   public function __construct($connectionstring)
   {
     $part=explode(" ",$connectionstring);
@@ -97,6 +100,9 @@ class pg_database extends fet_database
       $ret.=" user=".$this->username;
     if( $this->password )
       $ret.=" password=".$this->password;
+
+    // set connection timeout
+    $ret.=" connect_timeout=5";
     return $ret;
   }
 
@@ -115,14 +121,28 @@ class pg_database extends fet_database
     if( $this->offset>-1 && $this->limit )
       $this->query.=' LIMIT '.$this->limit.' OFFSET '.$this->offset;	
     
-    //    echo $this->query."\n";
     try{$this->_execute();}
     catch(Exception $e)
-      {	die( $e->__toString() );}
+      {	
+throw new fetException($e->__toString());
+}
   }
+
+private function _queryname()
+{
+return "testhest";
+//echo $this->query;
+$name = str_replace(' ','_',$this->query);
+$name = str_replace(',','_',$name);
+$name = str_replace('(','_',$name);
+$name = str_replace(')','_',$name);
+return $name;	
+}
   
-  private function _execute()
+  private function _execute($statement_key=null)
   {
+
+
        // use transaction if set
     if( $this->transaction )
       @pg_query($this->connection,"START TRANSACTION");
@@ -130,12 +150,16 @@ class pg_database extends fet_database
     // check for bind-variables
     if( !empty($this->bind_list) )
       {
-	if( @pg_prepare($this->connection,"my_query",$this->query)===false)
+
+      $this->query_name = $this->_queryname();
+//if( @pg_prepare($this->connection,"my_query",$this->query)===false)
+	// use sql as statement-name
+	if( @pg_prepare($this->connection,$this->query_name,$this->query)===false)
 	  {
 	    $message=pg_last_error();
 	    if( $this->transaction )
 	      @pg_query($this->connection,"ROLLBACK");
-	    @pg_query($this->connection,"DEALLOCATE my_query");
+	    @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
 
 	    throw new fetException($message);
 	  }
@@ -144,12 +168,12 @@ class pg_database extends fet_database
 	foreach( $this->bind_list as $binds)
 	  array_push($bind,$binds["value"]);
       
-	if( ($this->result=@pg_execute($this->connection,"my_query",$bind))===false)
+	if( ($this->result=@pg_execute($this->connection,$this->query_name,$bind))===false)
 	  {
 	    $message=pg_last_error();
 	    if( $this->transaction )
 	      @pg_query($this->connection,"ROLLBACK");
-	    @pg_query($this->connection,"DEALLOCATE my_query");
+	    @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
 	    throw new fetException($message);
 	  }
       }
@@ -200,7 +224,7 @@ class pg_database extends fet_database
 
   public function close()
   {  
-    @pg_query($this->connection,"DEALLOCATE my_query");
+    @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
     if( $this->connection )
       pg_close($this->connection);
 
