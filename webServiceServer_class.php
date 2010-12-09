@@ -358,9 +358,9 @@ abstract class webServiceServer {
           }
         }
         closedir($dh);
-        asort($fnames);
 
         if ($info || count($fnames)) {
+          asort($fnames);
           foreach ($fnames as $fname) {
             $contents = str_replace("\r\n", PHP_EOL, file_get_contents($fname));
             $contents=addcslashes(str_replace("\n",'\n',$contents), '"');
