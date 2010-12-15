@@ -25,28 +25,28 @@
  *
  */
 
-require_once("OLS_class_lib/curl_class.php");
-require_once("OLS_class_lib/verbose_class.php");
-require_once("OLS_class_lib/inifile_class.php");
-require_once("OLS_class_lib/timer_class.php");
-require_once("OLS_class_lib/aaa_class.php");
-require_once("OLS_class_lib/restconvert_class.php");
-require_once("OLS_class_lib/xmlconvert_class.php");
-require_once("OLS_class_lib/objconvert_class.php");
+require_once('OLS_class_lib/curl_class.php');
+require_once('OLS_class_lib/verbose_class.php');
+require_once('OLS_class_lib/inifile_class.php');
+require_once('OLS_class_lib/timer_class.php');
+require_once('OLS_class_lib/aaa_class.php');
+require_once('OLS_class_lib/restconvert_class.php');
+require_once('OLS_class_lib/xmlconvert_class.php');
+require_once('OLS_class_lib/objconvert_class.php');
 
 abstract class webServiceServer {
 
   protected $config; // inifile object
   protected $watch; // timer object
   protected $aaa; // Authentication, Access control and Accounting object
-	protected $xmldir="./"; // xml directory
+	protected $xmldir='./'; // xml directory
 	protected $validate= array(); // xml validate schemas
   protected $objconvert; // OLS object to xml convert
   protected $xmlconvert; // xml to OLS object convert
   protected $xmlns; // namespaces and prefixes 
   protected $tag_sequence; // tag sequence according to XSD or noame of XSD
   protected $soap_action; 
-  protected $output_type=""; 
+  protected $output_type=''; 
 
 
 	/** \brief Webservice constructer
@@ -59,12 +59,12 @@ abstract class webServiceServer {
     $this->config = new inifile($inifile); 
                                            
     if ($this->config->error) {                                    
-        die("Error: ".$this->config->error );
+        die('Error: '.$this->config->error );
       }                                                                
 
-    verbose::open($this->config->get_value("logfile", "setup"),
-                  $this->config->get_value("verbose", "setup"));    
-    $this->watch = new stopwatch("", " ", "", "%s:%01.3f");
+    verbose::open($this->config->get_value('logfile', 'setup'),
+                  $this->config->get_value('verbose', 'setup'));    
+    $this->watch = new stopwatch('', ' ', '', '%s:%01.3f');
 
 		if ($this->config->get_value('xmldir')) 
 			$this->xmldir=$this->config->get_value('xmldir');
@@ -73,11 +73,11 @@ abstract class webServiceServer {
     $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
    
-    if ($aaa_oci = $this->config->get_value("aaa_credentials", "aaa")) {
+    if ($aaa_oci = $this->config->get_value('aaa_credentials', 'aaa')) {
       $this->aaa = new aaa($aaa_oci,
-                           $this->config->get_value("aaa_cache_address", "aaa"),
-                           $this->config->get_value("aaa_cache_seconds", "aaa"),
-                           $this->config->get_value("aaa_ip_rights", "aaa"));
+                           $this->config->get_value('aaa_cache_address', 'aaa'),
+                           $this->config->get_value('aaa_cache_seconds', 'aaa'),
+                           $this->config->get_value('aaa_ip_rights', 'aaa'));
     }
 	}
 
@@ -87,25 +87,25 @@ abstract class webServiceServer {
   *
   */
 	public function handle_request() {
-	  if ($_SERVER["QUERY_STRING"] == "ShowInfo")
+	  if ($_SERVER['QUERY_STRING'] == 'ShowInfo')
       $this->ShowInfo();
-	  if ($_SERVER["QUERY_STRING"] == "Version") {
+	  if ($_SERVER['QUERY_STRING'] == 'Version') {
       die($this->version);
-	  } elseif ($_SERVER["QUERY_STRING"] == "HowRU") {
+	  } elseif ($_SERVER['QUERY_STRING'] == 'HowRU') {
      	$this->HowRU();          
-    } elseif (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
-      $this->soap_request($GLOBALS["HTTP_RAW_POST_DATA"]);                    
+    } elseif (isset($GLOBALS['HTTP_RAW_POST_DATA'])) {
+      $this->soap_request($GLOBALS['HTTP_RAW_POST_DATA']);                    
     } elseif (isset($_POST['xml'])) {
 			$xml=trim(stripslashes($_POST['xml']));
       $this->soap_request($xml);                    
     } elseif (!empty($_SERVER['QUERY_STRING']) ) {
       $this->rest_request();    
     } elseif ($this->in_house() 
-      || $this->config->get_value("show_samples", "setup")
-      || ip_func::ip_in_interval($_SERVER["REMOTE_ADDR"], $this->config->get_value("show_samples_ip_list", "setup"))) {
+      || $this->config->get_value('show_samples', 'setup')
+      || ip_func::ip_in_interval($_SERVER['REMOTE_ADDR'], $this->config->get_value('show_samples_ip_list', 'setup'))) {
 			$this->create_sample_forms();
     } else {
-      header("HTTP/1.0 404 Not Found");
+      header('HTTP/1.0 404 Not Found');
     }
 	}
 
@@ -114,13 +114,13 @@ abstract class webServiceServer {
   * @param xml <string>
   */
 	private function soap_request($xml) {
-    // Debug $this->verbose->log(TRACE, "Request " . $xml);
+    // Debug $this->verbose->log(TRACE, 'Request ' . $xml);
 
     // validate request
     $this->validate = $this->config->get_value('validate');
 
-		if ($this->validate["soap_request"] || $this->validate["request"])
-      $error = ! $this->validate_soap($xml, $this->validate, "request");
+		if ($this->validate['soap_request'] || $this->validate['request'])
+      $error = ! $this->validate_soap($xml, $this->validate, 'request');
 
 		if (empty($error)) {
       // parse to object
@@ -138,9 +138,9 @@ abstract class webServiceServer {
       // handle request
 			if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
         // validate response
-		    if ($this->validate["soap_response"] || $this->validate["response"]) {
+		    if ($this->validate['soap_response'] || $this->validate['response']) {
 			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
-          $error = ! $this->validate_soap($response_xml, $this->validate, "response");
+          $error = ! $this->validate_soap($response_xml, $this->validate, 'response');
         }
 
 		    if (empty($error)) {
@@ -149,38 +149,38 @@ abstract class webServiceServer {
           if (empty($this->output_type) || $req->_value->outputType->_value)
             $this->output_type = $req->_value->outputType->_value;
           switch ($this->output_type) {
-            case "json":
-              header("Content-Type: application/json");
+            case 'json':
+              header('Content-Type: application/json');
               $callback = &$req->_value->callback->_value;
               if ($callback && preg_match("/^\w+$/", $callback))
 			          echo $callback . ' && ' . $callback . '(' . $this->objconvert->obj2json($response_xmlobj) . ')';
               else
 			          echo $this->objconvert->obj2json($response_xmlobj);
               break;
-            case "php":
-              header("Content-Type: application/php");
+            case 'php':
+              header('Content-Type: application/php');
 			        echo $this->objconvert->obj2phps($response_xmlobj);
               break;
-            case "xml":
-              header("Content-Type: text/xml");
+            case 'xml':
+              header('Content-Type: text/xml');
 			        echo $this->objconvert->obj2xmlNS($response_xmlobj);
               break;
             default: 
               if (empty($response_xml))
 			          $response_xml =  $this->objconvert->obj2soap($response_xmlobj);
-              header("Content-Type: text/xml");
+              header('Content-Type: text/xml');
 			        echo $response_xml;
           }
         // request done and response send, dump timer 
-          if ($dump_timer = $this->config->get_value('dump_timer', "setup"))
+          if ($dump_timer = $this->config->get_value('dump_timer', 'setup'))
             verbose::log(TIMER, sprintf($dump_timer, $this->soap_action) . 
-                                ":: " . $this->watch->dump());
+                                ':: ' . $this->watch->dump());
 			  } else
-				  $this->soap_error("Error in response validation.");
+				  $this->soap_error('Error in response validation.');
 			} else
-				$this->soap_error("Incorrect SOAP envelope or wrong/unsupported request");
+				$this->soap_error('Incorrect SOAP envelope or wrong/unsupported request');
 		} else
-			$this->soap_error("Error in request validation.");
+			$this->soap_error('Error in request validation.');
 	}
 
 	/** \brief Handles rest request, converts it to xml and calls soap_request()
@@ -190,7 +190,7 @@ abstract class webServiceServer {
   */
 	private function rest_request() {
 			// convert to soap
-      $xmlns = ($this->xmlns["NONE"] ? $this->xmlns["NONE"] : $this->xmlns["0"]);
+      $xmlns = ($this->xmlns['NONE'] ? $this->xmlns['NONE'] : $this->xmlns['0']);
 			$rest = new restconvert($xmlns);
 			$xml=$rest->rest2soap(&$this->config);
 			$this->soap_request($xml);
@@ -200,7 +200,7 @@ abstract class webServiceServer {
   * 
   */
 	private function ShowInfo() {
-    $show_func = "show_info";
+    $show_func = 'show_info';
     if (method_exists($this, $show_func) && $this->in_house())
       $this->$show_func();
   }
@@ -211,12 +211,12 @@ abstract class webServiceServer {
   protected function in_house() {
     static $homie;
     if (!isset($homie)) {
-      if (!$domain = $this->config->get_value('in_house_domain', "setup"))
-        $domain = ".dbc.dk";
-      @ $remote = gethostbyaddr($_SERVER["REMOTE_ADDR"]);
+      if (!$domain = $this->config->get_value('in_house_domain', 'setup'))
+        $domain = '.dbc.dk';
+      @ $remote = gethostbyaddr($_SERVER['REMOTE_ADDR']);
       $homie = (strpos($remote, $domain) + strlen($domain) == strlen($remote));
       if ($homie)
-        $homie = (gethostbyname($remote) == $_SERVER["REMOTE_ADDR"]); // paranoia check
+        $homie = (gethostbyname($remote) == $_SERVER['REMOTE_ADDR']); // paranoia check
     }
     return $homie;
   }
@@ -227,20 +227,20 @@ abstract class webServiceServer {
 	private function HowRU() {
 		$curl = new curl();
 		$curl->set_option(CURLOPT_POST, 1);
-    $tests = $this->config->get_value('test', "howru");
+    $tests = $this->config->get_value('test', 'howru');
     if ($tests) {
-      $reg_match = $this->config->get_value('preg_match', "howru");
-      $reg_error = $this->config->get_value('error', "howru");
-      $url = $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"];
+      $reg_match = $this->config->get_value('preg_match', 'howru');
+      $reg_error = $this->config->get_value('error', 'howru');
+      $url = $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 		  foreach ($tests as $k=>$v) {
-			  $reply=$curl->get($url."?action=".$v);
+			  $reply=$curl->get($url.'?action='.$v);
 			  $preg_match=$reg_match[$k];
 			  if (!preg_match("/$preg_match/",$reply))
 				  die($reg_error[$k]);
 		  }
 		  $curl->close();
 		}
-    die("Gr8");
+    die('Gr8');
 	}
 
   /** \brief Validates soap and xml
@@ -255,12 +255,12 @@ abstract class webServiceServer {
 		$validate_soap = new DomDocument;
 		$validate_soap->preserveWhiteSpace = FALSE;
     @ $validate_soap->loadXml($soap);
-    if (($sc = $schemas["soap_".$validate_schema]) && ! @ $validate_soap->schemaValidate($sc))
+    if (($sc = $schemas['soap_'.$validate_schema]) && ! @ $validate_soap->schemaValidate($sc))
       return FALSE;
 
     if ($sc = $schemas[$validate_schema]) {
-      if ($validate_soap->firstChild->localName == "Envelope"
-        && $validate_soap->firstChild->firstChild->localName == "Body") {
+      if ($validate_soap->firstChild->localName == 'Envelope'
+        && $validate_soap->firstChild->firstChild->localName == 'Body') {
         $xml = &$validate_soap->firstChild->firstChild->firstChild;
         $validate_xml = new DOMdocument;
         @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
@@ -318,7 +318,7 @@ abstract class webServiceServer {
   */
   private function call_xmlobj_function($xmlobj) {
     if ($xmlobj) {
-      $soapActions = $this->config->get_value("soapAction", "setup");
+      $soapActions = $this->config->get_value('soapAction', 'setup');
       $request=key($xmlobj);
       if ($this->soap_action = array_search($request, $soapActions)) {
         $params=$xmlobj->$request->_value;
@@ -328,7 +328,7 @@ abstract class webServiceServer {
             $this->aaa->init_rights($auth->userIdAut->_value,
                                     $auth->groupIdAut->_value,
                                     $auth->passwordAut->_value,
-                                    $_SERVER["REMOTE_ADDR"]);
+                                    $_SERVER['REMOTE_ADDR']);
           }
           return $this->{$this->soap_action}($params);
         }
@@ -344,12 +344,12 @@ abstract class webServiceServer {
   */
 
 	private function create_sample_forms() {
-    echo "<html><head>";
+    echo '<html><head>';
 
     // Open a known directory, and proceed to read its contents
-    if (is_dir($this->xmldir."/request")) {
-      if ($dh = opendir($this->xmldir."/request")) {
-        chdir($this->xmldir."/request");
+    if (is_dir($this->xmldir.'/request')) {
+      if ($dh = opendir($this->xmldir.'/request')) {
+        chdir($this->xmldir.'/request');
         $reqs = array();
         while (($file = readdir($dh)) !== false) {
           if (!is_dir($file)) {
@@ -370,7 +370,7 @@ abstract class webServiceServer {
 
           echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
           echo '</head><body><form target="_blank" name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
-          echo $_REQUEST["xml"];
+          echo $_REQUEST['xml'];
           echo '</textarea><br><br>';
           echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
           echo '<option>Pick a test-request</option>';
@@ -380,12 +380,12 @@ abstract class webServiceServer {
           echo '</form>';
           echo $info;
         } else {
-          echo "</head><body>No example xml files found...";
+          echo '</head><body>No example xml files found...';
         }
         echo '<p style="font-size:0.6em">Version: ' . $this->version . '</p>';
       }
     }
-    echo "</body></html>";
+    echo '</body></html>';
   }
 
 }
