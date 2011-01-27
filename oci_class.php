@@ -387,7 +387,7 @@ class oci {
       $success  = @ociexecute($this->statement, OCI_DEFAULT);
     if ( ! $success ) {
       $this->set_OCI_error(oci_error($this->statement));
-      $this->oci_log(ERROR, 'ociexecute:: failed on ' . $this->query . ' binding ' . $v['name'] . ' to ' . $v['value'] . 'type: '. $v['type'] . ' with error: ' . $this->get_error_string());
+      $this->oci_log(ERROR, 'ociexecute:: failed on ' . $this->query . ' with error: ' . $this->get_error_string());
       throw new ociException($this->error);
     }
     $this->num_rows=oci_num_rows($this->statement);
