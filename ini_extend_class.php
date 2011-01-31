@@ -35,8 +35,9 @@ class ini_extend extends inifile
   
   private $cache_name;
   private $mother;
+  public $error;
 
-  const ws_file="http://vision.dbc.dk/~pjo/OpenLibrary/OpenFile/trunk/server.php/?";
+  const ws_file="http://metode.dbc.dk/~pjo/OpenLibrary/OpenFile/trunk/server.php/?";
 
   public function __construct($inifile, $use_cache=false)
   {
@@ -56,7 +57,8 @@ class ini_extend extends inifile
       $this->cache=new cache(" ");
     
     // print_r($this->ini_files);
-
+    //exit;
+    libxml_use_internal_errors(true);
     $this->import(); 
   }
 
@@ -145,7 +147,6 @@ class ini_extend extends inifile
   
   private function import()
   {
-    // TODO error-check
     $import =  $this->get_section("import");
 
     if( isset($import) )
@@ -160,10 +161,20 @@ class ini_extend extends inifile
 	  if( !$file = $this->cache_get() )
 	    {
 	      $file = $this->get_xml($key,key($imp));
+
+	      // error check
+	      if( $this->error )
+		return;
+
 	      $this->cache_set($file); 
 	    }
 	  
 	  $ini = new inifile($file);
+
+	  // Error check
+	  if( $ini->error )
+	    $this->error = $ini->error;
+
 	  $this->ini_files[$imp[key($imp)][0]]=$ini;
 	}
   }
@@ -173,30 +184,69 @@ class ini_extend extends inifile
    **/
   private function get_xml($filename,$version,$filepath=null)
   {
-    // TODO error-check
-
     $url = self::ws_file."action=getFile&fileName=$filename&version=$version&fileType=ini&filePath=files/";
   
     $curl = new curl();
     $curl->set_url($url);
     $xml = $curl->get();
     
+    $this->check_curl($curl);
+    //error check
+    if( $this->error )
+      return;
+
     $ret = $this->file_contents($xml);
     return $ret;       
   }
 
   private function file_contents($xml)
   {
-    // TODO error-check
-
     $dom = new DOMDocument();
     $dom->loadXML($xml);
 
-    $xpath = new DOMXPath($dom);
-    $query = "//types:content";
+    $this->check_lib_xml();
 
+    // error check
+    if( $this->error )
+      return;
+    
+    $xpath = new DOMXPath($dom);
+    $this->check_file_response($xpath); 
+
+    // error check
+    if( $this->error )
+      return;
+      
+    $query = "//types:content";
     $nodelist = $xpath->query($query);
     return $nodelist->item(0)->nodeValue;
+  }
+
+  private function check_lib_xml()
+  {
+    // error check
+    if ($errors = libxml_get_errors())
+      {
+	foreach ($errors as $error) 
+	  $this->error .= "lib_xml: ".$error->message;
+	
+	libxml_clear_errors();
+      }    
+  }
+
+  private function check_curl($curl)
+  {
+    $status = $curl->get_status();
+    if( $status['http_code'] != 200 )
+      $this->error = "http_code: ".$status['http_code']."  from url :".$status['url']."\n";
+  }
+
+  private function check_file_response($xpath)
+  {
+     $query = "//error";
+     $nodes = $xpath->query($query);
+     if( $nodes->length > 0 )
+       $this->error = $nodes->item(0)->nodeValue;
   }
 }
 ?>
