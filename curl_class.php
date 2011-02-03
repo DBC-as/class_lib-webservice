@@ -250,22 +250,14 @@ class cURL {
     foreach ( $this->curl_handle as $key => $handle )
       curl_multi_add_handle($this->curl_multi_handle,$this->curl_handle[$key]);
 
-    $active = null;
     // execute the handles
     do {
-      $mrc = curl_multi_exec($this->curl_multi_handle, $active);
-    } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+      $status = curl_multi_exec($this->curl_multi_handle, $active);
+      if ($info = curl_multi_info_read($this->curl_multi_handle))
+        if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
+          $this->wait_for_connections--;
+    } while ($this->wait_for_connections && ($status === CURLM_CALL_MULTI_PERFORM || $active));
 
-    while ($this->wait_for_connections && $active && $mrc == CURLM_OK) {
-      if (curl_multi_select($this->curl_multi_handle) != -1) {
-        do {
-          $mrc = curl_multi_exec($this->curl_multi_handle, $active);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-        if ($info = curl_multi_info_read($this->curl_multi_handle))
-          if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
-            $this->wait_for_connections--;
-      }
-    }
 
     foreach ( $this->curl_handle as $key => $handle ) {
       $this->curl_status[$key]          = curl_getinfo($this->curl_handle[$key]) ;
