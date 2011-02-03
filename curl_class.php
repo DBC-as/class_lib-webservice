@@ -418,9 +418,8 @@ class cURL {
 
 
   /**
-   * Set timeout
-   * @param $seconds    - timeout ind seconds
-   * @param $handle_no  - Handle number. Default all handle numbers. (integer)
+   * Set number of connections to wait for
+   * @param $wait_for_connections    - max connections to wait for
    */
 
   public function set_wait_for_connections($wait_for_connections) {
