@@ -163,6 +163,7 @@ class cURL {
 
     $this->curl_options = null;
     $this->curl_status = null;
+    $this->wait_for_connections = PHP_INT_MAX;
 
     if ( !function_exists('curl_init') ) {
       if (method_exists('verbose','log'))
@@ -249,11 +250,22 @@ class cURL {
     foreach ( $this->curl_handle as $key => $handle )
       curl_multi_add_handle($this->curl_multi_handle,$this->curl_handle[$key]);
 
-    $running = null;
+    $active = null;
     // execute the handles
     do {
-        curl_multi_exec($this->curl_multi_handle,$running);
-    } while ( $running > 0 );
+      $mrc = curl_multi_exec($this->curl_multi_handle, $active);
+    } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+    while ($this->wait_for_connections && $active && $mrc == CURLM_OK) {
+      if (curl_multi_select($this->curl_multi_handle) != -1) {
+        do {
+          $mrc = curl_multi_exec($this->curl_multi_handle, $active);
+        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        $info = curl_multi_info_read($this->curl_multi_handle);
+        if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
+          $this->wait_for_connections--;
+      }
+    }
 
     foreach ( $this->curl_handle as $key => $handle ) {
       $this->curl_status[$key]          = curl_getinfo($this->curl_handle[$key]) ;
@@ -404,6 +416,17 @@ class cURL {
       return $this->set_option(CURLOPT_TIMEOUT, $seconds, $handle_no);
   }
 
+
+  /**
+   * Set timeout
+   * @param $seconds    - timeout ind seconds
+   * @param $handle_no  - Handle number. Default all handle numbers. (integer)
+   */
+
+  public function set_wait_for_connections($wait_for_connections) {
+      $this->wait_for_connections = $wait_for_connections;
+      return TRUE;
+  }
 
 
   /**
