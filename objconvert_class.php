@@ -247,6 +247,19 @@ class objconvert {
 		 return $this->namespaces;
 	}
 
+ /** \brief Set namespace on all object nodes
+ 	*/
+  public function set_obj_namespace($obj, $ns) {
+    if (is_scalar($obj))
+      return $obj;
+    foreach ($obj as $key => $val) {
+      $ret->$key = $this->set_obj_namespace($val, $ns);
+      if ($key == '_value')
+        $ret->_namespace = $ns;
+    }
+    return $ret;
+  }
+
  /** \brief produce balanced xml
  	*/
 	public function tag_me($tag, $attr, $val) {
