@@ -250,7 +250,7 @@ class objconvert {
  /** \brief Set namespace on all object nodes
  	*/
   public function set_obj_namespace($obj, $ns) {
-    if (is_scalar($obj))
+    if (empty($obj) || is_scalar($obj))
       return $obj;
     foreach ($obj as $key => $val) {
       $ret->$key = $this->set_obj_namespace($val, $ns);
