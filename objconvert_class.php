@@ -254,7 +254,7 @@ class objconvert {
       return $obj;
     foreach ($obj as $key => $val) {
       $ret->$key = $this->set_obj_namespace($val, $ns);
-      if ($key == '_value')
+      if ($key === '_value')
         $ret->_namespace = $ns;
     }
     return $ret;
