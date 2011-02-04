@@ -252,11 +252,15 @@ class objconvert {
   public function set_obj_namespace($obj, $ns) {
     if (empty($obj) || is_scalar($obj))
       return $obj;
-    foreach ($obj as $key => $val) {
-      $ret->$key = $this->set_obj_namespace($val, $ns);
-      if ($key === '_value')
-        $ret->_namespace = $ns;
-    }
+    if (is_array($obj))
+      foreach ($obj as $key => $val)
+        $ret[$key] = $this->set_obj_namespace($val, $ns);
+    else
+      foreach ($obj as $key => $val) {
+        $ret->$key = $this->set_obj_namespace($val, $ns);
+        if ($key === '_value')
+          $ret->_namespace = $ns;
+      }
     return $ret;
   }
 
