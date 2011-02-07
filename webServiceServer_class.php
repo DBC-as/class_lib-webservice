@@ -114,7 +114,7 @@ abstract class webServiceServer {
   * @param xml <string>
   */
 	private function soap_request($xml) {
-    // Debug $this->verbose->log(TRACE, 'Request ' . $xml);
+    // Debug verbose::log(TRACE, 'Request ' . $xml);
 
     // validate request
     $this->validate = $this->config->get_value('validate');
