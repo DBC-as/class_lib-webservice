@@ -96,7 +96,7 @@ abstract class webServiceServer {
     } elseif (isset($_POST['xml'])) {
 			$xml=trim(stripslashes($_POST['xml']));
       $this->soap_request($xml);                    
-    } elseif (isset($GLOBALS['HTTP_RAW_POST_DATA'])) {
+    } elseif (!empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
       $this->soap_request($GLOBALS['HTTP_RAW_POST_DATA']);                    
     } elseif (!empty($_SERVER['QUERY_STRING']) ) {
       $this->rest_request();    
