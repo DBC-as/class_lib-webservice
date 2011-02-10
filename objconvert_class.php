@@ -136,13 +136,13 @@ class objconvert {
 
  /** \brief Convert ols-object to soap
  	*/
-	public function obj2soap($obj) {
+	public function obj2soap($obj, $soap_ns = 'http://schemas.xmlsoap.org/soap/envelope/') {
     $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
     foreach ($this->namespaces as $ns => $prefix)
       if ($this->used_namespaces[$ns] || empty($prefix))
         $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
-    return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
+    return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="' . $soap_ns . '"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
   }
 
  /** \brief UTF-8 header 
