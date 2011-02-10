@@ -127,9 +127,10 @@ abstract class webServiceServer {
       $this->xmlconvert=new xmlconvert();
       $xmlobj=$this->xmlconvert->soap2obj($xml);
       // soap envelope?
-      if ($xmlobj->Envelope)
+      if ($xmlobj->Envelope) {
         $request_xmlobj = &$xmlobj->Envelope->_value->Body->_value;
-      else
+        $soap_namespace = $xmlobj->Envelope->_namespace;
+      } else
         $request_xmlobj = &$xmlobj;
 
       // initialize objconvert and load namespaces
@@ -139,7 +140,7 @@ abstract class webServiceServer {
 			if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
         // validate response
 		    if ($this->validate['soap_response'] || $this->validate['response']) {
-			    $response_xml=$this->objconvert->obj2soap($response_xmlobj);
+			    $response_xml=$this->objconvert->obj2soap($response_xmlobj, $soap_namespace);
           $error = ! $this->validate_soap($response_xml, $this->validate, 'response');
         }
 
@@ -167,8 +168,11 @@ abstract class webServiceServer {
               break;
             default: 
               if (empty($response_xml))
-			          $response_xml =  $this->objconvert->obj2soap($response_xmlobj);
-              header('Content-Type: text/xml');
+			          $response_xml =  $this->objconvert->obj2soap($response_xmlobj, $soap_namespace);
+              if ($soap_namespace == 'http://www.w3.org/2003/05/soap-envelope' && empty($_POST['xml']))
+                header('Content-Type: application/soap+xml');   // soap 1.2
+              else
+                header('Content-Type: text/xml');
 			        echo $response_xml;
           }
         // request done and response send, dump timer 
