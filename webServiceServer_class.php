@@ -304,7 +304,7 @@ abstract class webServiceServer {
 	*
   */
 
-  protected function validate_xml($xml, $schema_filename, $resolve_externals='FALSE') {
+  protected function validate_xml($xml, $schema_filename, $resolve_externals=FALSE) {
 		$validateXml = new DomDocument;
     $validateXml->resolveExternals = $resolve_externals;
     $validateXml->loadXml($xml);
