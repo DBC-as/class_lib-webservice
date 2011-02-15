@@ -24,9 +24,9 @@
 *
 *
 * $t=new tokenizer();
-* $t->split_expression="/[ ]|([()=])/";
-* $t->operators=array("^","*","/","+","-");
-* $t->indexes=array("function");
+* $t->split_expression='/[ ]|([()=])/';
+* $t->operators=array('^','*','/','+','-');
+* $t->indexes=array('function');
 * $tokenlist=$t->convert;
 */
 
@@ -36,7 +36,7 @@ class tokenizer {
   var $token;
 
 	/// Expression to split by in preg format <string>
-  var $split_expression = "";
+  var $split_expression = '';
 
 	/// List of operators <array>
   var $operators=array();
@@ -92,7 +92,7 @@ class tokenizer {
       }
 
       foreach($this->index_prefixes as $v) {
-      	if(in_array(str_replace("$v".".","",$token), $this->indexes)) {
+      	if(in_array(str_replace("$v".'.','',$token), $this->indexes)) {
           return TRUE;
         }
       }
@@ -129,7 +129,7 @@ class tokenizer {
        $spos = $k;
      elseif (isset($spos)) {
        $tokens[$spos] .= $v;
-       if (strpos(" ".$v, '"')) unset($spos);
+       if (strpos(' '.$v, '"')) unset($spos);
        unset($tokens[$k]);
      }
      $last_token_index=$k;
@@ -141,19 +141,19 @@ class tokenizer {
 
 	  //If the token is a index token
      if($this->is_index($v)) {
-				$token["type"]="INDEX";
+				$token['type']='INDEX';
         if ($this->is_raw_index($v)) {
-				  $token["value"]='_query_:"{!raw f=' . $v . '}';
+				  $token['value']='_query_:"{!raw f=' . $v . '}';
           $use_raw = TRUE;
         } else 
-				  $token["value"]=$v;
+				  $token['value']=$v;
      
 			} else if($this->is_operator($v)) {
-				$token["type"]="OPERATOR";
+				$token['type']='OPERATOR';
         if ($use_raw && $v == '=')
-				  $token["value"]='';
+				  $token['value']='';
         else
-				  $token["value"]=$v;
+				  $token['value']=$v;
 
 			} else {
 
@@ -166,13 +166,13 @@ class tokenizer {
 				}
 
 				if(!$ignore) {
-					$token["type"]="OPERAND";
+					$token['type']='OPERAND';
           if ($use_raw) {
-					  $token["value"]=str_replace('"', '', $v) . '"';
-					  $token["raw_index"]=TRUE;
+					  $token['value']=str_replace('"', '', $v) . '"';
+					  $token['raw_index']=TRUE;
             $use_raw = FALSE;
           } else
-					  $token["value"]=$v;
+					  $token['value']=$v;
 				} 
 			}
 
