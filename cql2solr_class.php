@@ -121,7 +121,7 @@ function build_tree($tl) {
  /** \brief Parse a cql-query and build the solr search string
   * @param query the cql-query
   */
-	function convert($query, $rank=NULL) {
+	function convert($query, $rank=NULL, $boost_str=NULL) {
 
     $dismax_boost = $this->dismax($rank); 
 //var_dump($dismax_boost);
@@ -150,8 +150,11 @@ function build_tree($tl) {
             if ($op == "NOT") $NOT_level = $p_level;
             $and_or_part = ($op <> "NOT");
           }
-          if (!isset($NOT_level) && $op == "OR" && $dismax_boost && $dismax_terms) {
-      	    $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms) . "%29+" . $op . "+%28";
+          if (!isset($NOT_level) && $op == "OR" && ($dismax_boost || $boost_str) && $dismax_terms) {
+      	    if ($dismax_boost) 
+              $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms) . "%29+" . $op . "+%28";
+      	    if ($boost_str) 
+              $dismax_q .= "+AND+" . sprintf($boost_str, $dismax_terms) . "%29+" . $op . "+%28";
             unset($dismax_terms);
           } else
       	    $dismax_q .= $op;
@@ -179,6 +182,8 @@ function build_tree($tl) {
     }
     if ($dismax_boost && $dismax_terms)
       $dismax_q .= "+AND+" . sprintf($dismax_boost, $dismax_terms);
+    if ($boost_str && $dismax_terms)
+      $dismax_q .= "+AND+" . sprintf($boost_str, $dismax_terms);
     $dismax_q .= "%29";
 //var_dump($dismax_terms); var_dump($solr_q); var_dump($dismax_q); die();
 		return array("solr" => $solr_q, "dismax" => $dismax_q);
