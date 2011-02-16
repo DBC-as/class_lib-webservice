@@ -121,7 +121,7 @@ function build_tree($tl) {
  /** \brief Parse a cql-query and build the solr search string
   * @param query the cql-query
   */
-	function convert($query, $rank=NULL, $boost_str=NULL) {
+	function convert($query, $rank=NULL) {
 
     $dismax_boost = $this->dismax($rank); 
 //var_dump($dismax_boost);
@@ -133,7 +133,7 @@ function build_tree($tl) {
 //var_dump($this->build_tree($this->tokellist));
  
 
-    $search_pid_index = FALSE;
+//    $search_pid_index = FALSE;
     $and_or_part = TRUE;
     $p_level = 0;
     foreach($this->tokenlist as $k => $v) {
@@ -145,16 +145,13 @@ function build_tree($tl) {
         case 'OPERATOR':
           $op = $this->map[strtolower($v['value'])];
       	  $solr_q .= $op;
-          if ($op != ':') $search_pid_index = FALSE;
+//          if ($op != ':') $search_pid_index = FALSE;
           if (in_array($op, array('AND', 'OR', 'NOT'))) {
             if ($op == 'NOT') $NOT_level = $p_level;
             $and_or_part = ($op <> 'NOT');
           }
-          if (!isset($NOT_level) && $op == 'OR' && ($dismax_boost || $boost_str) && $dismax_terms) {
-      	    if ($dismax_boost) 
-              $dismax_q .= '+AND+' . sprintf($dismax_boost, $dismax_terms) . '%29+' . $op . '+%28';
-      	    if ($boost_str) 
-              $dismax_q .= '+AND+' . sprintf($boost_str, $dismax_terms) . '%29+' . $op . '+%28';
+          if (!isset($NOT_level) && $op == 'OR' && $dismax_boost && $dismax_terms) {
+            $dismax_q .= '+AND+' . sprintf($dismax_boost, $dismax_terms) . '%29+' . $op . '+%28';
             unset($dismax_terms);
           } else
       	    $dismax_q .= $op;
@@ -164,17 +161,18 @@ function build_tree($tl) {
           elseif ($v['value'] == ')') $p_level--;
           elseif (!$space && isset($NOT_level) && $NOT_level == $p_level) 
             unset($NOT_level);
-          if ($search_pid_index)
-            $url_val = str_replace('%3A', '_', $url_val);
+//          if ($search_pid_index)
+//            $url_val = str_replace('%3A', '_', $url_val);
+          $url_val = str_replace(urlencode(':'), urlencode('\:'), $url_val);
 				  $solr_q .= $url_val;
 				  $dismax_q .= $url_val;
           if (!$v['raw_index'] && trim($dismax_val) && !$space)
             $dismax_terms .= ($and_or_part ? '' : '-') . $dismax_val . urlencode(' ');
           break;
         case 'INDEX':
-          if (strtolower($v['value']) == 'rec.id')
-            $url_val = 'fedoraNormPid';
-          $search_pid_index = $url_val == 'fedoraNormPid';
+//          if (strtolower($v['value']) == 'rec.id')
+//            $url_val = 'fedoraNormPid';
+//          $search_pid_index = $url_val == 'fedoraNormPid';
 				  $solr_q .= $url_val;
 				  $dismax_q .= $url_val;
           break;
@@ -182,8 +180,6 @@ function build_tree($tl) {
     }
     if ($dismax_boost && $dismax_terms)
       $dismax_q .= '+AND+' . sprintf($dismax_boost, $dismax_terms);
-    if ($boost_str && $dismax_terms)
-      $dismax_q .= '+AND+' . sprintf($boost_str, $dismax_terms);
     $dismax_q .= '%29';
 //var_dump($dismax_terms); var_dump($solr_q); var_dump($dismax_q); die();
 		return array('solr' => $solr_q, 'dismax' => $dismax_q);
