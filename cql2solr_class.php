@@ -135,6 +135,7 @@ function build_tree($tl) {
 
 //    $search_pid_index = FALSE;
     $and_or_part = TRUE;
+    $num_operands = 0;
     $p_level = 0;
     foreach($this->tokenlist as $k => $v) {
 // var_dump($v);
@@ -168,6 +169,7 @@ function build_tree($tl) {
 				  $dismax_q .= $url_val;
           if (!$v['raw_index'] && trim($dismax_val) && !$space)
             $dismax_terms .= ($and_or_part ? '' : '-') . $dismax_val . urlencode(' ');
+          if ($url_val) $num_operands++;
           break;
         case 'INDEX':
 //          if (strtolower($v['value']) == 'rec.id')
@@ -182,7 +184,7 @@ function build_tree($tl) {
       $dismax_q .= '+AND+' . sprintf($dismax_boost, $dismax_terms);
     $dismax_q .= '%29';
 //var_dump($dismax_terms); var_dump($solr_q); var_dump($dismax_q); die();
-		return array('solr' => $solr_q, 'dismax' => $dismax_q);
+		return array('solr' => $solr_q, 'dismax' => $dismax_q, 'operands' => $num_operands);
   }
 
  /** \brief Build a dismax-boost string setting the dismax parameters:
