@@ -62,6 +62,12 @@ abstract class webServiceServer {
         die('Error: '.$this->config->error );
       }                                                                
 
+    // service closed
+    if ($http_error = $this->config->get_value('service_http_error', 'setup')) {
+      header($http_error);
+      die($http_error);
+    }
+
     verbose::open($this->config->get_value('logfile', 'setup'),
                   $this->config->get_value('verbose', 'setup'));    
     $this->watch = new stopwatch('', ' ', '', '%s:%01.3f');
