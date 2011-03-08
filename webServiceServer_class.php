@@ -125,7 +125,7 @@ abstract class webServiceServer {
     // validate request
     $this->validate = $this->config->get_value('validate');
 
-		if ($this->validate['soap_request'] || $this->validate['request'])
+    if ($this->validate['soap_request'] || $this->validate['request'])
       $error = ! $this->validate_soap($xml, $this->validate, 'request');
 
 		if (empty($error)) {
@@ -270,13 +270,18 @@ abstract class webServiceServer {
 
     if ($sc = $schemas[$validate_schema]) {
       if ($validate_soap->firstChild->localName == 'Envelope'
-        && $validate_soap->firstChild->firstChild->localName == 'Body') {
-        $xml = &$validate_soap->firstChild->firstChild->firstChild;
-        $validate_xml = new DOMdocument;
-        @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
-      } else {
-        $validate_xml = &$validate_soap;
+        && $validate_soap->firstChild->hasChildNodes()) {
+        foreach ($validate_soap->firstChild->childNodes as $soap_node)
+          if ($soap_node->localName == 'Body') {
+            $xml = &$soap_node->firstChild;
+            $validate_xml = new DOMdocument;
+            @ $validate_xml->appendChild($validate_xml->importNode($xml, TRUE));
+            break;
+          }
       }
+      if (empty($validate_xml))
+        $validate_xml = &$validate_soap;
+        
       if (! @ $validate_xml->schemaValidate($sc))
         return FALSE;
     }
