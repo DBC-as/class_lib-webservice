@@ -252,12 +252,20 @@ class cURL {
 
     // execute the handles
     do {
+/*
+   curl_multi_select() should according to the manual:
+      'Blocks until there is activity on any of the curl_multi connections.'
+   but including the line below, more than doubles the time used in this function???
+
+   So instead we busy-wait and run through the loop many times
+*/
+      //curl_multi_select($this->curl_multi_handle);
       $status = curl_multi_exec($this->curl_multi_handle, $active);
-      if ($info = curl_multi_info_read($this->curl_multi_handle))
+      if ($info = curl_multi_info_read($this->curl_multi_handle)) {
         if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
           $this->wait_for_connections--;
+      }
     } while ($this->wait_for_connections && ($status === CURLM_CALL_MULTI_PERFORM || $active));
-
 
     foreach ( $this->curl_handle as $key => $handle ) {
       $this->curl_status[$key]          = curl_getinfo($this->curl_handle[$key]) ;
