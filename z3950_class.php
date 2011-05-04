@@ -22,201 +22,201 @@
 
 class z3950 {
 
-  private $target;
-  private $database;
-  private $connect_options = array();
-  private $syntax;
-  private $element;
-  private $schema;
-  private $start;
-  private $step;
-  private $rpn;
-  private $error;
-  private $errno;
-  private $addinfo;
-  private $hits;
-  private $z_id;
+    private $target;
+    private $database;
+    private $connect_options = array();
+    private $syntax;
+    private $element;
+    private $schema;
+    private $start;
+    private $step;
+    private $rpn;
+    private $error;
+    private $errno;
+    private $addinfo;
+    private $hits;
+    private $z_id;
 
-	public function __construct() {
-	}
+    public function __construct() {
+    }
 
-	/** \brief do a z3950 rpn search
- 	*
- 	*/
-	public function z3950_search($wait_seconds = 15) {
-    if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
-      if ($this->database)
-        yaz_database($this->z_id, $this->database);
-      yaz_sort($this->z_id, "");
-      yaz_range($this->z_id, 1, 0);
-      yaz_search($this->z_id, "rpn", $this->rpn);
-      $wait = array("timeout" => $wait_seconds);
-      yaz_wait($this->z_id, $wait);
-      $this->set_error($this->z_id);
-      if ($this->hits = yaz_hits($this->z_id)) {
-        // 2do yaz_sort($this->z_id, $this->sort);
-        yaz_syntax($this->z_id, $this->syntax);
-        yaz_element($this->z_id, $this->element);
-        $start = max($this->start, 1);	// need to be at least 1
-        $step = min($this->step, $this->hits - $this->start + 1);	// cannot excede hits
-        yaz_range($this->z_id, $start, $step);
-        yaz_schema($this->z_id, $this->schema);
-        yaz_present($this->z_id);
-        yaz_wait($this->z_id, $wait);
+    /** \brief do a z3950 rpn search
+     *
+     */
+    public function z3950_search($wait_seconds = 15) {
+        if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
+            if ($this->database)
+                yaz_database($this->z_id, $this->database);
+            yaz_sort($this->z_id, '');
+            yaz_range($this->z_id, 1, 0);
+            yaz_search($this->z_id, 'rpn', $this->rpn);
+            $wait = array('timeout' => $wait_seconds);
+            yaz_wait($this->z_id, $wait);
+            $this->set_error($this->z_id);
+            if ($this->hits = yaz_hits($this->z_id)) {
+                // 2do yaz_sort($this->z_id, $this->sort);
+                yaz_syntax($this->z_id, $this->syntax);
+                yaz_element($this->z_id, $this->element);
+                $start = max($this->start, 1);	// need to be at least 1
+                $step = min($this->step, $this->hits - $this->start + 1);	// cannot excede hits
+                yaz_range($this->z_id, $start, $step);
+                yaz_schema($this->z_id, $this->schema);
+                yaz_present($this->z_id);
+                yaz_wait($this->z_id, $wait);
+                $this->set_error($this->z_id);
+            }
+        } else
+            $this->set_error($this->z_id);
+        return $this->hits;
+    }
+
+    /** \brief do a z3950 fetch record
+     *
+     */
+    public function z3950_record($no=1) {
+        if (is_resource($this->z_id)) {
+            return(yaz_record($this->z_id, $no, 'raw'));
+        } else
+            return FALSE;
+    }
+
+    /** \brief do a z3950 xml_itemorder using extend service
+     *
+     */
+    public function z3950_xml_itemorder(&$xml, $wait_seconds = 15) {
+        return $this->z3950_es($xml, 'itemorder', $wait_seconds);
+    }
+
+    /** \brief do a z3950 xml_update using extend service
+     *
+     */
+    public function z3950_xml_update(&$xml, $wait_seconds = 15) {
+        return $this->z3950_es($xml, 'xmlupdate', $wait_seconds);
+    }
+
+    /** \brief do a z3950 xml_update using extend service
+     *
+     */
+    private function z3950_es(&$xml, $op, $wait_seconds = 15) {
+        if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
+            if ($this->database)
+                yaz_database($this->z_id, $this->database);
+            $args = array('doc' => $xml, 'itemorder-setname' => '', 'syntax' => 'xml');
+            yaz_es($this->z_id, $op, $args);
+            $wait = array('timeout' => $wait_seconds);
+            yaz_wait($this->z_id, $wait);
+            $this->set_error($this->z_id);
+            return yaz_es_result($this->z_id);
+        }
+
         $this->set_error($this->z_id);
-      }
-    } else
-      $this->set_error($this->z_id);
-    return $this->hits;
-	}
+        return FALSE;
+    }
 
-	/** \brief do a z3950 fetch record
- 	*
- 	*/
-	public function z3950_record($no=1) {
-    if (is_resource($this->z_id)) {
-      return(yaz_record($this->z_id, $no, "raw"));
-    } else
-      return FALSE;
-  }
+    /** \brief set target
+     *
+     */
+    private function set_error(&$z_id) {
+        $this->error = yaz_error($z_id);
+        $this->errno = yaz_errno($z_id);
+        $this->addinfo = yaz_addinfo($z_id);
+    }
 
-	/** \brief do a z3950 xml_itemorder using extend service
- 	*
- 	*/
-	public function z3950_xml_itemorder(&$xml, $wait_seconds = 15) {
-    return $this->z3950_es($xml, "itemorder", $wait_seconds);
-  }
 
-	/** \brief do a z3950 xml_update using extend service
- 	*
- 	*/
-	public function z3950_xml_update(&$xml, $wait_seconds = 15) {
-    return $this->z3950_es($xml, "xmlupdate", $wait_seconds);
-  }
+    /** \brief get error
+     *
+     */
+    public function get_error() {
+        return $this->error;
+    }
 
-	/** \brief do a z3950 xml_update using extend service
- 	*
- 	*/
-	private function z3950_es(&$xml, $op, $wait_seconds = 15) {
-    if ($this->z_id = yaz_connect($this->target, $this->connect_options)) {
-      if ($this->database)
-        yaz_database($this->z_id, $this->database);
-      $args = array("doc" => $xml, "itemorder-setname" => "", "syntax" => "xml");
-      yaz_es($this->z_id, $op, $args);
-      $wait = array("timeout" => $wait_seconds);
-      yaz_wait($this->z_id, $wait);
-      $this->set_error($this->z_id);
-      return yaz_es_result($this->z_id);
-    } 
+    /** \brief get error
+     *
+     */
+    public function get_errno() {
+        return $this->errno;
+    }
 
-    $this->set_error($this->z_id);
-    return FALSE;
-  }
+    /** \brief get addinfo
+     *
+     */
+    public function get_addinfo() {
+        return $this->addinfo;
+    }
 
-	/** \brief set target
- 	*
- 	*/
-	private function set_error(&$z_id) {
-    $this->error = yaz_error($z_id);
-    $this->errno = yaz_errno($z_id);
-    $this->addinfo = yaz_addinfo($z_id);
-	}
+    /** \brief get error_string
+     *
+     */
+    public function get_error_string() {
+        return $this->error . '(' . $this->errno . ') - ' . $this->addinfo;
+    }
 
-  
-	/** \brief get error
- 	*
- 	*/
-	public function get_error() {
-    return $this->error;
-	}
+    /** \brief set target
+     *
+     */
+    public function set_target($target) {
+        $this->target = $target;
+    }
 
-	/** \brief get error
- 	*
- 	*/
-	public function get_errno() {
-    return $this->errno;
-	}
+    /** \brief set database
+     *
+     */
+    public function set_database($database) {
+        $this->database = $database;
+    }
 
-	/** \brief get addinfo
- 	*
- 	*/
-	public function get_addinfo() {
-    return $this->addinfo;
-	}
+    /** \brief set authentication
+     *
+     */
+    public function set_authentication($authentication, $ip='') {
+        list($this->connect_options['user'],
+             $this->connect_options['group'],
+             $this->connect_options['password']) = explode('/', $authentication);
+        if ($ip)
+            $this->connect_options['otherInfo0'] = '1.2.840.10003.10.1000.81.3:' . $ip;
+    }
 
-	/** \brief get error_string
- 	*
- 	*/
-	public function get_error_string() {
-    return $this->error . '(' . $this->errno . ') - ' . $this->addinfo;
-	}
+    /** \brief set syntax
+     *
+     */
+    public function set_syntax($syntax) {
+        $this->syntax = $syntax;
+    }
 
-	/** \brief set target
- 	*
- 	*/
-	public function set_target($target) {
-    $this->target = $target;
-	}
+    /** \brief set element set name
+     *
+     */
+    public function set_element($element) {
+        $this->element = $element;
+    }
 
-	/** \brief set database
- 	*
- 	*/
-	public function set_database($database) {
-    $this->database = $database;
-	}
+    /** \brief set schema
+     *
+     */
+    public function set_schema($schema) {
+        $this->schema = $schema;
+    }
 
-	/** \brief set authentication
- 	*
- 	*/
-	public function set_authentication($authentication, $ip="") {
-    list($this->connect_options["user"],
-         $this->connect_options["group"],
-         $this->connect_options["password"]) = explode('/', $authentication);
-    if ($ip)
-      $this->connect_options["otherInfo0"] = '1.2.840.10003.10.1000.81.3:' . $ip;
-	}
+    /** \brief set start
+     *
+     */
+    public function set_start($start) {
+        $this->start = $start;
+    }
 
-	/** \brief set syntax
- 	*
- 	*/
-	public function set_syntax($syntax) {
-    $this->syntax = $syntax;
-	}
+    /** \brief set step
+     *
+     */
+    public function set_step($step) {
+        $this->step = $step;
+    }
 
-	/** \brief set element set name
- 	*
- 	*/
-	public function set_element($element) {
-    $this->element = $element;
-	}
-
-	/** \brief set schema
- 	*
- 	*/
-	public function set_schema($schema) {
-    $this->schema = $schema;
-	}
-
-	/** \brief set start
- 	*
- 	*/
-	public function set_start($start) {
-    $this->start = $start;
-	}
-
-	/** \brief set step
- 	*
- 	*/
-	public function set_step($step) {
-    $this->step = $step;
-	}
-
-	/** \brief set rpn
- 	*
- 	*/
-	public function set_rpn($rpn) {
-    $this->rpn = $rpn;
-	}
+    /** \brief set rpn
+     *
+     */
+    public function set_rpn($rpn) {
+        $this->rpn = $rpn;
+    }
 
 }
 
