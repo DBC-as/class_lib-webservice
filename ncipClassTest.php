@@ -483,7 +483,6 @@ array(
           'RequestIdentifierValue' => '{E90E8B77-5482-43ED-81B6-2E5487FA3073}',
           'UniqueAgencyId' => 'DK-675143',
       ),
-  'ItemElementType' => '',
 )),
 
 //------------------------------------------------------------------------------
@@ -2502,7 +2501,25 @@ array(
           'RequestIdentifierValue' => '{E90E8B77-5482-43ED-81B6-2E5487FA3073}',
           'UniqueAgencyId' => 'DK-675143',
       ),
+  'UniqueItemId' => Array
+      (
+          'ItemIdentifierValue' => '{2F9AD5AC-D4CF-488D-90EF-18BE6B86B221}',
+          'UniqueAgencyId' => 'DK-775100',
+      ),
+  'UniqueUserId' => Array
+      (
+          'UserIdentifierValue' => '{3199cfb9-f361-47af-96d8-eb23ba577768}',
+          'UniqueAgencyId' => 'DK-675143',
+      ),
+  'RequestType' => 'Hold',
+  'RequestScopeType' => 'Bibliographic Item',
+  'RequestStatusType' => 'Available For Pickup',
   'HoldQueuePosition' => 1,
+  'Line1' => 'Egå Havevej 5',
+  'Locality' => 'Egå',
+  'PostalCode' => '8250',
+  'PhysicalAddressType' => 'Street Address',
+  'NeedBeforeDate' => '1224108000',
 )),
 
 //------------------------------------------------------------------------------
@@ -3201,6 +3218,10 @@ array(
           'RequestIdentifierValue' => '87654321',
           'UniqueAgencyId' => 'DK-710100',
       ),
+  'LocationWithinBuilding' => '451',
+  'District' => '',
+  'Locality' => 'hb',
+  'PhysicalAddressType' => 'Postal Address',
   'Author' => 'Author',
   'PublicationDate' => 'Year',
   'Title' => 'Title',
