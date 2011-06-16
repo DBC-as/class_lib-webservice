@@ -2209,7 +2209,6 @@ array(
 
 //------------------------------------------------------------------------------
 //Combined public-school libraries
-/* Her er der en fejl i den gamle ncip, idet jeg fortolker et BibliographicItemId og et BibliographicRecordId som PCDATA, selvom det indeholder nestede tags
 array('
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1.0//EN" "http://www.niso.org/ncip/v1_0/imp1/dtd/ncip_v1_0.dtd">
@@ -2297,27 +2296,14 @@ array(
           'UniqueAgencyId' => 'DK-775100',
       ),
   'Author' => 'Haugaard, Erik Christian',
-  'BibliographicItemId' => '
-        87-14-18458-3
-
-        
-          http://www.niso.org/ncip/v1_0/schemes/bibliographicitemidentifiercode/bibliographicitemidentifiercode.scm
-          ISBN
-        
-      ',
-  'BibliographicRecordId' => '
-        0 614 248 6
-
-        
-          http://biblstandard.dk/ncip/schemes/faust/1.0/
-          FAUST
-        
-      ',
+  'BibliographicItemIdentifier' => '87-14-18458-3',
+  'BibliographicItemIdentifierCode' => 'ISBN',
+  'BibliographicRecordIdentifier' => '0 614 248 6',
+  'BibliographicRecordIdentifierCode' => 'FAUST',
   'PublicationDate' => '1984',
   'Publisher' => 'Høst',
   'Title' => 'Samuraiens søn',
 )),
-*/
 
 //------------------------------------------------------------------------------
 //Combined public-school libraries
@@ -3731,6 +3717,121 @@ array(
           'Element' => 'CreateUserResponse',
           'Scheme' => 'NCIP General Processing Error Scheme',
       ),
+)),
+
+//------------------------------------------------------------------------------
+// Hjemmelavet test: Test af ItemTransaction feltet
+array('
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1.01//EN" "http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+<NCIPMessage version="http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+	<LookupItemResponse>
+		<ResponseHeader>
+			<FromAgencyId>
+				<UniqueAgencyId>
+					<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+					<Value>DK-710100</Value>
+				</UniqueAgencyId>
+			</FromAgencyId>
+			<FromAgencyAuthentication>[PASSWORD]</FromAgencyAuthentication>
+			<ToAgencyId>
+				<UniqueAgencyId>
+					<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+					<Value>DK-190101</Value>
+				</UniqueAgencyId>
+			</ToAgencyId>
+		</ResponseHeader>
+		<UniqueItemId>
+			<UniqueAgencyId>
+				<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+				<Value>DK-710100</Value>
+			</UniqueAgencyId>
+			<ItemIdentifierValue>12345678</ItemIdentifierValue>
+		</UniqueItemId>
+		<ItemOptionalFields>
+		<ItemTransaction>
+        <CurrentBorrower>
+            <UniqueUserId>
+              <UniqueAgencyId>
+                <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+                <Value>DK-715700</Value>
+              </UniqueAgencyId>
+              <UserIdentifierValue>111</UserIdentifierValue>
+            </UniqueUserId>
+        </CurrentBorrower>
+        <CurrentRequester>
+            <UniqueUserId>
+              <UniqueAgencyId>
+                <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+                <Value>DK-715700</Value>
+              </UniqueAgencyId>
+              <UserIdentifierValue>1222</UserIdentifierValue>
+            </UniqueUserId>
+        </CurrentRequester>
+        <CurrentRequester>
+            <UniqueUserId>
+              <UniqueAgencyId>
+                <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+                <Value>DK-715700</Value>
+              </UniqueAgencyId>
+              <UserIdentifierValue>1333</UserIdentifierValue>
+            </UniqueUserId>
+        </CurrentRequester>
+        <CurrentRequester>
+            <UniqueUserId>
+              <UniqueAgencyId>
+                <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+                <Value>DK-715700</Value>
+              </UniqueAgencyId>
+              <UserIdentifierValue>1444</UserIdentifierValue>
+            </UniqueUserId>
+        </CurrentRequester>
+		</ItemTransaction>
+			<BibliographicDescription>
+				<Author>Author</Author>
+				<PublicationDate>Year</PublicationDate>
+				<Title>Title</Title>
+			</BibliographicDescription>
+		</ItemOptionalFields>
+	</LookupItemResponse>
+</NCIPMessage>
+',
+array(
+  'Ncip' => 'LookupItemResponse',
+  'FromAgencyId' => 'DK-710100',
+  'FromAgencyAuthentication' => '[PASSWORD]',
+  'ToAgencyId' => 'DK-190101',
+  'UniqueItemId' => Array
+      (
+          'ItemIdentifierValue' => '12345678',
+          'UniqueAgencyId' => 'DK-710100',
+      ),
+  'CurrentBorrower' => Array
+      (
+          'UserIdentifierValue' => '111',
+          'UniqueAgencyId' => 'DK-715700',
+      ),
+  'CurrentRequester' => Array
+      (
+          Array
+              (
+                  'UserIdentifierValue' => '1222',
+                  'UniqueAgencyId' => 'DK-715700',
+              ),
+          Array
+              (
+                  'UserIdentifierValue' => '1333',
+                  'UniqueAgencyId' => 'DK-715700',
+              ),
+          Array
+              (
+                  'UserIdentifierValue' => '1444',
+                  'UniqueAgencyId' => 'DK-715700',
+              ),
+      ),
+  'Author' => 'Author',
+  'PublicationDate' => 'Year',
+  'Title' => 'Title',
 )),
 
 //------------------------------------------------------------------------------

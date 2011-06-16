@@ -45,293 +45,8 @@ require_once("http_wrapper_class.php");
 *   CancelRequestItemResponse
 *   RenewItemResponse
 *
-* Ved opbygning af en request/response angives en parameterblok, som angivet herunder.
 * Nøjagtig de samme parameterblokke returneres ved fortolkingen af requests/responses.
 *
-*
-* LookupUserRequest:
-* ------------------
-* Array
-* (
-*     [Ncip] => LookupUser
-*     [FromAgencyId] => DK-190101
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-710100
-*     [UserId] => 1231231230
-*     [UserPIN] => 1234
-*     [UserElementType] => Name Information
-*     [LoanedItemsDesired] => 1
-*     [RequestedItemsDesired] => 1
-* )
-*
-*
-* LookupItemRequest:
-* ------------------
-* Array
-* (
-*     [Ncip] => LookupItem
-*     [FromAgencyId] => DK-190101
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-710100
-*     [UniqueItemId] => Array
-*         (
-*             [ItemIdentifierValue] => 07197195
-*             [UniqueAgencyId] => DK-719999
-*         )
-*     [ItemElementType] => Bibliographic Description
-* )
-* 
-*   
-* LookupRequestRequest:
-* ---------------------
-* Array
-* (
-*     [Ncip] => LookupRequest
-*     [FromAgencyId] => DK-190101
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-710100
-*     [UniqueRequestId] => Array
-*         (
-*             [RequestIdentifierValue] => 87654321
-*             [UniqueAgencyId] => DK-719999
-*         )
-*     [ItemElementType] => Bibliographic Description
-* )
-*
-*   
-* CancelRequestItemRequest:
-* -------------------------
-* Array
-* (
-*     [Ncip] => CancelRequestItem
-*     [FromAgencyId] => DK-190101
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-710100
-*     [UniqueUserId] => Array
-*         (
-*             [UserIdentifierValue] => 1231231230
-*             [UniqueAgencyId] => DK-719999
-*         )
-*     [UniqueRequestId] => Array
-*         (
-*             [RequestIdentifierValue] => 87654321
-*             [UniqueAgencyId] => DK-718888
-*         )
-*     [RequestType] => Hold
-* )
-*
-*   
-* RenewItemRequest:
-* -----------------
-* Array
-* (
-*     [FromAgencyId] => DK-190101
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-710100
-*     [UniqueUserId] => Array
-*         (
-*             [UserIdentifierValue] => 1231231230
-*             [UniqueAgencyId] => DK-719999
-*         )
-*     [UniqueItemId] => Array
-*         (
-*             [ItemIdentifierValue] => 27175953
-*             [UniqueAgencyId] => DK-718888
-*         )
-* )
-*
-*
-*
-*
-*
-* LookupUserResponse:
-* -------------------
-* Array
-* (
-*     [Ncip] => LookupUserResponse
-*     [FromAgencyId] => DK-710100
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-190101
-*     [UniqueUserId] => Array
-*         (
-*             [UserIdentifierValue] => 1231231230
-*             [UniqueAgencyId] => DK-710100
-*         )
-*     [RequestedItem] => Array
-*         (
-*             [0] => Array
-*                 (
-*                     [UniqueRequestId] => Array
-*                         (
-*                             [RequestIdentifierValue] => 87654321
-*                             [UniqueAgencyId] => DK-710100
-*                         )
-*                     [RequestType] => Hold
-*                     [RequestStatusType] => In Process
-*                     [DatePlaced] => 1199972100
-*                     [PickupDate] => 1199972100
-*                     [PickupExpiryDate] => 1199972100
-*                     [ReminderLevel] => 1
-*                     [HoldQueuePosition] => 2
-*                 )
-*         )
-*     [LoanedItem] => Array
-*         (
-*             [0] => Array
-*                 (
-*                     [UniqueItemId] => Array
-*                         (
-*                             [ItemIdentifierValue] => 12345678
-*                             [UniqueAgencyId] => DK-710100
-*                         )
-*                     [ReminderLevel] => 1
-*                     [DateDue] => 1205694000
-*                     [CurrencyCode] => DKK
-*                     [MonetaryValue] => 0
-*                 )
-*         )
-*     [GivenName] => Givenname
-*     [Surname] => Surname
-*     [UnstructuredPersonalUserName] => UnstructuredPersonalUserName
-* )
-*
-*
-* LookupItemResponse:
-* -------------------
-* Array
-* (
-*     [Ncip] => LookupItemResponse
-*     [FromAgencyId] => DK-710100
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-190101
-*     [UniqueItemId] => Array
-*         (
-*             [ItemIdentifierValue] => 12345678
-*             [UniqueAgencyId] => DK-710100
-*         )
-*     [HoldPickupDate] = HoldPickupDate
-*     [DateRecalled] = DateRecalled
-*     [Author] = Author
-*     [AuthorOfComponent] = AuthorOfComponent
-*     [BibliographicItemId] = BibliographicItemId
-*     [BibliographicRecordId] = BibliographicRecordId
-*     [ComponentId] = ComponentId
-*     [Edition] = Edition
-*     [Pagination] = Pagination
-*     [PlaceOfPublication] = PlaceOfPublication
-*     [PublicationDate] = PublicationDate
-*     [PublicationDateOfComponent] = PublicationDateOfComponent
-*     [Publisher] = Publisher
-*     [SeriesTitleNumber] = SeriesTitleNumber
-*     [Title] = Title
-*     [TitleOfComponent] = TitleOfComponent
-*     [BibliographicLevel] = BibliographicLevel
-*     [SponsoringBody] = SponsoringBody
-*     [ElectronicDataFormatType] = ElectronicDataFormatType
-*     [Language] = Language
-*     [MediumType] = MediumType
-* )
-* 
-* 
-* LookupRequestResponse:
-* ----------------------
-* Array
-* (
-*     [Ncip] => LookupRequestResponse
-*     [FromAgencyId] => DK-710100
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-190101
-*     [UniqueRequestId] => Array
-*         (
-*             [RequestIdentifierValue] => 87654321
-*             [UniqueAgencyId] => DK-710100
-*         )
-*     [HoldQueuePosition] => 2
-*     [Author] = Author
-*     [AuthorOfComponent] = AuthorOfComponent
-*     [BibliographicItemId] = BibliographicItemId
-*     [BibliographicRecordId] = BibliographicRecordId
-*     [ComponentId] = ComponentId
-*     [Edition] = Edition
-*     [Pagination] = Pagination
-*     [PlaceOfPublication] = PlaceOfPublication
-*     [PublicationDate] = PublicationDate
-*     [PublicationDateOfComponent] = PublicationDateOfComponent
-*     [Publisher] = Publisher
-*     [SeriesTitleNumber] = SeriesTitleNumber
-*     [Title] = Title
-*     [TitleOfComponent] = TitleOfComponent
-*     [BibliographicLevel] = BibliographicLevel
-*     [SponsoringBody] = SponsoringBody
-*     [ElectronicDataFormatType] = ElectronicDataFormatType
-*     [Language] = Language
-*     [MediumType] = MediumType
-* )
-* 
-* 
-* CancelRequestItemResponse:
-* --------------------------
-* Array
-* (
-*     [Ncip] => CancelRequestItemResponse
-*     [FromAgencyId] => DK-710100
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-190101
-*     [UniqueUserId] => Array
-*         (
-*             [UserIdentifierValue] => 1231231230
-*             [UniqueAgencyId] => DK-710100
-*         )
-*     [UniqueRequestId] => Array
-*         (
-*             [RequestIdentifierValue] => 87654321
-*             [UniqueAgencyId] => DK-710100
-*         )
-* )
-* 
-* 
-* RenewItemResponse:
-* ------------------
-* Array
-* (
-*     [Ncip] => RenewItemResponse
-*     [FromAgencyId] => DK-190103
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-715700
-*     [UniqueItemId] => Array
-*         (
-*             [ItemIdentifierValue] => 27175953
-*             [UniqueAgencyId] => DK-715700
-*         )
-*     [DateDue] => 1221901200
-* )
-* 
-* Array
-* (
-*     [Ncip] => RenewItemResponse
-*     [FromAgencyId] => DK-190103
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-715700
-*     [DateOfExpectedReply] => 1221901200
-* )
-* 
-* 
-* Fejl:
-* -----
-* Array
-* (
-*     [Ncip] => LookupUserResponse
-*     [FromAgencyId] => DK-710100
-*     [FromAgencyAuthentication] => [PASSWORD]
-*     [ToAgencyId] => DK-190101
-*     [Problem] => ProcessingError eller MessagingError
-*     [ErrorType] => User Authentication Failed
-*     [ErrorElement] => AuthenticationInput
-* )
-* 
-*
-*
-*   
 */
 
 define("NCIP_DATE_FORMAT", "d.m.Y");
@@ -403,7 +118,7 @@ class ncip extends http_wrapper {
     if (empty($parameters["Ncip"]) or
         !in_array($message, array_keys($this->createMessages)) or 
         ($this->parameters["Problem"]["Error"] == "UnknownError")) {
-          return $this->_create_version_message();
+          return self::_create_version_message();
         }
     $impl = new DomImplementation;
     $dtd = $impl->createDocumentType("NCIPMessage", "-//NISO//NCIP DTD Version 1//EN", "http://www.niso.org/ncip/v1_0/imp1/dtd/ncip_v1_0.dtd");
@@ -419,6 +134,10 @@ class ncip extends http_wrapper {
     $this->dom->appendChild( $ncipMessage );
     $this->dom->formatOutput = true;
     $this->dom_xml = $this->dom->saveXML();
+
+// Må ikke komme med i drift
+//echo "NCIP Request:\n\n" . $this->dom_xml . "\n\n\n";
+
     return $this->dom_xml;
   }
 
@@ -434,20 +153,24 @@ class ncip extends http_wrapper {
 *
 */
   public function parse(&$ncip_str) {
+
+// Må ikke komme med i drift
+//echo "NCIP Response:\n\n$ncip_str\n\n=========================\n\n\n";
+
     $this->parameters = array();
     $this->dom = DOMDocument::loadXML($ncip_str,  LIBXML_NOERROR);
 
-    $rootTags = $this->_get_child_elements($this->dom);
+    $rootTags = self::_get_child_elements($this->dom);
     $ncipMessage = $rootTags[0];  // Der bør kun være ét tag som rod-tag, og det skal være NCIPMessage
-    if ((empty($ncipMessage)) or ($ncipMessage->nodeName != "NCIPMessage")) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "NCIPMessage", "NCIP Messaging Error Type Scheme");
+    if ((empty($ncipMessage)) or ($ncipMessage->nodeName != "NCIPMessage")) return self::_problem("MessagingError", "Invalid Message Syntax Error", "NCIPMessage", "NCIP Messaging Error Type Scheme");
 
-    $ncipMessageElements = $this->_get_child_elements($ncipMessage);
+    $ncipMessageElements = self::_get_child_elements($ncipMessage);
     $message = $ncipMessageElements[0];  // Det første tag i NCIPMessage skal være message type tagget - såhhh det regner vi med at det er
     $tag = $message->nodeName;
 
     $this->parameters["Ncip"] = $tag;
-    if ( !in_array($tag, array_keys($this->parseMessages)) ) return $this->_problem("MessagingError", "Unsupported Service", $tag, "NCIP General Processing Error Scheme");
-    if ( !method_exists($this, $this->parseMessages[$tag]) ) return $this->_problem("MessagingError", "Unsupported Service", $tag, "NCIP General Processing Error Scheme");
+    if ( !in_array($tag, array_keys($this->parseMessages)) ) return self::_problem("MessagingError", "Unsupported Service", $tag, "NCIP General Processing Error Scheme");
+    if ( !method_exists($this, $this->parseMessages[$tag]) ) return self::_problem("MessagingError", "Unsupported Service", $tag, "NCIP General Processing Error Scheme");
     $this->parameters = array_merge($this->parameters, call_user_func(array($this, $this->parseMessages[$tag]), $message));  // Kald den aktuelle parsing metode
     return $this->parameters;
   }
@@ -463,7 +186,7 @@ class ncip extends http_wrapper {
 */
   public function parse_file($ncip_file) {
     $file_content = file_get_contents($ncip_file);
-    return $this->parse($file_content);
+    return self::parse($file_content);
   }
 
 
@@ -472,6 +195,40 @@ class ncip extends http_wrapper {
 //------------------------------------------------------------------------------
 // Private metoder
 //------------------------------------------------------------------------------
+
+
+
+
+/** \brief _get_element
+*
+* Hent et navngivet element, og put det ned i et array - men kun hvis det findes
+*
+* @param array $result            Det array, hvori resultatet lægges
+* @param DOMElement $dom_element  DOM Elementet, hvori der ledes
+* @param $tag_name                Navnet på tagget, der ledes efter. Hvis dette
+*                                 er et array af tag navne, ledes efter serien af tag navne
+* @param string $result_name      Det resulterende tag navn i $result arrayet.
+*                                 Hvis ikke dette angives, findes navnet som $tag_name -
+*                                 og hvis $tag_name er et array, bruges det sidste element som navn
+* @return                         Indholdet af det fundne element - hvis ikke det findes, returneres null
+*                                 
+*/
+  private function _get_element(&$result, $dom_element, $tag_name, $result_name="") {
+    if (!is_array($tag_name)) {
+      $tag_name = array($tag_name);
+    }
+    foreach($tag_name as $name) {
+      $dom_element = $dom_element->getElementsByTagName($name)->item(0);
+      if (!isset($dom_element)) {
+        return null;  // Elementet findes ikke, derfor gemmes ikke noget resultat
+      }
+    }
+    if (empty($result_name)) {
+      return $result[$name] = $dom_element->nodeValue;  // Brug det sidste navn i listen som indeks
+    } else {
+      return $result[$result_name] = $dom_element->nodeValue;
+    }
+  }
 
 
 
@@ -515,10 +272,10 @@ class ncip extends http_wrapper {
     if (!isset($this->parameters["UserElementType"])) $this->parameters["UserElementType"] = "Name Information";
     if (!isset($this->parameters["LoanedItemsDesired"])) $this->parameters["LoanedItemsDesired"] = 1;
     if (!isset($this->parameters["RequestedItemsDesired"])) $this->parameters["RequestedItemsDesired"] = 1;
-    $xml->appendChild($this->_create_header("InitiationHeader"));
-    $xml->appendChild($this->_create_authentication_input($this->parameters["UserId"], "text/plain", "User Id"));
-    $xml->appendChild($this->_create_authentication_input($this->parameters["UserPIN"], "text/plain", "PIN"));
-    $xml->appendChild($this->_create_scheme_value_pair("UserElementType", "http://www.niso.org/ncip/v1_0/schemes/userelementtype/userelementtype.scm", $this->parameters["UserElementType"]));
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_authentication_input($this->parameters["UserId"], "text/plain", "User Id"));
+    $xml->appendChild(self::_create_authentication_input($this->parameters["UserPIN"], "text/plain", "PIN"));
+    $xml->appendChild(self::_create_scheme_value_pair("UserElementType", "http://www.niso.org/ncip/v1_0/schemes/userelementtype/userelementtype.scm", $this->parameters["UserElementType"]));
     if (!empty($this->parameters["LoanedItemsDesired"])) $xml->appendChild($this->dom->createElement("LoanedItemsDesired"));
     if (!empty($this->parameters["RequestedItemsDesired"])) $xml->appendChild($this->dom->createElement("RequestedItemsDesired"));
   }
@@ -533,23 +290,23 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_lookup_user_response($xml) {
-    $xml->appendChild($this->_create_header("ResponseHeader"));
-    $xml_problem = $this->_create_problem();
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
       $xml->appendChild($xml_problem);
       return;
     }
-    $xml->appendChild($this->_create_unique_id("User", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
     $xml_user_transaction = $this->dom->createElement("UserTransaction");
     if (is_array($this->parameters["RequestedItem"]))
       foreach ($this->parameters["RequestedItem"] as $item) {
         $xml_requested_item = $this->dom->createElement("RequestedItem");
-        $xml_requested_item->appendChild($this->_create_unique_id("Request", $item));
+        $xml_requested_item->appendChild(self::_create_unique_id("Request", $item));
         if (!empty($item["RequestType"])) {
-          $xml_requested_item->appendChild($this->_create_scheme_value_pair("RequestType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requesttype/requesttype.scm", $item["RequestType"]));
+          $xml_requested_item->appendChild(self::_create_scheme_value_pair("RequestType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requesttype/requesttype.scm", $item["RequestType"]));
         }
         if (!empty($item["RequestStatusType"])) {
-          $xml_requested_item->appendChild($this->_create_scheme_value_pair("RequestStatusType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requeststatustype/requeststatustype.scm", $item["RequestStatusType"]));
+          $xml_requested_item->appendChild(self::_create_scheme_value_pair("RequestStatusType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requeststatustype/requeststatustype.scm", $item["RequestStatusType"]));
         }
         if (!empty($item["DatePlaced"])) {
           $xml_requested_item->appendChild($this->dom->createElement("DatePlaced", date(NCIP_DATE_FORMAT, $item["DatePlaced"])));
@@ -571,7 +328,7 @@ class ncip extends http_wrapper {
     if (is_array($this->parameters["LoanedItem"]))
       foreach ($this->parameters["LoanedItem"] as $item) {
         $xml_loaned_item = $this->dom->createElement("LoanedItem");
-        $xml_loaned_item->appendChild($this->_create_unique_id("Item", $item));
+        $xml_loaned_item->appendChild(self::_create_unique_id("Item", $item));
         if (!empty($item["ReminderLevel"])) {
           $xml_loaned_item->appendChild($this->dom->createElement("ReminderLevel", $item["ReminderLevel"]));
         }
@@ -581,7 +338,7 @@ class ncip extends http_wrapper {
         if (isset($item["MonetaryValue"])) {
           $xml_amount = $this->dom->createElement("Amount");
           if (!empty($item["CurrencyCode"])) {
-            $xml_amount->appendChild($this->_create_scheme_value_pair("CurrencyCode", "http://www.bsi-global.com/Technical+Information/Publications/_Publications/tig90x.doc", $item["CurrencyCode"]));
+            $xml_amount->appendChild(self::_create_scheme_value_pair("CurrencyCode", "http://www.bsi-global.com/Technical+Information/Publications/_Publications/tig90x.doc", $item["CurrencyCode"]));
           }
           $xml_amount->appendChild($this->dom->createElement("MonetaryValue", $item["MonetaryValue"]));
           $xml_loaned_item->appendChild($xml_amount);
@@ -620,9 +377,9 @@ class ncip extends http_wrapper {
 */
   private function _create_lookup_item_request($xml) {
     if (!isset($this->parameters["ItemElementType"])) $this->parameters["ItemElementType"] = "Bibliographic Description";
-    $xml->appendChild($this->_create_header("InitiationHeader"));
-    $xml->appendChild($this->_create_unique_id("Item", $this->parameters));
-    $xml->appendChild($this->_create_scheme_value_pair("ItemElementType", "http://www.niso.org/ncip/v1_0/schemes/itemelementtype/itemelementtype.scm", $this->parameters["ItemElementType"]));
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
+    $xml->appendChild(self::_create_scheme_value_pair("ItemElementType", "http://www.niso.org/ncip/v1_0/schemes/itemelementtype/itemelementtype.scm", $this->parameters["ItemElementType"]));
   }
 
 /** \brief _create_lookup_item_response
@@ -635,18 +392,18 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_lookup_item_response($xml) {
-    $xml->appendChild($this->_create_header("ResponseHeader"));
-    $xml_problem = $this->_create_problem();
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
       $xml->appendChild($xml_problem);
       return;
     }
-    $xml->appendChild($this->_create_unique_id("Item", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
     if (!empty($this->parameters["HoldPickupDate"]))
       $xml->appendChild($this->dom->createElement("HoldPickupDate", $this->parameters["HoldPickupDate"]));
     if (!empty($this->parameters["DateRecalled"]))
       $xml->appendChild($this->dom->createElement("DateRecalled", $this->parameters["DateRecalled"]));
-    $this->_create_item_optional_fields($xml);
+    self::_create_item_optional_fields($xml);
   }
 
 /** \brief _create_lookup_request_request
@@ -660,9 +417,9 @@ class ncip extends http_wrapper {
 */
   private function _create_lookup_request_request($xml) {
     if (!isset($this->parameters["ItemElementType"])) $this->parameters["ItemElementType"] = "Bibliographic Description";
-    $xml->appendChild($this->_create_header("InitiationHeader"));
-    $xml->appendChild($this->_create_unique_id("Request", $this->parameters));
-    $xml->appendChild($this->_create_scheme_value_pair("ItemElementType", "http://www.niso.org/ncip/v1_0/schemes/itemelementtype/itemelementtype.scm", $this->parameters["ItemElementType"]));
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
+    $xml->appendChild(self::_create_scheme_value_pair("ItemElementType", "http://www.niso.org/ncip/v1_0/schemes/itemelementtype/itemelementtype.scm", $this->parameters["ItemElementType"]));
   }
 
 /** \brief _create_lookup_request_response
@@ -675,17 +432,17 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_lookup_request_response($xml) {
-    $xml->appendChild($this->_create_header("ResponseHeader"));
-    $xml_problem = $this->_create_problem();
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
       $xml->appendChild($xml_problem);
       return;
     }
-    $xml->appendChild($this->_create_unique_id("Request", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
     if (!empty($this->parameters["HoldQueuePosition"])) {
       $xml->appendChild($this->dom->createElement("HoldQueuePosition", $this->parameters["HoldQueuePosition"]));
     }
-    $this->_create_item_optional_fields($xml);
+    self::_create_item_optional_fields($xml);
   }
 
 /** \brief _create_cancel_request_item_request
@@ -698,10 +455,10 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_cancel_request_item_request($xml) {
-    $xml->appendChild($this->_create_header("InitiationHeader"));
-    $xml->appendChild($this->_create_unique_id("User", $this->parameters));
-    $xml->appendChild($this->_create_unique_id("Request", $this->parameters));
-    $xml->appendChild($this->_create_scheme_value_pair("RequestType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requesttype/requesttype.scm", $this->parameters["RequestType"]));
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
+    $xml->appendChild(self::_create_scheme_value_pair("RequestType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requesttype/requesttype.scm", $this->parameters["RequestType"]));
  }
 
 /** \brief _create_cancel_request_item_response
@@ -714,14 +471,14 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_cancel_request_item_response($xml) {
-    $xml->appendChild($this->_create_header("ResponseHeader"));
-    $xml_problem = $this->_create_problem();
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
       $xml->appendChild($xml_problem);
       return;
     }
-    $xml->appendChild($this->_create_unique_id("User", $this->parameters));
-    $xml->appendChild($this->_create_unique_id("Request", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
  }
 
 /** \brief _create_renew_item_request
@@ -734,9 +491,9 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_renew_item_request($xml) {
-    $xml->appendChild($this->_create_header("InitiationHeader"));
-    $xml->appendChild($this->_create_unique_id("User", $this->parameters));
-    $xml->appendChild($this->_create_unique_id("Item", $this->parameters));
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
   }
 
 /** \brief _create_renew_item_response
@@ -749,14 +506,14 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_renew_item_response($xml) {
-    $xml->appendChild($this->_create_header("ResponseHeader"));
-    $xml_problem = $this->_create_problem();
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
       $xml->appendChild($xml_problem);
       return;
     }
     if (!empty($this->parameters["UniqueItemId"])) {
-      $xml->appendChild($this->_create_unique_id("Item", $this->parameters));
+      $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
     }
     if (!empty($this->parameters["DateDue"])) {
       $xml->appendChild($this->dom->createElement("DateDue", date(NCIP_DATE_FORMAT, $this->parameters["DateDue"])));
@@ -796,7 +553,7 @@ class ncip extends http_wrapper {
 */
   private function _create_agency_id($what, $agencyId) {
     $xml = $this->dom->createElement($what . "AgencyId");
-    $xml->appendChild($this->_create_scheme_value_pair("UniqueAgencyId", "http://biblstandard.dk/isil/schemes/1.1/", $agencyId));
+    $xml->appendChild(self::_create_scheme_value_pair("UniqueAgencyId", "http://biblstandard.dk/isil/schemes/1.1/", $agencyId));
     return $xml;
   }
   
@@ -811,11 +568,11 @@ class ncip extends http_wrapper {
 */
   private function _create_header($header_tag) {
     $xml = $this->dom->createElement($header_tag);
-    $xml->appendChild($this->_create_agency_id("From", $this->parameters["FromAgencyId"]));
+    $xml->appendChild(self::_create_agency_id("From", $this->parameters["FromAgencyId"]));
     if (!empty($this->parameters["FromAgencyAuthentication"])) {
       $xml->appendChild($this->dom->createElement("FromAgencyAuthentication", $this->parameters["FromAgencyAuthentication"]));
     }
-    $xml->appendChild($this->_create_agency_id("To", $this->parameters["ToAgencyId"]));
+    $xml->appendChild(self::_create_agency_id("To", $this->parameters["ToAgencyId"]));
     return $xml;
   }
 
@@ -914,7 +671,7 @@ class ncip extends http_wrapper {
     }
     $xml = $this->dom->createElement("Problem");
     $xml_error = $this->dom->createElement($this->parameters["Problem"]["Error"]);
-    $xml_error->appendChild($this->_create_scheme_value_pair($this->parameters["Problem"]["Error"] . "Type", $this->parameters["Problem"]["Scheme"], $this->parameters["Problem"]["Type"]));
+    $xml_error->appendChild(self::_create_scheme_value_pair($this->parameters["Problem"]["Error"] . "Type", $this->parameters["Problem"]["Scheme"], $this->parameters["Problem"]["Type"]));
     $xml_error_element = $this->dom->createElement($this->parameters["Problem"]["Error"] . "Element");
     if (!empty($this->parameters["Problem"]["Element"]))
       $xml_error_element->appendChild($this->dom->createElement("ElementName", $this->parameters["Problem"]["Element"]));
@@ -967,8 +724,8 @@ class ncip extends http_wrapper {
   private function _create_authentication_input($inputData, $dataFormatType, $inputType) {
     $xml = $this->dom->createElement("AuthenticationInput");
     $xml->appendChild($this->dom->createElement("AuthenticationInputData", $inputData));
-    $xml->appendChild($this->_create_scheme_value_pair("AuthenticationDataFormatType", "http://www.iana.org/assignments/media-types", $dataFormatType));
-    $xml->appendChild($this->_create_scheme_value_pair("AuthenticationInputType", "http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm", $inputType));
+    $xml->appendChild(self::_create_scheme_value_pair("AuthenticationDataFormatType", "http://www.iana.org/assignments/media-types", $dataFormatType));
+    $xml->appendChild(self::_create_scheme_value_pair("AuthenticationInputType", "http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm", $inputType));
     return $xml;
   }
   
@@ -986,7 +743,7 @@ class ncip extends http_wrapper {
 */
   private function _create_unique_id($what, $uniqueXxxId) {
     $xml = $this->dom->createElement("Unique" . $what . "Id");
-    $xml->appendChild($this->_create_scheme_value_pair("UniqueAgencyId", "http://biblstandard.dk/isil/schemes/1.1/", $uniqueXxxId["Unique" . $what . "Id"]["UniqueAgencyId"]));
+    $xml->appendChild(self::_create_scheme_value_pair("UniqueAgencyId", "http://biblstandard.dk/isil/schemes/1.1/", $uniqueXxxId["Unique" . $what . "Id"]["UniqueAgencyId"]));
     $xml->appendChild($this->dom->createElement($what . "IdentifierValue", $uniqueXxxId["Unique" . $what . "Id"][$what . "IdentifierValue"]));
     return $xml;
   }
@@ -1004,12 +761,12 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_user_request($lookupRequest) {
-    $user = $this->_parse_header("InitiationHeader", $lookupRequest);
+    $user = self::_parse_header("InitiationHeader", $lookupRequest);
     if (!empty($user["Problem"])) return $user;
-    $user["UserId"] = $this->_parse_authentication_input("User Id", $lookupRequest);
-    $user["UserPIN"] = $this->_parse_authentication_input("PIN", $lookupRequest);
-    $user["UserElementType"] = $this->_parse_scheme_value_pair($lookupRequest, "UserElementType");
-    if (empty($user["UserElementType"])) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "UserElementType", "NCIP Messaging Error Type Scheme");
+    $user["UserId"] = self::_parse_authentication_input("User Id", $lookupRequest);
+    $user["UserPIN"] = self::_parse_authentication_input("PIN", $lookupRequest);
+    self::_get_element($user, $lookupRequest, array("UserElementType", "Value"), "UserElementType");
+    if (empty($user["UserElementType"])) return self::_problem("MessagingError", "Invalid Message Syntax Error", "UserElementType", "NCIP Messaging Error Type Scheme");
     $loaned_items = $lookupRequest->getElementsByTagName("LoanedItemsDesired");
     if (is_object($loaned_items) and ($loaned_items->length>0)) $user["LoanedItemsDesired"] = 1;
     $requested_items = $lookupRequest->getElementsByTagName("RequestedItemsDesired");
@@ -1027,14 +784,14 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_user_response($lookupResponse) {
-    $user = $this->_parse_header("ResponseHeader", $lookupResponse);
+    $user = self::_parse_header("ResponseHeader", $lookupResponse);
     if (!empty($user["Problem"])) return $user;
-    $user = array_merge($user, $this->_parse_unique_id_header($lookupResponse, "User"));
+    $user = array_merge($user, self::_parse_unique_id_header($lookupResponse, "User"));
     unset($user["Problem"]);  // UniqueIdHeader behover ikke at vaere der - saa undertryk fejl
     $userTransaction = $lookupResponse->getElementsByTagName("UserTransaction")->item(0);
     if (!empty($userTransaction)) {
       foreach ( $userTransaction->getElementsByTagName("RequestedItem") as $item ) {
-        $req = $this->_parse_unique_id_header($item, "Request");  // Parse "UniqueRequestId"
+        $req = self::_parse_unique_id_header($item, "Request");  // Parse "UniqueRequestId"
         if (isset($req)) {
           $req["RequestType"] = $item->getElementsByTagName("RequestType")->item(0)->getElementsByTagName("Value")->item(0)->nodeValue;
           $req["RequestStatusType"] = $item->getElementsByTagName("RequestStatusType")->item(0)->getElementsByTagName("Value")->item(0)->nodeValue;
@@ -1051,7 +808,7 @@ class ncip extends http_wrapper {
         }
       }
       foreach ( $userTransaction->getElementsByTagName("LoanedItem") as $item ) {
-        $loan = $this->_parse_unique_id_header($item, "Item");  // Parse "UniqueItemId"
+        $loan = self::_parse_unique_id_header($item, "Item");  // Parse "UniqueItemId"
         if (isset($loan)) {
           $loan["ReminderLevel"] = $item->getElementsByTagName("ReminderLevel")->item(0)->nodeValue;
           $dateDue = $item->getElementsByTagName("DateDue")->item(0)->nodeValue;
@@ -1093,12 +850,12 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_item_request($lookupRequest) {
-    $item = $this->_parse_header("InitiationHeader", $lookupRequest);
+    $item = self::_parse_header("InitiationHeader", $lookupRequest);
     if (!empty($item["Problem"])) return $item;
-    $item = array_merge($item, $this->_parse_unique_id_header($lookupRequest, "Item"));
+    $item = array_merge($item, self::_parse_unique_id_header($lookupRequest, "Item"));
     if (!empty($item["Problem"])) return $item;
-    $item["ItemElementType"] = $this->_parse_scheme_value_pair($lookupRequest, "ItemElementType");
-    if (empty($item["ItemElementType"])) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "ItemElementType", "NCIP Messaging Error Type Scheme");
+    self::_get_element($item, $lookupRequest, array("ItemElementType", "Value"), "ItemElementType");
+    if (empty($item["ItemElementType"])) return self::_problem("MessagingError", "Invalid Message Syntax Error", "ItemElementType", "NCIP Messaging Error Type Scheme");
     return $item;
   }
   
@@ -1112,16 +869,17 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_item_response($lookupResponse) {
-    $item = $this->_parse_header("ResponseHeader", $lookupResponse);
+    $item = self::_parse_header("ResponseHeader", $lookupResponse);
     if (!empty($item["Problem"])) return $item;
-    $item = array_merge($item, $this->_parse_unique_id_header($lookupResponse, "Item"));
-    if (!empty($item["Problem"])) return $item;
-    $holdPickupDate = $lookupResponse->getElementsByTagName("HoldPickupDate")->item(0)->nodeValue;
-    if (isset($holdPickupDate)) $item = array_merge($item, strtotime($holdPickupDate));
-    $dateRecalled = $lookupResponse->getElementsByTagName("DateRecalled")->item(0)->nodeValue;
-    if (isset($dateRecalled)) $item = array_merge($item, strtotime($dateRecalled));
-    // <ItemTransaction> er ikke understøttet i denne version
-    $item = array_merge($item, $this->_parse_item_optional_fields($lookupResponse));
+    $item = array_merge($item, self::_parse_unique_id_header($lookupResponse, "Request"));  // Optional
+    $item = array_merge($item, self::_parse_unique_id_header($lookupResponse, "Item"));  // Optional
+    unset($item['Problem']); // Neither of these headers need to be there, so if not - clear the error
+    self::_get_element($item, $lookupResponse, "HoldPickupDate");  // Optional
+    if (isset($item["HoldPickupDate"])) $item["HoldPickupDate"] = strtotime($item["HoldPickupDate"]);
+    self::_get_element($item, $lookupResponse, "DateRecalled");  // Optional
+    if (isset($item["DateRecalled"])) $item["DateRecalled"] = strtotime($item["DateRecalled"]);
+    $item = array_merge($item, self::_parse_item_transaction($lookupResponse));
+    $item = array_merge($item, self::_parse_item_optional_fields($lookupResponse));
     return $item;
   }
   
@@ -1135,11 +893,11 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_request_request($lookupRequest) {
-    $request = $this->_parse_header("InitiationHeader", $lookupRequest);
+    $request = self::_parse_header("InitiationHeader", $lookupRequest);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($lookupRequest, "Request"));
+    $request = array_merge($request, self::_parse_unique_id_header($lookupRequest, "Request"));
     if (!empty($request["Problem"])) return $request;
-    $request["ItemElementType"] = $this->_parse_scheme_value_pair($lookupRequest, "ItemElementType");
+    self::_get_element($request, $lookupRequest, array("ItemElementType", "Value"), "ItemElementType");
     return $request;
   }
   
@@ -1153,13 +911,33 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_lookup_request_response($lookupResponse) {
-    $request = $this->_parse_header("ResponseHeader", $lookupResponse);
+    $request = self::_parse_header("ResponseHeader", $lookupResponse);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($lookupResponse, "Request"));
-    if (!empty($request["Problem"])) return $request;
-    $holdQueuePosition = $lookupResponse->getElementsByTagName("HoldQueuePosition")->item(0)->nodeValue;
-    if (isset($holdQueuePosition)) $request["HoldQueuePosition"] = $holdQueuePosition;
-    $request = array_merge($request, $this->_parse_item_optional_fields($lookupResponse));
+    $request = array_merge($request, self::_parse_unique_id_header($lookupResponse, "Request"));  // Optional
+    $request = array_merge($request, self::_parse_unique_id_header($lookupResponse, "Item"));  // Optional
+    $request = array_merge($request, self::_parse_unique_id_header($lookupResponse, "User"));  // Optional
+    unset($request['Problem']);  // UniqueRequestId, UniqueItemId and UniqueUserId are optional
+    self::_get_element($request, $lookupResponse, array("RequestType", "Value"), "RequestType");  // Optional
+    self::_get_element($request, $lookupResponse, array("RequestScopeType", "Value"), "RequestScopeType");  // Optional
+    self::_get_element($request, $lookupResponse, array("RequestStatusType", "Value"), "RequestStatusType");  // Optional
+    self::_get_element($request, $lookupResponse, "HoldQueuePosition");  // Optional
+    $request = array_merge($request, self::_parse_shipping_information($lookupResponse));
+    self::_get_element($request, $lookupResponse, "EarliestDateNeeded");  // Optional
+    if (isset($request["EarliestDateNeeded"])) $request["EarliestDateNeeded"] = strtotime($request["EarliestDateNeeded"]);
+    self::_get_element($request, $lookupResponse, "NeedBeforeDate");  // Optional
+    if (isset($request["NeedBeforeDate"])) $request["NeedBeforeDate"] = strtotime($request["NeedBeforeDate"]);
+    self::_get_element($request, $lookupResponse, "PickupDate");  // Optional
+    if (isset($request["PickupDate"])) $request["PickupDate"] = strtotime($request["PickupDate"]);
+    self::_get_element($request, $lookupResponse, "PickupExpiryDate");  // Optional
+    if (isset($request["PickupExpiryDate"])) $request["PickupExpiryDate"] = strtotime($request["PickupExpiryDate"]);
+    self::_get_element($request, $lookupResponse, "DateOfUserRequest");  // Optional
+    if (isset($request["DateOfUserRequest"])) $request["DateOfUserRequest"] = strtotime($request["DateOfUserRequest"]);
+    self::_get_element($request, $lookupResponse, "DateAvailable");  // Optional
+    if (isset($request["DateAvailable"])) $request["DateAvailable"] = strtotime($request["DateAvailable"]);
+    $request = array_merge($request, self::_parse_amount($lookupResponse, 'AcknowledgedFeeAmount'));
+    $request = array_merge($request, self::_parse_amount($lookupResponse, 'PaidFeeAmount'));
+    $request = array_merge($request, self::_parse_item_optional_fields($lookupResponse));   // Optional
+    $request = array_merge($request, self::_parse_user_optional_fields($lookupResponse));   // Optional
     return $request;
   }
   
@@ -1173,12 +951,12 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_cancel_request_item_request($cancelRequest) {
-    $request = $this->_parse_header("InitiationHeader", $cancelRequest);
+    $request = self::_parse_header("InitiationHeader", $cancelRequest);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($cancelRequest, "User"));
+    $request = array_merge($request, self::_parse_unique_id_header($cancelRequest, "User"));
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($cancelRequest, "Request"));
-    $request["RequestType"] = $this->_parse_scheme_value_pair($cancelRequest, "RequestType");
+    $request = array_merge($request, self::_parse_unique_id_header($cancelRequest, "Request"));
+    self::_get_element($request, $cancelRequest, array("RequestType", "Value"), "RequestType");
     return $request;
   }
   
@@ -1192,11 +970,11 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_cancel_request_item_response($cancelResponse) {
-    $request = $this->_parse_header("ResponseHeader", $cancelResponse);
+    $request = self::_parse_header("ResponseHeader", $cancelResponse);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($cancelResponse, "User"));
+    $request = array_merge($request, self::_parse_unique_id_header($cancelResponse, "User"));
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($cancelResponse, "Request"));
+    $request = array_merge($request, self::_parse_unique_id_header($cancelResponse, "Request"));
     return $request;
   }
   
@@ -1210,11 +988,11 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_renew_item_request($renewRequest) {
-    $request = $this->_parse_header("InitiationHeader", $renewRequest);
+    $request = self::_parse_header("InitiationHeader", $renewRequest);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($renewRequest, "User"));
+    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "User"));
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, $this->_parse_unique_id_header($renewRequest, "Item"));
+    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "Item"));
     return $request;
   }
 
@@ -1228,7 +1006,7 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_renew_item_response($renewResponse) {
-    $request = $this->_parse_header("ResponseHeader", $renewResponse);
+    $request = self::_parse_header("ResponseHeader", $renewResponse);
     if (!empty($request["Problem"])) return $request;
 
     $pending = $renewResponse->getElementsByTagName("Pending")->item(0);
@@ -1237,7 +1015,7 @@ class ncip extends http_wrapper {
       if (isset($dateOfExpectedReply)) $request["DateOfExpectedReply"] = strtotime($dateOfExpectedReply);
       return $request;
     }
-    $request = array_merge($request, $this->_parse_unique_id_header($renewResponse, "Item"));
+    $request = array_merge($request, self::_parse_unique_id_header($renewResponse, "Item"));
     if (!empty($request["Problem"])) return $request;
     $dateDue = $renewResponse->getElementsByTagName("DateDue")->item(0)->nodeValue;
     if (isset($dateDue)) $request["DateDue"] = strtotime($dateDue);
@@ -1275,24 +1053,18 @@ class ncip extends http_wrapper {
 */
   private function _parse_header($header_tag, $xml) {
     $ret = array();
-    if (!isset($xml)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", $header_tag, "NCIP Messaging Error Type Scheme");
-    $header = $xml->getElementsByTagName($header_tag)->item(0);
-    if (!isset($header)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", $header_tag, "NCIP Messaging Error Type Scheme");
-
-    $fromAgencyId = $header->getElementsByTagName("FromAgencyId")->item(0);
-    if (!isset($fromAgencyId)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "FromAgencyId", "NCIP Messaging Error Type Scheme");
-    $ret["FromAgencyId"] = $this->_parse_scheme_value_pair($fromAgencyId, "UniqueAgencyId");
-    if (empty($ret["FromAgencyId"])) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "UniqueAgencyId", "NCIP Messaging Error Type Scheme");
-
-    $ret["FromAgencyAuthentication"] = $header->getElementsByTagName("FromAgencyAuthentication")->item(0)->nodeValue;
-//    if (empty($ret["FromAgencyAuthentication"])) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "FromAgencyAuthentication", "NCIP Messaging Error Type Scheme");
-
-    $toAgencyId = $header->getElementsByTagName("ToAgencyId")->item(0);
-    if (!isset($toAgencyId)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "ToAgencyId", "NCIP Messaging Error Type Scheme");
-    $ret["ToAgencyId"] = $this->_parse_scheme_value_pair($toAgencyId, "UniqueAgencyId");
-    if (empty($ret["ToAgencyId"])) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "UniqueAgencyId", "NCIP Messaging Error Type Scheme");
-
-    return array_merge($ret, $this->_parse_problem($xml));
+    if (!isset($xml)) return self::_problem("MessagingError", "Invalid Message Syntax Error", $header_tag, "NCIP Messaging Error Type Scheme");
+    self::_get_element($ret, $xml, array($header_tag, "FromSystemId", "Value"), "FromSystemId");  // Optional
+    self::_get_element($ret, $xml, array($header_tag, "FromSystemAuthentication"));  // Optional
+    self::_get_element($ret, $xml, array($header_tag, "FromAgencyId", "UniqueAgencyId", "Value"), "FromAgencyId");  // Mandatory
+    if (empty($ret["FromAgencyId"])) return self::_problem("MessagingError", "Invalid Message Syntax Error", "FromAgencyId", "NCIP Messaging Error Type Scheme");
+    self::_get_element($ret, $xml, array($header_tag, "FromAgencyAuthentication"));  // Optional
+    self::_get_element($ret, $xml, array($header_tag, "OnBehalfOfAgency", "UniqueAgencyId", "Value"), "OnBehalfOfAgency");  // Optional
+    self::_get_element($ret, $xml, array($header_tag, "ToSystemId", "Value"), "ToSystemId");  // Optional
+    self::_get_element($ret, $xml, array($header_tag, "ToAgencyId", "UniqueAgencyId", "Value"), "ToAgencyId");  //  Mandatory
+    if (empty($ret["ToAgencyId"])) return self::_problem("MessagingError", "Invalid Message Syntax Error", "ToAgencyId", "NCIP Messaging Error Type Scheme");
+    self::_get_element($ret, $xml, array($header_tag, "ApplicationProfileType", "Value"), "ApplicationProfileType");  // Optional
+    return array_merge($ret, self::_parse_problem($xml));
   }
   
   
@@ -1306,19 +1078,83 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_unique_id_header($response, $par) {
-    if (!isset($response)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "Unique" . $par . "Id", "NCIP Messaging Error Type Scheme");
+    if (!isset($response)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "Unique" . $par . "Id", "NCIP Messaging Error Type Scheme");
     $uniqueId = $response->getElementsByTagName("Unique" . $par . "Id")->item(0);
-    if (!isset($uniqueId)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "Unique" . $par . "Id", "NCIP Messaging Error Type Scheme");
+    if (!isset($uniqueId)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "Unique" . $par . "Id", "NCIP Messaging Error Type Scheme");
     $identifierValue = $uniqueId->getElementsByTagName($par . "IdentifierValue")->item(0);
-    if (!isset($identifierValue)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", $par . "IdentifierValue", "NCIP Messaging Error Type Scheme");
+    if (!isset($identifierValue)) return self::_problem("MessagingError", "Invalid Message Syntax Error", $par . "IdentifierValue", "NCIP Messaging Error Type Scheme");
     $uniqueAgencyId = $uniqueId->getElementsByTagName("UniqueAgencyId")->item(0);
-    if (!isset($uniqueAgencyId)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "UniqueAgencyId", "NCIP Messaging Error Type Scheme");
+    if (!isset($uniqueAgencyId)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "UniqueAgencyId", "NCIP Messaging Error Type Scheme");
     $value = $uniqueAgencyId->getElementsByTagName("Value")->item(0);
-    if (!isset($value)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "Value", "NCIP Messaging Error Type Scheme");
+    if (!isset($value)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "Value", "NCIP Messaging Error Type Scheme");
     return array( "Unique" . $par . "Id" => array($par . "IdentifierValue" => $identifierValue->nodeValue, "UniqueAgencyId" => $value->nodeValue) );
   }
   
   
+/** \brief _parse_shipping_information
+*
+* Fortolker et DOMElement, og henter Shipping Information info ud af det
+*
+* @param DOMElement $lookupResponse Det element, hvorfra Item Optional Fields info ønskes læst 
+* @return array Item Optional Fields info
+*
+*/
+  private function _parse_shipping_information($lookupResponse) {
+    $ret = array();
+    $shippingInformation = $lookupResponse->getElementsByTagName("ShippingInformation")->item(0);
+    if (isset($shippingInformation)) {
+      self::_get_element($ret, $lookupResponse, 'ShippingInstructions');
+      self::_get_element($ret, $lookupResponse, 'ShippingNote');
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'LocationWithinBuilding'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'HouseName'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Street'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'PostOfficeBox'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'District'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Line1'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Line2'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Locality'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Region'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'Country'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'PostalCode'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'StructuredAddress', 'CareOf'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'UnstructuredAddress', 'UnstructuredAddressType', 'Value'), 'UnstructuredAddressType');
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'UnstructuredAddress', 'UnstructuredAddressData'));
+      self::_get_element($ret, $lookupResponse, array('PhysicalAddress', 'PhysicalAddressType', 'Value'), 'PhysicalAddressType');
+    }
+    return $ret;
+  }
+
+
+/** \brief _parse_item_transaction
+*
+* Fortolker et DOMElement, og henter Item Transaction info ud af det
+*
+* @param DOMElement $lookupResponse Det element, hvorfra Item Transaction info ønskes læst 
+* @return array Item Transaction info
+*
+*/
+  private function _parse_item_transaction($lookupResponse) {
+    $ret = array();
+    $itemTransaction = $lookupResponse->getElementsByTagName("ItemTransaction")->item(0);
+    if (isset($itemTransaction)) {
+      $currentBorrower = $itemTransaction->getElementsByTagName("CurrentBorrower")->item(0);
+      if (isset($currentBorrower)) {
+        self::_get_element($ret['CurrentBorrower'], $currentBorrower, array('UniqueUserId', 'UserIdentifierValue'));
+        self::_get_element($ret['CurrentBorrower'], $currentBorrower, array('UniqueUserId', 'UniqueAgencyId', 'Value'), 'UniqueAgencyId');
+      }
+      $currentRequesters = $itemTransaction->getElementsByTagName("CurrentRequester");
+      foreach ($currentRequesters as $currentRequester) {
+        $element = array();
+        self::_get_element($element, $currentRequester, array('UniqueUserId', 'UserIdentifierValue'));
+        self::_get_element($element, $currentRequester, array('UniqueUserId', 'UniqueAgencyId', 'Value'), 'UniqueAgencyId');
+        $ret['CurrentRequester'][] = $element;
+      }
+    }
+    return $ret;
+  }
+  
+
+
 /** \brief _parse_item_optional_fields
 *
 * Fortolker et DOMElement, og henter Item Optional Fields info ud af det
@@ -1333,47 +1169,48 @@ class ncip extends http_wrapper {
     if (isset($itemOptionalFields)) {
       $bibliographicDescription = $itemOptionalFields->getElementsByTagName("BibliographicDescription")->item(0);
       if (isset($bibliographicDescription)) {
-        $author = $bibliographicDescription->getElementsByTagName("Author")->item(0)->nodeValue;
-        if (isset($author)) $ret["Author"] = $author;
-        $authorOfComponent = $bibliographicDescription->getElementsByTagName("AuthorOfComponent")->item(0)->nodeValue;
-        if (isset($authorOfComponent)) $ret["AuthorOfComponent"] = $authorOfComponent;
-        $bibliographicItemId = $bibliographicDescription->getElementsByTagName("BibliographicItemId")->item(0)->nodeValue;
-        if (isset($bibliographicItemId)) $ret["BibliographicItemId"] = $bibliographicItemId;
-        $bibliographicRecordId = $bibliographicDescription->getElementsByTagName("BibliographicRecordId")->item(0)->nodeValue;
-        if (isset($bibliographicRecordId)) $ret["BibliographicRecordId"] = $bibliographicRecordId;
-        $componentId = $bibliographicDescription->getElementsByTagName("ComponentId")->item(0)->nodeValue;
-        if (isset($componentId)) $ret["ComponentId"] = $componentId;
-        $edition = $bibliographicDescription->getElementsByTagName("Edition")->item(0)->nodeValue;
-        if (isset($edition)) $ret["Edition"] = $edition;
-        $pagination = $bibliographicDescription->getElementsByTagName("Pagination")->item(0)->nodeValue;
-        if (isset($pagination)) $ret["Pagination"] = $pagination;
-        $placeOfPublication = $bibliographicDescription->getElementsByTagName("PlaceOfPublication")->item(0)->nodeValue;
-        if (isset($placeOfPublication)) $ret["PlaceOfPublication"] = $placeOfPublication;
-        $publicationDate = $bibliographicDescription->getElementsByTagName("PublicationDate")->item(0)->nodeValue;
-        if (isset($publicationDate)) $ret["PublicationDate"] = $publicationDate;
-        $publicationDateOfComponent = $bibliographicDescription->getElementsByTagName("PublicationDateOfComponent")->item(0)->nodeValue;
-        if (isset($publicationDateOfComponent)) $ret["PublicationDateOfComponent"] = $publicationDateOfComponent;
-        $publisher = $bibliographicDescription->getElementsByTagName("Publisher")->item(0)->nodeValue;
-        if (isset($publisher)) $ret["Publisher"] = $publisher;
-        $seriesTitleNumber = $bibliographicDescription->getElementsByTagName("SeriesTitleNumber")->item(0)->nodeValue;
-        if (isset($seriesTitleNumber)) $ret["SeriesTitleNumber"] = $seriesTitleNumber;
-        $title = $bibliographicDescription->getElementsByTagName("Title")->item(0)->nodeValue;
-        if (isset($title)) $ret["Title"] = $title;
-        $titleOfComponent = $bibliographicDescription->getElementsByTagName("TitleOfComponent")->item(0)->nodeValue;
-        if (isset($titleOfComponent)) $ret["TitleOfComponent"] = $titleOfComponent;
-        $bibliographicLevel = $bibliographicDescription->getElementsByTagName("BibliographicLevel")->item(0)->nodeValue;
-        if (isset($bibliographicLevel)) $ret["BibliographicLevel"] = $bibliographicLevel;
-        $sponsoringBody = $bibliographicDescription->getElementsByTagName("SponsoringBody")->item(0)->nodeValue;
-        if (isset($sponsoringBody)) $ret["SponsoringBody"] = $sponsoringBody;
-        $electronicDataFormatType = $bibliographicDescription->getElementsByTagName("ElectronicDataFormatType")->item(0)->nodeValue;
-        if (isset($electronicDataFormatType)) $ret["ElectronicDataFormatType"] = $electronicDataFormatType;
-        $language = $bibliographicDescription->getElementsByTagName("Language")->item(0)->nodeValue;
-        if (isset($language)) $ret["Language"] = $language;
-        $mediumType = $bibliographicDescription->getElementsByTagName("MediumType")->item(0)->nodeValue;
-        if (isset($mediumType)) $ret["MediumType"] = $mediumType;
+        self::_get_element($ret, $bibliographicDescription, 'Author');
+        self::_get_element($ret, $bibliographicDescription, 'AuthorOfComponent');
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicItemId', 'BibliographicItemIdentifier'));
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicItemId', 'BibliographicItemIdentifierCode', 'Value'), 'BibliographicItemIdentifierCode');
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicRecordId', 'BibliographicRecordIdentifier'));
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicRecordId', 'UniqueAgencyId', 'Value'), 'BibliographicUniqueAgencyId');
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicRecordId', 'BibliographicRecordIdentifierCode', 'Value'), 'BibliographicRecordIdentifierCode');
+        self::_get_element($ret, $bibliographicDescription, array('ComponentId', 'ComponentIdentifierType', 'Value'), 'ComponentIdentifierType');
+        self::_get_element($ret, $bibliographicDescription, array('ComponentId', 'ComponentIdentifier'));
+        self::_get_element($ret, $bibliographicDescription, 'Edition');
+        self::_get_element($ret, $bibliographicDescription, 'Pagination');
+        self::_get_element($ret, $bibliographicDescription, 'PlaceOfPublication');
+        self::_get_element($ret, $bibliographicDescription, 'PublicationDate');
+        self::_get_element($ret, $bibliographicDescription, 'PublicationDateOfComponent');
+        self::_get_element($ret, $bibliographicDescription, 'Publisher');
+        self::_get_element($ret, $bibliographicDescription, 'SeriesTitleNumber');
+        self::_get_element($ret, $bibliographicDescription, 'Title');
+        self::_get_element($ret, $bibliographicDescription, 'TitleOfComponent');
+        self::_get_element($ret, $bibliographicDescription, array('BibliographicLevel', 'Value'), 'BibliographicLevel');
+        self::_get_element($ret, $bibliographicDescription, 'SponsoringBody');
+        self::_get_element($ret, $bibliographicDescription, array('ElectronicDataFormatType', 'Value'), 'ElectronicDataFormatType');
+        self::_get_element($ret, $bibliographicDescription, array('Language', 'Value'), 'Language');
+        self::_get_element($ret, $bibliographicDescription, array('MediumType', 'Value'), 'MediumType');
       }
       // Eneste understøttede tag i <ItemOptionalFields> er <BibliographicDescription>, alle resterende tags understøttes ikke i denne version
     }    
+    return $ret;
+  }
+  
+
+
+/** \brief _parse_user_optional_fields
+*
+* Fortolker et DOMElement, og henter Item Optional Fields info ud af det
+*
+* @param DOMElement $lookupResponse Det element, hvorfra Item Optional Fields info ønskes læst 
+* @return array Item Optional Fields info
+*
+*/
+  private function _parse_user_optional_fields($lookupResponse) {
+    $ret = array();
+    // Ingen support - endnu
     return $ret;
   }
   
@@ -1393,35 +1230,35 @@ class ncip extends http_wrapper {
     $authentication_input_tags = $xml->getElementsByTagName("AuthenticationInput");
     if (empty($authentication_input_tags)) return null;
     foreach ($authentication_input_tags as $item) {
-      $type = $this->_parse_scheme_value_pair($item, "AuthenticationInputType");
+      $type = self::_get_element($dummy, $item, array("AuthenticationInputType", "Value"), "AuthenticationInputType");
       if ($type == $authentication_input_type_name) {
-        return $item->getElementsByTagName("AuthenticationInputData")->item(0)->nodeValue;
+        return self::_get_element($dummy, $item, "AuthenticationInputData");
       }
     }
     return null;
   }
 
 
-
-/** \brief _parse_scheme_value_pair
+/** \brief _parse_amount
 *
-* Fortolker et DOMElement, og henter et Scheme / Value par ud af det
+* Fortolker et DOMElement, og henter amount ud af det
 *
-* @param DOMElement $xml Det element, hvorfra Scheme / Value parret ønskes læst 
-* @param string $name Tag navnet på det element, der indeholder Scheme / Value parret
-* @return string værdien af <Value> tagget i Scheme / Value parret
+* @param DOMElement $dom Det element, hvorfra amount ønskes læst 
+* @param string $tag Navnet på det tag, der ønskes læst
+* @return array Det resulterende array
 *
 */
-  private function _parse_scheme_value_pair($xml, $name=null) {
-    if (empty($xml)) return null;
-    if (!empty($name)) {
-      $xml = $xml->getElementsByTagName($name)->item(0);
-    }
-    if (empty($xml)) return null;
-    return $xml->getElementsByTagName("Value")->item(0)->nodeValue;
+  private function _parse_amount($dom, $tag) {
+    if (!isset($dom)) return array();
+    $ret = array();
+    $amount = $dom->getElementsByTagName($tag)->item(0);
+    if (empty($amount)) return array();
+    self::_get_element($ret[$tag], $amount, array('CurrencyCode', 'Value'), 'CurrencyCode');
+    self::_get_element($ret[$tag], $amount, 'MonetaryValue');
+    return $ret;
   }
-  
-  
+
+
 /** \brief _parse_problem
 *
 * Fortolker et DOMElement, og henter Problem info ud af det
@@ -1438,7 +1275,7 @@ class ncip extends http_wrapper {
 *
 */
   private function _parse_problem($xml) {
-    if (!isset($xml)) return $this->_problem();
+    if (!isset($xml)) return self::_problem();
     $problem = $xml->getElementsByTagName("Problem")->item(0);
     if (!isset($problem)) return array();  // No problem detected
 
@@ -1449,14 +1286,14 @@ class ncip extends http_wrapper {
       $ret_value["Error"] = "ProcessingError";
 
       $processingErrorType = $processingError->getElementsByTagName("ProcessingErrorType")->item(0);
-      if (!isset($processingErrorType)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "ProcessingErrorType", "NCIP Messaging Error Type Scheme");
+      if (!isset($processingErrorType)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "ProcessingErrorType", "NCIP Messaging Error Type Scheme");
       $ret_value["Scheme"] = $processingErrorType->getElementsByTagName("Scheme")->item(0)->nodeValue;
       if (empty($ret_value["Scheme"])) unset($ret_value["Scheme"]);
       $ret_value["Type"] = $processingErrorType->getElementsByTagName("Value")->item(0)->nodeValue;
       if (empty($ret_value["Type"])) unset($ret_value["Type"]);
 
       $processingErrorElement = $processingError->getElementsByTagName("ProcessingErrorElement")->item(0);
-//      if (!isset($processingErrorElement)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "ProcessingErrorElement", "NCIP Messaging Error Type Scheme");
+//      if (!isset($processingErrorElement)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "ProcessingErrorElement", "NCIP Messaging Error Type Scheme");
       if (isset($processingErrorElement)) {
         $ret_value["Element"] = $processingErrorElement->getElementsByTagName("ElementName")->item(0)->nodeValue;
         if (empty($ret_value["Element"])) unset($ret_value["Element"]);
@@ -1472,14 +1309,14 @@ class ncip extends http_wrapper {
       $ret_value["Error"] = "MessagingError";
 
       $messagingErrorType = $messagingError->getElementsByTagName("MessagingErrorType")->item(0);
-      if (!isset($messagingErrorType)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "MessagingErrorType", "NCIP Messaging Error Type Scheme");
+      if (!isset($messagingErrorType)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "MessagingErrorType", "NCIP Messaging Error Type Scheme");
       $ret_value["Scheme"] = $messagingErrorType->getElementsByTagName("Scheme")->item(0)->nodeValue;
       if (empty($ret_value["Scheme"])) unset($ret_value["Scheme"]);
       $ret_value["Type"] = $messagingErrorType->getElementsByTagName("Value")->item(0)->nodeValue;
       if (empty($ret_value["Type"])) unset($ret_value["Type"]);
 
       $messagingErrorElement = $messagingError->getElementsByTagName("MessagingErrorElement")->item(0);
-      if (!isset($messagingErrorElement)) return $this->_problem("MessagingError", "Invalid Message Syntax Error", "MessagingErrorElement", "NCIP Messaging Error Type Scheme");
+      if (!isset($messagingErrorElement)) return self::_problem("MessagingError", "Invalid Message Syntax Error", "MessagingErrorElement", "NCIP Messaging Error Type Scheme");
       $ret_value["Element"] = $messagingErrorElement->getElementsByTagName("ElementName")->item(0)->nodeValue;
       if (empty($ret_value["Element"])) unset($ret_value["Element"]);
       $ret_value["Value"] = $messagingErrorElement->getElementsByTagName("MessagingErrorValue")->item(0)->nodeValue;
@@ -1487,7 +1324,7 @@ class ncip extends http_wrapper {
 
       return array("Problem" => $ret_value);
     }
-  return $this->_problem("MessagingError", "Invalid Message Syntax Error", "", "NCIP Messaging Error Type Scheme");
+  return self::_problem("MessagingError", "Invalid Message Syntax Error", "", "NCIP Messaging Error Type Scheme");
   }
   
 }
