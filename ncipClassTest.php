@@ -3835,6 +3835,1759 @@ array(
 )),
 
 //------------------------------------------------------------------------------
+// Hjemmelavet test: Test af lookupUser med alle felter udfyldt
+array('
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1.01//EN" "http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+<NCIPMessage version="http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+	<LookupUserResponse>
+		<ResponseHeader>
+			<FromSystemId>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</FromSystemId>
+			<FromSystemAuthentication datatype="string">text</FromSystemAuthentication>
+			<FromAgencyId>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+			</FromAgencyId>
+			<FromAgencyAuthentication datatype="string">text</FromAgencyAuthentication>
+			<ToSystemId>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</ToSystemId>
+			<ToAgencyId>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+			</ToAgencyId>
+		</ResponseHeader>
+		<UniqueUserId>
+			<UniqueAgencyId>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</UniqueAgencyId>
+			<UserIdentifierValue datatype="string">text</UserIdentifierValue>
+		</UniqueUserId>
+		<UserFiscalAccount>
+			<AccountBalance>
+				<CurrencyCode>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</CurrencyCode>
+				<MonetaryValue datatype="integer">text</MonetaryValue>
+			</AccountBalance>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+		</UserFiscalAccount>
+		<UserFiscalAccount>
+			<AccountBalance>
+				<CurrencyCode>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</CurrencyCode>
+				<MonetaryValue datatype="integer">text</MonetaryValue>
+			</AccountBalance>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+		</UserFiscalAccount>
+		<UserFiscalAccount>
+			<AccountBalance>
+				<CurrencyCode>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</CurrencyCode>
+				<MonetaryValue datatype="integer">text</MonetaryValue>
+			</AccountBalance>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+			<AccountDetails>
+				<AccrualDate datatype="dateTime">text</AccrualDate>
+				<FiscalTransactionInformation>
+					<FiscalActionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalActionType>
+					<FiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</FiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<RelatedFiscalTransactionReferenceId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<FiscalTransactionIdentifierValue datatype="string">text</FiscalTransactionIdentifierValue>
+					</RelatedFiscalTransactionReferenceId>
+					<FiscalTransactionType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</FiscalTransactionType>
+					<ValidFromDate datatype="dateTime">text</ValidFromDate>
+					<ValidToDate datatype="dateTime">text</ValidToDate>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+					<FiscalTransactionDescription datatype="string">text</FiscalTransactionDescription>
+					<UniqueRequestId>
+						<UniqueAgencyId>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</UniqueAgencyId>
+						<RequestIdentifierValue datatype="string">text</RequestIdentifierValue>
+					</UniqueRequestId>
+					<ItemDetails>
+						<UniqueItemId>
+							<UniqueAgencyId>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</UniqueAgencyId>
+							<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+						</UniqueItemId>
+						<BibliographicDescription>
+							<Author datatype="string">text</Author>
+							<AuthorOfComponent datatype="string">text</AuthorOfComponent>
+							<BibliographicItemId>
+								<BibliographicItemIdentifier datatype="string">text</BibliographicItemIdentifier>
+								<BibliographicItemIdentifierCode>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</BibliographicItemIdentifierCode>
+							</BibliographicItemId>
+							<BibliographicRecordId>
+								<BibliographicRecordIdentifier datatype="string">text</BibliographicRecordIdentifier>
+								<UniqueAgencyId>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</UniqueAgencyId>
+							</BibliographicRecordId>
+							<ComponentId>
+								<ComponentIdentifierType>
+									<Scheme datatype="string">text</Scheme>
+									<Value datatype="string">text</Value>
+								</ComponentIdentifierType>
+								<ComponentIdentifier datatype="string">text</ComponentIdentifier>
+							</ComponentId>
+							<Edition datatype="string">text</Edition>
+							<Pagination datatype="string">text</Pagination>
+							<PlaceOfPublication datatype="string">text</PlaceOfPublication>
+							<PublicationDate datatype="string">text</PublicationDate>
+							<PublicationDateOfComponent datatype="string">text</PublicationDateOfComponent>
+							<Publisher datatype="string">text</Publisher>
+							<SeriesTitleNumber datatype="string">text</SeriesTitleNumber>
+							<Title datatype="string">text</Title>
+							<TitleOfComponent datatype="string">text</TitleOfComponent>
+							<BibliographicLevel>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</BibliographicLevel>
+							<SponsoringBody datatype="string">text</SponsoringBody>
+							<ElectronicDataFormatType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</ElectronicDataFormatType>
+							<Language>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</Language>
+							<MediumType>
+								<Scheme datatype="string">text</Scheme>
+								<Value datatype="string">text</Value>
+							</MediumType>
+						</BibliographicDescription>
+						<DateCheckedOut datatype="dateTime">text</DateCheckedOut>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateRenewed datatype="dateTime">text</DateRenewed>
+						<DateDue datatype="dateTime">text</DateDue>
+						<DateReturned datatype="dateTime">text</DateReturned>
+					</ItemDetails>
+				</FiscalTransactionInformation>
+			</AccountDetails>
+		</UserFiscalAccount>
+		<LoanedItemsCount>
+			<CirculationStatus>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</CirculationStatus>
+			<LoanedItemCountValue datatype="nonNegativeInteger">text</LoanedItemCountValue>
+		</LoanedItemsCount>
+		<LoanedItemsCount>
+			<CirculationStatus>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</CirculationStatus>
+			<LoanedItemCountValue datatype="nonNegativeInteger">text</LoanedItemCountValue>
+		</LoanedItemsCount>
+		<LoanedItemsCount>
+			<CirculationStatus>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</CirculationStatus>
+			<LoanedItemCountValue datatype="nonNegativeInteger">text</LoanedItemCountValue>
+		</LoanedItemsCount>
+		<RequestedItemsCount>
+			<RequestType>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</RequestType>
+			<RequestedItemCountValue datatype="nonNegativeInteger">text</RequestedItemCountValue>
+		</RequestedItemsCount>
+		<RequestedItemsCount>
+			<RequestType>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</RequestType>
+			<RequestedItemCountValue datatype="nonNegativeInteger">text</RequestedItemCountValue>
+		</RequestedItemsCount>
+		<RequestedItemsCount>
+			<RequestType>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</RequestType>
+			<RequestedItemCountValue datatype="nonNegativeInteger">text</RequestedItemCountValue>
+		</RequestedItemsCount>
+		<UserTransaction>
+			<RequestedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<RequestType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestType>
+				<RequestStatusType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestStatusType>
+				<DatePlaced datatype="dateTime">text</DatePlaced>
+				<PickupDate datatype="dateTime">text</PickupDate>
+				<PickupExpiryDate datatype="dateTime">text</PickupExpiryDate>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<HoldQueuePosition datatype="positiveInteger">text</HoldQueuePosition>
+			</RequestedItem>
+			<RequestedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<RequestType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestType>
+				<RequestStatusType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestStatusType>
+				<DatePlaced datatype="dateTime">text</DatePlaced>
+				<PickupDate datatype="dateTime">text</PickupDate>
+				<PickupExpiryDate datatype="dateTime">text</PickupExpiryDate>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<HoldQueuePosition datatype="positiveInteger">text</HoldQueuePosition>
+			</RequestedItem>
+			<RequestedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<RequestType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestType>
+				<RequestStatusType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</RequestStatusType>
+				<DatePlaced datatype="dateTime">text</DatePlaced>
+				<PickupDate datatype="dateTime">text</PickupDate>
+				<PickupExpiryDate datatype="dateTime">text</PickupExpiryDate>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<HoldQueuePosition datatype="positiveInteger">text</HoldQueuePosition>
+			</RequestedItem>
+			<LoanedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<DateDue datatype="dateTime">text</DateDue>
+				<Amount>
+					<CurrencyCode>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</CurrencyCode>
+					<MonetaryValue datatype="integer">text</MonetaryValue>
+				</Amount>
+			</LoanedItem>
+			<LoanedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<DateDue datatype="dateTime">text</DateDue>
+				<Amount>
+					<CurrencyCode>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</CurrencyCode>
+					<MonetaryValue datatype="integer">text</MonetaryValue>
+				</Amount>
+			</LoanedItem>
+			<LoanedItem>
+				<UniqueItemId>
+					<UniqueAgencyId>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UniqueAgencyId>
+					<ItemIdentifierValue datatype="string">text</ItemIdentifierValue>
+				</UniqueItemId>
+				<ReminderLevel datatype="positiveInteger">text</ReminderLevel>
+				<DateDue datatype="dateTime">text</DateDue>
+				<Amount>
+					<CurrencyCode>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</CurrencyCode>
+					<MonetaryValue datatype="integer">text</MonetaryValue>
+				</Amount>
+			</LoanedItem>
+		</UserTransaction>
+		<UserOptionalFields>
+			<VisibleUserId>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<VisibleUserIdentifierType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</VisibleUserIdentifierType>
+				<VisibleUserIdentifier datatype="string">text</VisibleUserIdentifier>
+			</VisibleUserId>
+			<VisibleUserId>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<VisibleUserIdentifierType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</VisibleUserIdentifierType>
+				<VisibleUserIdentifier datatype="string">text</VisibleUserIdentifier>
+			</VisibleUserId>
+			<VisibleUserId>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<VisibleUserIdentifierType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</VisibleUserIdentifierType>
+				<VisibleUserIdentifier datatype="string">text</VisibleUserIdentifier>
+			</VisibleUserId>
+			<NameInformation>
+				<PersonalNameInformation>
+					<UnstructuredPersonalUserName datatype="string">text</UnstructuredPersonalUserName>
+				</PersonalNameInformation>
+			</NameInformation>
+			<UserAddressInformation>
+				<UserAddressRoleType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UserAddressRoleType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<PhysicalAddress>
+					<StructuredAddress>
+						<LocationWithinBuilding datatype="string">text</LocationWithinBuilding>
+						<HouseName datatype="string">text</HouseName>
+						<District datatype="string">text</District>
+						<Locality datatype="string">text</Locality>
+						<Region datatype="string">text</Region>
+						<Country datatype="string">text</Country>
+						<PostalCode datatype="string">text</PostalCode>
+						<CareOf datatype="string">text</CareOf>
+					</StructuredAddress>
+					<PhysicalAddressType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PhysicalAddressType>
+				</PhysicalAddress>
+			</UserAddressInformation>
+			<UserAddressInformation>
+				<UserAddressRoleType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UserAddressRoleType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<PhysicalAddress>
+					<StructuredAddress>
+						<LocationWithinBuilding datatype="string">text</LocationWithinBuilding>
+						<HouseName datatype="string">text</HouseName>
+						<District datatype="string">text</District>
+						<Locality datatype="string">text</Locality>
+						<Region datatype="string">text</Region>
+						<Country datatype="string">text</Country>
+						<PostalCode datatype="string">text</PostalCode>
+						<CareOf datatype="string">text</CareOf>
+					</StructuredAddress>
+					<PhysicalAddressType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PhysicalAddressType>
+				</PhysicalAddress>
+			</UserAddressInformation>
+			<UserAddressInformation>
+				<UserAddressRoleType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UserAddressRoleType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<PhysicalAddress>
+					<StructuredAddress>
+						<LocationWithinBuilding datatype="string">text</LocationWithinBuilding>
+						<HouseName datatype="string">text</HouseName>
+						<District datatype="string">text</District>
+						<Locality datatype="string">text</Locality>
+						<Region datatype="string">text</Region>
+						<Country datatype="string">text</Country>
+						<PostalCode datatype="string">text</PostalCode>
+						<CareOf datatype="string">text</CareOf>
+					</StructuredAddress>
+					<PhysicalAddressType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PhysicalAddressType>
+				</PhysicalAddress>
+			</UserAddressInformation>
+			<DateOfBirth datatype="dateTime">text</DateOfBirth>
+			<UserLanguage>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</UserLanguage>
+			<UserLanguage>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</UserLanguage>
+			<UserLanguage>
+				<Scheme datatype="string">text</Scheme>
+				<Value datatype="string">text</Value>
+			</UserLanguage>
+			<UserPrivilege>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<AgencyUserPrivilegeType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</AgencyUserPrivilegeType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<UserPrivilegeFee>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+				</UserPrivilegeFee>
+				<UserPrivilegeStatus>
+					<UserPrivilegeStatusType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UserPrivilegeStatusType>
+					<DateOfUserPrivilegeStatus datatype="dateTime">text</DateOfUserPrivilegeStatus>
+				</UserPrivilegeStatus>
+				<UserPrivilegeDescription datatype="string">text</UserPrivilegeDescription>
+			</UserPrivilege>
+			<UserPrivilege>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<AgencyUserPrivilegeType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</AgencyUserPrivilegeType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<UserPrivilegeFee>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+				</UserPrivilegeFee>
+				<UserPrivilegeStatus>
+					<UserPrivilegeStatusType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UserPrivilegeStatusType>
+					<DateOfUserPrivilegeStatus datatype="dateTime">text</DateOfUserPrivilegeStatus>
+				</UserPrivilegeStatus>
+				<UserPrivilegeDescription datatype="string">text</UserPrivilegeDescription>
+			</UserPrivilege>
+			<UserPrivilege>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<AgencyUserPrivilegeType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</AgencyUserPrivilegeType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+				<UserPrivilegeFee>
+					<Amount>
+						<CurrencyCode>
+							<Scheme datatype="string">text</Scheme>
+							<Value datatype="string">text</Value>
+						</CurrencyCode>
+						<MonetaryValue datatype="integer">text</MonetaryValue>
+					</Amount>
+					<PaymentMethodType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</PaymentMethodType>
+				</UserPrivilegeFee>
+				<UserPrivilegeStatus>
+					<UserPrivilegeStatusType>
+						<Scheme datatype="string">text</Scheme>
+						<Value datatype="string">text</Value>
+					</UserPrivilegeStatusType>
+					<DateOfUserPrivilegeStatus datatype="dateTime">text</DateOfUserPrivilegeStatus>
+				</UserPrivilegeStatus>
+				<UserPrivilegeDescription datatype="string">text</UserPrivilegeDescription>
+			</UserPrivilege>
+			<BlockOrTrap>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<BlockOrTrapType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</BlockOrTrapType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+			</BlockOrTrap>
+			<BlockOrTrap>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<BlockOrTrapType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</BlockOrTrapType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+			</BlockOrTrap>
+			<BlockOrTrap>
+				<UniqueAgencyId>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</UniqueAgencyId>
+				<BlockOrTrapType>
+					<Scheme datatype="string">text</Scheme>
+					<Value datatype="string">text</Value>
+				</BlockOrTrapType>
+				<ValidFromDate datatype="dateTime">text</ValidFromDate>
+				<ValidToDate datatype="dateTime">text</ValidToDate>
+			</BlockOrTrap>
+		</UserOptionalFields>
+	</LookupUserResponse>
+</NCIPMessage>
+',
+array(
+    'Ncip' => 'LookupUserResponse',
+    'FromSystemId' => 'text',
+    'FromSystemAuthentication' => 'text',
+    'FromAgencyId' => 'text',
+    'FromAgencyAuthentication' => 'text',
+    'ToSystemId' => 'text',
+    'ToAgencyId' => 'text',
+    'UniqueUserId' => Array
+        (
+            'UserIdentifierValue' => 'text',
+            'UniqueAgencyId' => 'text',
+        ),
+    'RequestedItem' => Array
+        (
+            '0' => Array
+                (
+                    'Problem' => Array
+                        (
+                            'Error' => 'MessagingError',
+                            'Type' => 'Invalid Message Syntax Error',
+                            'Element' => 'UniqueRequestId',
+                            'Scheme' => 'NCIP Messaging Error Type Scheme',
+                        ),
+                    'RequestType' => 'text',
+                    'RequestStatusType' => 'text',
+                    'DatePlaced' => '',
+                    'PickupDate' => '',
+                    'PickupExpiryDate' => '',
+                    'PickupReminderLevelDate' => 'text',
+                    'HoldQueuePosition' => 'text',
+                ),
+            '1' => Array
+                (
+                    'Problem' => Array
+                        (
+                            'Error' => 'MessagingError',
+                            'Type' => 'Invalid Message Syntax Error',
+                            'Element' => 'UniqueRequestId',
+                            'Scheme' => 'NCIP Messaging Error Type Scheme',
+                        ),
+                    'RequestType' => 'text',
+                    'RequestStatusType' => 'text',
+                    'DatePlaced' => '',
+                    'PickupDate' => '',
+                    'PickupExpiryDate' => '',
+                    'PickupReminderLevelDate' => 'text',
+                    'HoldQueuePosition' => 'text',
+                ),
+            '2' => Array
+                (
+                    'Problem' => Array
+                        (
+                            'Error' => 'MessagingError',
+                            'Type' => 'Invalid Message Syntax Error',
+                            'Element' => 'UniqueRequestId',
+                            'Scheme' => 'NCIP Messaging Error Type Scheme',
+                        ),
+                    'RequestType' => 'text',
+                    'RequestStatusType' => 'text',
+                    'DatePlaced' => '',
+                    'PickupDate' => '',
+                    'PickupExpiryDate' => '',
+                    'PickupReminderLevelDate' => 'text',
+                    'HoldQueuePosition' => 'text',
+                ),
+        ),
+    'LoanedItem' => Array
+        (
+            '0' => Array
+                (
+                    'UniqueItemId' => Array
+                        (
+                            'ItemIdentifierValue' => 'text',
+                            'UniqueAgencyId' => 'text',
+                        ),
+                    'ReminderLevel' => 'text',
+                    'DateDue' => '',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                ),
+            '1' => Array
+                (
+                    'UniqueItemId' => Array
+                        (
+                            'ItemIdentifierValue' => 'text',
+                            'UniqueAgencyId' => 'text',
+                        ),
+                    'ReminderLevel' => 'text',
+                    'DateDue' => '',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                ),
+            '2' => Array
+                (
+                    'UniqueItemId' => Array
+                        (
+                            'ItemIdentifierValue' => 'text',
+                            'UniqueAgencyId' => 'text',
+                        ),
+                    'ReminderLevel' => 'text',
+                    'DateDue' => '',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                ),
+        ),
+    'UnstructuredPersonalUserName' => 'text',
+)),
+
+//------------------------------------------------------------------------------
     );
   }
 
