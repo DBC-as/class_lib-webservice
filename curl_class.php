@@ -257,9 +257,10 @@ class cURL {
       'Blocks until there is activity on any of the curl_multi connections.'
    but including the line below, more than doubles the time used in this function???
 
-   So instead we busy-wait and run through the loop many times
+   Has to call it with a timeout less than 1, or it will default (and wait) 1 second for
+   each connection????????
 */
-      //curl_multi_select($this->curl_multi_handle);
+      curl_multi_select($this->curl_multi_handle, 0.01);
       $status = curl_multi_exec($this->curl_multi_handle, $active);
       if ($info = curl_multi_info_read($this->curl_multi_handle)) {
         if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
