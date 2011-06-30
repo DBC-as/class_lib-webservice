@@ -265,6 +265,7 @@ abstract class webServiceServer {
     */
 
     protected function validate_soap($soap, $schemas, $validate_schema) {
+        libxml_use_internal_errors(true);
         $validate_soap = new DomDocument;
         $validate_soap->preserveWhiteSpace = FALSE;
         @ $validate_soap->loadXml($soap);
@@ -298,13 +299,20 @@ abstract class webServiceServer {
     *
     */
     protected function soap_error($err) {
-        header('HTTP/1.0 500 Internal Server Error');
+        $elevel = array(LIBXML_ERR_WARNING => "\n Warning",
+                        LIBXML_ERR_ERROR => "\n Error",
+                        LIBXML_ERR_FATAL => "\n Fatal");
+        if ($errors = libxml_get_errors())
+            foreach ($errors as $error)
+                $xml_err .= $elevel[$error->level] . ": " .  trim($error->message) . 
+                            ($error->file ? " in file " . $error->file : " on line " . $error->line);
+        header('HTTP/1.0 400 Bad Request');
         header('Content-Type: text/xml; charset="utf-8"');
         echo '<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
         <SOAP-ENV:Body>
         <SOAP-ENV:Fault>
         <faultcode>SOAP-ENV:Server</faultcode>
-        <faultstring>' . htmlspecialchars($err) . '</faultstring>
+        <faultstring>' . htmlspecialchars($err . $xml_err) . '</faultstring>
         </SOAP-ENV:Fault>
         </SOAP-ENV:Body>
         </SOAP-ENV:Envelope>';
@@ -319,6 +327,7 @@ abstract class webServiceServer {
     */
 
     protected function validate_xml($xml, $schema_filename, $resolve_externals=FALSE) {
+        libxml_use_internal_errors(true);
         $validateXml = new DomDocument;
         $validateXml->resolveExternals = $resolve_externals;
         $validateXml->loadXml($xml);
