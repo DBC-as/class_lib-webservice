@@ -68,6 +68,8 @@ abstract class webServiceServer {
             die($http_error);
         }
 
+        libxml_use_internal_errors(TRUE);
+
         verbose::open($this->config->get_value('logfile', 'setup'),
                       $this->config->get_value('verbose', 'setup'));
         $this->watch = new stopwatch('', ' ', '', '%s:%01.3f');
@@ -265,7 +267,6 @@ abstract class webServiceServer {
     */
 
     protected function validate_soap($soap, $schemas, $validate_schema) {
-        libxml_use_internal_errors(true);
         $validate_soap = new DomDocument;
         $validate_soap->preserveWhiteSpace = FALSE;
         @ $validate_soap->loadXml($soap);
@@ -327,7 +328,6 @@ abstract class webServiceServer {
     */
 
     protected function validate_xml($xml, $schema_filename, $resolve_externals=FALSE) {
-        libxml_use_internal_errors(true);
         $validateXml = new DomDocument;
         $validateXml->resolveExternals = $resolve_externals;
         $validateXml->loadXml($xml);
