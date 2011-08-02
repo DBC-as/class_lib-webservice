@@ -264,7 +264,7 @@ abstract class webServiceServer {
             } else
                 die('No files found for regression test');
         } else
-            die('Cannot open regression catalouge: ' $this->xmldir.'/regression');
+            die('Cannot open regression catalouge: ' . $this->xmldir.'/regression');
     }
 
     /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
