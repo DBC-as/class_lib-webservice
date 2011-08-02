@@ -101,6 +101,8 @@ abstract class webServiceServer {
             die($this->version);
         } elseif ($_SERVER['QUERY_STRING'] == 'HowRU') {
             $this->HowRU();
+        } elseif ($_SERVER['QUERY_STRING'] == 'RegressionTest') {
+            $this->RegressionTest();
         } elseif (isset($_POST['xml'])) {
             $xml=trim(stripslashes($_POST['xml']));
             $this->soap_request($xml);
@@ -234,6 +236,35 @@ abstract class webServiceServer {
                 $homie = (gethostbyname($remote) == $_SERVER['REMOTE_ADDR']); // paranoia check
         }
         return $homie;
+    }
+
+    /** \brief RegressionTest tests the webservice
+    *
+    */
+    private function RegressionTest() {
+        if (! is_dir($this->xmldir.'/regression'))
+            die('No regression catalouge');
+
+        if ($dh = opendir($this->xmldir.'/regression')) {
+            chdir($this->xmldir.'/regression');
+            $reqs = array();
+            while (($file = readdir($dh)) !== false)
+                if (!is_dir($file) && preg_match('/xml$/',$file,$matches)) 
+                    $fnames[] = $file;
+            if (count($fnames)) {
+                asort($fnames);
+                $curl = new curl();
+                $curl->set_option(CURLOPT_POST, 1);
+                foreach ($fnames as $fname) {
+                    $contents = str_replace("\r\n", PHP_EOL, file_get_contents($fname));
+                    $curl->set_post_xml($contents);
+                    $reply = $curl->get($_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+                    echo $reply;
+                }
+            } else
+                die('No files found for regression test');
+        } else
+            die('Cannot open regression catalouge: ' $this->xmldir.'/regression');
     }
 
     /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
