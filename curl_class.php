@@ -255,9 +255,9 @@ class cURL {
 /*
    curl_multi_select() should according to the manual:
       'Blocks until there is activity on any of the curl_multi connections.'
-   but including the line below, more than doubles the time used in this function???
+   but including the line below without an timeout, more than doubles the time used in this function???
 
-   Has to call it with a timeout less than 1, or it will default (and wait) 1 second for
+   Has to call it with a timeout less than 1, or it will apparently default (and wait) 1 second for
    each connection????????
 */
       curl_multi_select($this->curl_multi_handle, 0.01);
