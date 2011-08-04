@@ -46,6 +46,7 @@ abstract class webServiceServer {
     protected $xmlns; // namespaces and prefixes
     protected $tag_sequence; // tag sequence according to XSD or noame of XSD
     protected $soap_action;
+    protected $dump_timer;
     protected $output_type='';
 
 
@@ -80,6 +81,7 @@ abstract class webServiceServer {
         $this->tag_sequence = $this->config->get_value('tag_sequence', 'setup');
         $this->version = $this->config->get_value('version', 'setup');
         $this->output_type = $this->config->get_value('default_output_type', 'setup');
+        $this->dump_timer = $this->config->get_value('dump_timer', 'setup');
 
         if ($aaa_oci = $this->config->get_value('aaa_credentials', 'aaa')) {
             $this->aaa = new aaa($aaa_oci,
@@ -189,8 +191,8 @@ abstract class webServiceServer {
                         echo $response_xml;
                     }
                     // request done and response send, dump timer
-                    if ($dump_timer = $this->config->get_value('dump_timer', 'setup'))
-                        verbose::log(TIMER, sprintf($dump_timer, $this->soap_action) .
+                    if ($this->dump_timer)
+                        verbose::log(TIMER, sprintf($this->dump_timer, $this->soap_action) .
                                      ':: ' . $this->watch->dump());
                 } else
                     $this->soap_error('Error in response validation.');
