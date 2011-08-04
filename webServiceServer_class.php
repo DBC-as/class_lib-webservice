@@ -402,6 +402,9 @@ abstract class webServiceServer {
     */
 
     private function create_sample_forms() {
+        if (!($sample_header = $this->config->get_value('sample_header', 'setup')))
+            $sample_header = 'Content-type: text/html; charset=utf-8';
+        header ($sample_header);
         echo '<html><head>';
 
         // Open a known directory, and proceed to read its contents
