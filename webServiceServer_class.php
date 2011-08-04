@@ -402,7 +402,9 @@ abstract class webServiceServer {
     */
 
     private function create_sample_forms() {
-        if (!($sample_header = $this->config->get_value('sample_header', 'setup')))
+        if ($sample_header = $this->config->get_value('sample_header', 'setup')) {
+            $header_warning = '<p>Ensure that the character set of the request match your browser settings</p>';
+        } else
             $sample_header = 'Content-type: text/html; charset=utf-8';
         header ($sample_header);
         echo '<html><head>';
@@ -430,7 +432,7 @@ abstract class webServiceServer {
                     }
 
                     echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
-                    echo '</head><body><form target="_blank" name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
+                    echo '</head><body>' . $header_warning . '<form target="_blank" name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
                     echo $_REQUEST['xml'];
                     echo '</textarea><br><br>';
                     echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
