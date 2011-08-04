@@ -20,9 +20,9 @@
 */
 
 /**
- *  
+ *
  * Wrapper for memcachedb
- * 
+ *
  * Information about memcachedb and the corresponding server, can be
  * found at http://memcachedb.org
  *
@@ -39,61 +39,72 @@
 
 class cache_db
 {
-  private $memcache=null;
-  private $expire;
+    private $memcache=null;
+    private $expire;
 
- /**
-  * \brief constructor
-  * @param host (string)
-  * @param port (integer)
-  * @param expire (timestamp) default expire datestamp
-  **/
+    /**
+     * \brief constructor
+     * @param host (string)
+     * @param port (integer)
+     * @param expire (timestamp) default expire datestamp
+     **/
 
-  function __construct($host, $port, $expire="") {
-		$this->memcache=new Memcache();
-    if (empty($port) && strpos($host, ":"))
-      list($host, $port) = explode(":", $host, 2);
-		if (!@$this->memcache->connect($host,$port) )
-	  	$this->memcache=null;
-    $this->expire = ($expire?$expire:strtotime("+1 day"));
-  }
+    function __construct($host, $port, $expire="") {
+        $this->memcache=new Memcache();
+        if (empty($port) && strpos($host, ":"))
+            list($host, $port) = explode(":", $host, 2);
+        if (!@$this->memcache->connect($host,$port) )
+            $this->memcache=null;
+        $this->expire = ($expire?$expire:strtotime("+1 day"));
+    }
 
-  function __destruct() { }
+    function __destruct() { }
 
 
- /**
-  * \brief Gets data stored with key $key
-  * @param key (string)
-  **/
+    /**
+     * \brief Gets data stored with key $key
+     * @param key (string)
+     **/
 
-  public function get($key) {
-    if (is_object($this->memcache))
-      return $this->memcache->get($key);
-    return FALSE;
-  }
+    public function get($key) {
+        if (is_object($this->memcache))
+            return $this->memcache->get($key);
+        return FALSE;
+    }
 
- /**
-  * \brief stores data with key $key in the memcache-server
-  * @param key (string)
-  * @param data (string)
-  * @param expire (timestamp) 
-  **/
+    /**
+     * \brief stores data with key $key in the memcache-server
+     * @param key (string)
+     * @param data (string)
+     * @param expire (timestamp)
+     **/
 
-  public function set($key,$data, $expire=0) {   
-    if (is_object($this->memcache))
-       return $this->memcache->set($key, $data, FALSE, ($expire?$expire:$this->expire));
-     return FALSE;
-  }
+    public function set($key,$data, $expire=0) {
+        if (is_object($this->memcache))
+            return $this->memcache->set($key, $data, FALSE, ($expire?$expire:$this->expire));
+        return FALSE;
+    }
 
- /**
-  * \brief mark all items in cache as expired
-  **/
+    /**
+     * \brief Delete data store with key in the memcached server
+     * @param key (string)
+     **/
 
-  public function flush() {
-    if(is_object($this->memcache))
-      return $this->memcache->flush();
-    return FALSE;
-  } 
+    public function delete($key) {
+        if (is_object($this->memcache))
+            return $this->memcache->delete($key);
+        return FALSE;
+    }
+
+    /**
+     * \brief mark all items in cache as expired
+     **/
+
+    public function flush() {
+        if (is_object($this->memcache))
+            return $this->memcache->flush();
+        return FALSE;
+    }
 }
 
 
