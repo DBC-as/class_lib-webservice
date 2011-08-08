@@ -42,8 +42,9 @@ class aaa {
     private $fors_oci;						// oci connection
     private $fors_credentials;		// oci login credentiales
     private $rights;							// the rights
+		private $vip_credentials;     // connect to VIP
 
-    public function __construct($fors_credentials, $cache_addr = '', $cache_seconds = 0, $ip_rights='') {
+    public function __construct($fors_credentials, $cache_addr = '', $cache_seconds = 0, $ip_rights='', $use_vip=FALSE) {
         $this->fors_credentials = $fors_credentials;
         if ($cache_addr) {
             $this->aaa_cache = new cache($cache_addr);
@@ -52,6 +53,9 @@ class aaa {
             $this->error_cache_seconds = 60;
         }
         $this->ip_rights = $ip_rights;
+		    if($use_vip) {
+      		$this->vip_credentials = $fors_credentials;
+    		}
     }
 
     /**
@@ -70,6 +74,21 @@ class aaa {
             if ($this->rights = $this->aaa_cache->get($cache_key))
                 return !empty($this->rights);
         }
+
+				if(!empty($this->vip_credentials)) {
+      		if (empty($this->vip_oci)) $this->vip_oci = new Oci($this->vip_credentials);
+      		try { $this->vip_oci->connect(); }
+      		catch (ociException $e) {
+        	verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->vip_oci->get_error_string());
+        	return FALSE;
+      	}
+
+      	$q='select distinct d.domain from user_domains d, navision_tab n where d.delete_date is null';
+      	$this->vip_oci->set_query($q);
+      	while($list=$this->vip_oci->fetch_into_assoc()) {
+        	$this->vip_rights['dbc']['ip_list'].=$list['DOMAIN'].';';
+      	}
+    	}
 
         if ($ip && is_array($this->ip_rights)) {
             foreach ($this->ip_rights as $rights)
