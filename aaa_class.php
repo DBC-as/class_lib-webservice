@@ -83,7 +83,7 @@ class aaa {
         	return FALSE;
       	}
 
-      	$q='select distinct d.domain from user_domains d, navision_tab n where d.delete_date is null';
+      	$q='select distinct d.domain from user_domains d, navision_tab n where n.navision_product=37003100 and d.delete_date is null';
       	$this->vip_oci->set_query($q);
       	while($list=$this->vip_oci->fetch_into_assoc()) {
         	$this->vip_rights['dbc']['ip_list'].=$list['DOMAIN'].';';
