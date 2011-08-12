@@ -35,14 +35,18 @@ require_once('OLS_class_lib/ip_class.php');
 
 class aaa {
 
-    private $aaa_cache;						// cache object
-    private $cache_seconds;				// number of seconds to cache
+    private $aaa_cache;				// cache object
+    private $cache_seconds;			// number of seconds to cache
     private $error_cache_seconds;	// number of seconds to cache answer after an error
-    private $ip_rights;				    // array with repeated elements: ip_list, ressource
-    private $fors_oci;						// oci connection
+    private $ip_rights;			    // array with repeated elements: ip_list, ressource
+    private $fors_oci;				// oci connection
     private $fors_credentials;		// oci login credentiales
-    private $rights;							// the rights
-		private $vip_credentials;     // connect to VIP
+    private $rights;				// the rights
+    private $user;			    	// User if any
+    private $group;			    	// Group if any
+    private $password;				// Password if any
+    private $ip;			    	// IP address
+    private $vip_credentials;     // connect to VIP
 
     public function __construct($fors_credentials, $cache_addr = '', $cache_seconds = 0, $ip_rights='', $use_vip=FALSE) {
         $this->fors_credentials = $fors_credentials;
@@ -53,9 +57,9 @@ class aaa {
             $this->error_cache_seconds = 60;
         }
         $this->ip_rights = $ip_rights;
-		    if($use_vip) {
-      		$this->vip_credentials = $fors_credentials;
-    		}
+        if ($use_vip) {
+            $this->vip_credentials = $fors_credentials;
+        }
     }
 
     /**
@@ -69,26 +73,32 @@ class aaa {
     * @returns TRUE if users has some rights
     **/
     public function init_rights($user, $group, $passw, $ip=0) {
+        $this->user = $user;
+        $this->group = $group;
+        $this->password = $passw;
+        $this->ip = $ip;
         if ($this->aaa_cache) {
             $cache_key = 'AAA_'.md5($user . '_' . $group . '_' . $passw . '_' . $ip);
             if ($this->rights = $this->aaa_cache->get($cache_key))
                 return !empty($this->rights);
         }
 
-				if(!empty($this->vip_credentials)) {
-      		if (empty($this->vip_oci)) $this->vip_oci = new Oci($this->vip_credentials);
-      		try { $this->vip_oci->connect(); }
-      		catch (ociException $e) {
-        	verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->vip_oci->get_error_string());
-        	return FALSE;
-      	}
+        if (!empty($this->vip_credentials)) {
+            if (empty($this->vip_oci)) $this->vip_oci = new Oci($this->vip_credentials);
+            try {
+                $this->vip_oci->connect();
+            }
+            catch (ociException $e) {
+                verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->vip_oci->get_error_string());
+                return FALSE;
+            }
 
-      	$q='select distinct d.domain from user_domains d, navision_tab n where n.navision_product=37003100 and d.delete_date is null';
-      	$this->vip_oci->set_query($q);
-      	while($list=$this->vip_oci->fetch_into_assoc()) {
-        	$this->vip_rights['dbc']['ip_list'].=$list['DOMAIN'].';';
-      	}
-    	}
+            $q='select distinct d.domain from user_domains d, navision_tab n where n.navision_product=37003100 and d.delete_date is null';
+            $this->vip_oci->set_query($q);
+            while ($list=$this->vip_oci->fetch_into_assoc()) {
+                $this->vip_rights['dbc']['ip_list'].=$list['DOMAIN'].';';
+            }
+        }
 
         if ($ip && is_array($this->ip_rights)) {
             foreach ($this->ip_rights as $rights)
@@ -218,6 +228,24 @@ class aaa {
     public function has_right($ressource, $right) {
         return $this->rights->$ressource->$right == TRUE;
     }
+
+
+    /**
+    * \brief Register $operation on $ressource
+    *
+    * @param $ressource
+    * @param $operation
+    *
+    * @returns boolean
+    **/
+    public function accounting($ressource, $operation) {
+        return TRUE;
+    }
+
+
+
+
+
 
     private function fetch_rights_from_userid($userid, $group) {
         $rights = new stdClass;
