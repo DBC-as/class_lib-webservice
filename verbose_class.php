@@ -26,19 +26,19 @@
  * Usage: \n
  * verbose::open(logfile_name, log_mask); \n
  * verbose::log(FATAL,'could not find value x')\n
- *  
+ *
  * Example:
  * verbose::open('my_trace_file.log', 'WARNING+FATAL+TIMER'); \n
  * verbose::log(FATAL, 'Cannot find database');\n
- * 
+ *
  * Example:
  * verbose::open('my_trace_file.log', WARNING+FATAL+TIMER); \n
  * verbose::log(FATAL, 'Cannot find database');\n
- *  
+ *
  * Example (will add process-id to all verbose lines):
  * verbose::open('my_trace_file.log', PID+WARNING+FATAL+TIMER); \n
  * verbose::log(FATAL, 'Cannot find database');\n
- *  
+ *
  * Example:
  * verbose::open('my_trace_file.log', 77, 'H:i:s d:m:y'); \n
  * verbose::log(TRACE, 'db::look_up_user()');\n
@@ -56,75 +56,95 @@
 
 class verbose {
 
-  static $verbose_file_name;
-  static $verbose_mask;
-  static $date_format;
-  static $my_pid = '';
+    static $verbose_file_name;
+    static $verbose_mask;
+    static $date_format;
+    static $my_pid = '';
 
-  private function __construct() {}
-  private function __destruct() {}
-  private function __clone() {}
+    private function __construct() {}
+    private function __destruct() {}
+    private function __clone() {}
 
- /**
-  * \brief Sets loglevel and logfile
-  * @param verbose_file_name (string)
-  * @param verbose_mask (string or integer)
-  **/
+    /**
+     * \brief Sets loglevel and logfile
+     * @param verbose_file_name (string)
+     * @param verbose_mask (string or integer)
+     **/
 
-  public function open($verbose_file_name, $verbose_mask, $date_format='') {
-    if (!self::$date_format = $date_format)
-      self::$date_format='H:i:s-d/m/y';
-    self::$verbose_file_name=$verbose_file_name;
-    if (!is_string($verbose_mask))
-      self::$verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
-    else
-      foreach (explode('+', $verbose_mask) as $vm) {
-        if (defined(trim($vm))) self::$verbose_mask |= constant(trim($vm));
-        if ($vm == 'PID') self::$my_pid = ' [' . getmypid() . ']';
-      }
-  }
-
- /**
-  * \brief Logs to a file, or prints out log message.
-  * @param verbose_level Level of verbose output (string)
-  * @param str Log string to write (string)
-  */
-
-  public function log($verbose_level, $str) {
-    if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
-      switch ($verbose_level) {
-        case WARNING : $vtext = 'WARNING'; break;
-        case ERROR :   $vtext = 'ERROR'; break;
-        case FATAL :   $vtext = 'FATAL'; break;
-        case STAT :    $vtext = 'STAT'; break;
-        case TIMER :   $vtext = 'TIMER'; break;
-        case DEBUG :   $vtext = 'DEBUG'; break;
-        case TRACE :   $vtext = 'TRACE'; break;
-        case Z3950 :   $vtext = 'Z3950'; break;
-        case OCI :     $vtext = 'OCI'; break;
-        default :      $vtext = 'UNKNOWN'; break;
-      }
-
-      if ($fp = @ fopen(self::$verbose_file_name,'a')) {
-        if(!ereg("\n\$", $str)) $str .= "\n";
-        fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ': ' . $str);
-        fclose($fp);
-      } else
-        die('FATAL: Cannot open ' . self::$verbose_file_name);
+    public function open($verbose_file_name, $verbose_mask, $date_format='') {
+        if (!self::$date_format = $date_format)
+            self::$date_format='H:i:s-d/m/y';
+        self::$verbose_file_name=$verbose_file_name;
+        if (!is_string($verbose_mask))
+            self::$verbose_mask=(empty($verbose_mask) ? 0 : $verbose_mask);
+        else
+            foreach (explode('+', $verbose_mask) as $vm) {
+            if (defined(trim($vm))) self::$verbose_mask |= constant(trim($vm));
+            if ($vm == 'PID') self::$my_pid = ' [' . getmypid() . ']';
+        }
     }
-  }
 
- /**
-  * \brief Make a unique transaction id
-  * @param t_service_prefix Service prifix that identifies the service
-  * @param t_id Current transaction_id
-  */
+    /**
+     * \brief Logs to a file, or prints out log message.
+     * @param verbose_level Level of verbose output (string)
+     * @param str Log string to write (string)
+     */
 
-  public function make_transaction_id($t_service_prefix, $t_id = '') {
-    return $t_service_prefix . ':' . 
-           date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid() . 
-           ($t_id ? '<' . $t_id : '');
-  }
+    public function log($verbose_level, $str) {
+        if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
+            switch ($verbose_level) {
+            case WARNING :
+                $vtext = 'WARNING';
+                break;
+            case ERROR :
+                $vtext = 'ERROR';
+                break;
+            case FATAL :
+                $vtext = 'FATAL';
+                break;
+            case STAT :
+                $vtext = 'STAT';
+                break;
+            case TIMER :
+                $vtext = 'TIMER';
+                break;
+            case DEBUG :
+                $vtext = 'DEBUG';
+                break;
+            case TRACE :
+                $vtext = 'TRACE';
+                break;
+            case Z3950 :
+                $vtext = 'Z3950';
+                break;
+            case OCI :
+                $vtext = 'OCI';
+                break;
+            default :
+                $vtext = 'UNKNOWN';
+                break;
+            }
+
+            if ($fp = @ fopen(self::$verbose_file_name,'a')) {
+                if (!ereg("\n\$", $str)) $str .= "\n";
+                fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ': ' . $str);
+                fclose($fp);
+            } else
+                die('FATAL: Cannot open ' . self::$verbose_file_name);
+        }
+    }
+
+    /**
+     * \brief Make a unique transaction id
+     * @param t_service_prefix Service prifix that identifies the service
+     * @param t_id Current transaction_id
+     */
+
+    public function make_transaction_id($t_service_prefix, $t_id = '') {
+        return $t_service_prefix . ':' .
+               date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid() .
+               ($t_id ? '<' . $t_id : '');
+    }
 
 }
 ?>
