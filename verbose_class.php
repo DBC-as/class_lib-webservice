@@ -71,7 +71,7 @@ class verbose {
   * @param verbose_mask (string or integer)
   **/
 
-  function open($verbose_file_name, $verbose_mask, $date_format='') {
+  public function open($verbose_file_name, $verbose_mask, $date_format='') {
     if (!self::$date_format = $date_format)
       self::$date_format='H:i:s-d/m/y';
     self::$verbose_file_name=$verbose_file_name;
@@ -90,7 +90,7 @@ class verbose {
   * @param str Log string to write (string)
   */
 
-  function log($verbose_level, $str) {
+  public function log($verbose_level, $str) {
     if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
       switch ($verbose_level) {
         case WARNING : $vtext = 'WARNING'; break;
@@ -113,6 +113,18 @@ class verbose {
         die('FATAL: Cannot open ' . self::$verbose_file_name);
     }
   }
+
 }
+ /**
+  * \brief Make a unique transaction id
+  * @param t_service_prefix Service prifix that identifies the service
+  * @param t_id Current transaction_id
+  */
+
+  public function make_transaction_id($t_service_prefix, $t_id = '') {
+    return $t_service_prefix . ':' . 
+           date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid() . 
+           ($t_id ? '<' . $t_id : '');
+  }
 
 ?>
