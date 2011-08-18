@@ -114,7 +114,6 @@ class verbose {
     }
   }
 
-}
  /**
   * \brief Make a unique transaction id
   * @param t_service_prefix Service prifix that identifies the service
@@ -127,4 +126,5 @@ class verbose {
            ($t_id ? '<' . $t_id : '');
   }
 
+}
 ?>
