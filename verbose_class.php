@@ -135,12 +135,12 @@ class verbose {
     }
 
     /**
-     * \brief Make a unique transaction id
-     * @param t_service_prefix Service prifix that identifies the service
-     * @param t_id Current transaction_id
+     * \brief Make a unique tracking id
+     * @param t_service_prefix Service prefix that identifies the service
+     * @param t_id Current tracking_id
      */
 
-    public function make_transaction_id($t_service_prefix, $t_id = '') {
+    public function make_tracking_id($t_service_prefix, $t_id = '') {
         return $t_service_prefix . ':' .
                date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid() .
                ($t_id ? '<' . $t_id : '');
