@@ -66,7 +66,9 @@ class ncip extends http_wrapper {
            "CancelRequestItem"         => "_create_cancel_request_item_request",
            "CancelRequestItemResponse" => "_create_cancel_request_item_response",
            "RenewItem"                 => "_create_renew_item_request",
-           "RenewItemResponse"         => "_create_renew_item_response" );
+           "RenewItemResponse"         => "_create_renew_item_response",
+           "UpdateRequestItem"         => "_create_update_request_item_request",
+           "UpdateRequestItemResponse" => "_create_update_request_item_response" );
   private $parseMessages =
     array( "LookupUser"                => "_parse_lookup_user_request",
            "LookupUserResponse"        => "_parse_lookup_user_response",
@@ -77,7 +79,9 @@ class ncip extends http_wrapper {
            "CancelRequestItem"         => "_parse_cancel_request_item_request",
            "CancelRequestItemResponse" => "_parse_cancel_request_item_response",
            "RenewItem"                 => "_parse_renew_item_request",
-           "RenewItemResponse"         => "_parse_renew_item_response" );
+           "RenewItemResponse"         => "_parse_renew_item_response",
+           "UpdateRequestItem"         => "_parse_update_request_item_request",
+           "UpdateRequestItemResponse" => "_parse_update_request_item_response" );
 
 
 /** \brief Constructor
@@ -263,7 +267,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "LookupUser" ncip request
 * 
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -272,19 +276,21 @@ class ncip extends http_wrapper {
     if (!isset($this->parameters["UserElementType"])) $this->parameters["UserElementType"] = "Name Information";
     if (!isset($this->parameters["LoanedItemsDesired"])) $this->parameters["LoanedItemsDesired"] = 1;
     if (!isset($this->parameters["RequestedItemsDesired"])) $this->parameters["RequestedItemsDesired"] = 1;
+    if (!isset($this->parameters["UserFiscalAccountDesired"])) $this->parameters["UserFiscalAccountDesired"] = 1;
     $xml->appendChild(self::_create_header("InitiationHeader"));
     $xml->appendChild(self::_create_authentication_input($this->parameters["UserId"], "text/plain", "User Id"));
     $xml->appendChild(self::_create_authentication_input($this->parameters["UserPIN"], "text/plain", "PIN"));
     $xml->appendChild(self::_create_scheme_value_pair("UserElementType", "http://www.niso.org/ncip/v1_0/schemes/userelementtype/userelementtype.scm", $this->parameters["UserElementType"]));
     if (!empty($this->parameters["LoanedItemsDesired"])) $xml->appendChild($this->dom->createElement("LoanedItemsDesired"));
     if (!empty($this->parameters["RequestedItemsDesired"])) $xml->appendChild($this->dom->createElement("RequestedItemsDesired"));
+    if (!empty($this->parameters["UserFiscalAccountDesired"])) $xml->appendChild($this->dom->createElement("UserFiscalAccountDesired"));
   }
 
 /** \brief _create_lookup_user_response
 *
 * Opbyg en "LookupUser" ncip response
 * 
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -370,7 +376,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "LookupItem" ncip request
 * 
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -386,7 +392,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "LookupItem" ncip response
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -410,7 +416,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "LookupRequest" ncip request
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -426,7 +432,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "LookupRequest" ncip response
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -449,7 +455,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "CancelRequestItem" ncip request
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -465,7 +471,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "CancelRequestItem" ncip response
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -485,7 +491,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "RenewItem" ncip request
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -500,7 +506,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "RenewItem" ncip response
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -524,6 +530,72 @@ class ncip extends http_wrapper {
       $xml->appendChild($xml_pending);
     }
   }
+
+
+
+
+
+
+
+
+
+/** \brief _create_update_request_item_request
+*
+* Opbyg en "UpdateRequestItem" ncip request
+* NB: Denne version kan udelukkende opdatere afhentningsstedet - dvs. 
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
+* 
+* @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
+*
+*/
+  private function _create_update_request_item_request($xml) {
+    $xml->appendChild(self::_create_header("InitiationHeader"));
+    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
+    $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
+  }
+
+/** \brief _create_update_request_item_response
+*
+* Opbyg en "UpdateRequestItem" ncip response
+*
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
+* 
+* @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
+*
+*/
+  private function _create_update_request_item_response($xml) {
+    $xml->appendChild(self::_create_header("ResponseHeader"));
+    $xml_problem = self::_create_problem();
+    if (!empty($xml_problem)) {
+      $xml->appendChild($xml_problem);
+      return;
+    }
+    if (!empty($this->parameters["UniqueItemId"])) {
+      $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
+    }
+    if (!empty($this->parameters["DateDue"])) {
+      $xml->appendChild($this->dom->createElement("DateDue", date(NCIP_DATE_FORMAT, $this->parameters["DateDue"])));
+    }
+    if (!empty($this->parameters["DateOfExpectedReply"])) {
+      $xml_pending = $this->dom->createElement("Pending");
+      $xml_pending->appendChild($this->dom->createElement("DateOfExpectedReply", date(NCIP_DATE_FORMAT, $this->parameters["DateOfExpectedReply"])));
+      $xml->appendChild($xml_pending);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /** \brief _create_scheme_value_pair
 *
@@ -580,7 +652,7 @@ class ncip extends http_wrapper {
 *
 * Opbyg en "ItemOptionalFields" blok
 *
-* Parametrene til ncip beskeden hentes fra $this->parameters. Se formatet herover.
+* Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
 *
@@ -771,6 +843,8 @@ class ncip extends http_wrapper {
     if (is_object($loaned_items) and ($loaned_items->length>0)) $user["LoanedItemsDesired"] = 1;
     $requested_items = $lookupRequest->getElementsByTagName("RequestedItemsDesired");
     if (is_object($requested_items) and ($requested_items->length>0)) $user["RequestedItemsDesired"] = 1;
+    $user_fiscal_account_items = $lookupRequest->getElementsByTagName("UserFiscalAccountDesired");
+    if (is_object($user_fiscal_account_items) and ($user_fiscal_account_items->length>0)) $user["UserFiscalAccountDesired"] = 1;
     return $user;
   }
   
@@ -788,6 +862,25 @@ class ncip extends http_wrapper {
     if (!empty($user["Problem"])) return $user;
     $user = array_merge($user, self::_parse_unique_id_header($lookupResponse, "User"));
     unset($user["Problem"]);  // UniqueIdHeader behover ikke at vaere der - saa undertryk fejl
+    $userFiscalAccount = $lookupResponse->getElementsByTagName("UserFiscalAccount")->item(0);
+    if (!empty($userFiscalAccount)) {
+      self::_get_element($user["UserFiscalAccount"], $userFiscalAccount, array("AccountBalance", "CurrencyCode",  "Value"), "AccountBalanceCurrency");
+      self::_get_element($user["UserFiscalAccount"], $userFiscalAccount, array("AccountBalance", "MonetaryValue"), "AccountBalanceValue");
+      foreach ( $userFiscalAccount->getElementsByTagName("AccountDetails") as $detail ) {
+        $fiscal = array();
+        self::_get_element($fiscal, $detail, "AccrualDate");
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "FiscalTransactionType",  "Value"), "FiscalTransactionType");
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "Amount",  "CurrencyCode", "Value"), "CurrencyCode");
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "Amount",  "MonetaryValue"));
+        self::_get_element($fiscal['UniqueItemId'], $detail, array("FiscalTransactionInformation", "ItemDetails",  "UniqueItemId", "UniqueAgencyId", "Value"), "UniqueAgencyId");
+        self::_get_element($fiscal['UniqueItemId'], $detail, array("FiscalTransactionInformation", "ItemDetails",  "UniqueItemId", "ItemIdentifierValue"));
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "ItemDetails",  "BibliographicDescription", "Author"));
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "ItemDetails",  "BibliographicDescription", "Title"));
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "ItemDetails",  "BibliographicDescription", "PublicationDate"));
+        self::_get_element($fiscal, $detail, array("FiscalTransactionInformation", "ItemDetails",  "BibliographicDescription", "BibliographicRecordId", "BibliographicRecordIdentifier"), "BibliographicRecordId");
+        if (!empty($fiscal)) $user["UserFiscalAccount"][] = $fiscal;
+      }
+    }
     $userTransaction = $lookupResponse->getElementsByTagName("UserTransaction")->item(0);
     if (!empty($userTransaction)) {
       foreach ( $userTransaction->getElementsByTagName("RequestedItem") as $item ) {
@@ -1021,6 +1114,82 @@ class ncip extends http_wrapper {
     if (isset($dateDue)) $request["DateDue"] = strtotime($dateDue);
     return $request;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+/** \brief _parse_update_request_item_request
+*
+* Fortolker UpdateRequestItem request, og returnerer et array med resultatet
+*
+* @param DOMElement $renewRequest DOM Elementet med indholdet af RenewItemRequest
+* @return array De fortolkede værdier
+*
+*/
+  private function _parse_update_request_item_request($renewRequest) {
+    $request = self::_parse_header("InitiationHeader", $renewRequest);
+    if (!empty($request["Problem"])) return $request;
+    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "User"));
+    if (!empty($request["Problem"])) return $request;
+    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "Item"));
+    return $request;
+  }
+
+
+/** \brief _parse_update_request_item_response
+*
+* Fortolker UpdateRequestItem response, og returnerer et array med resultatet
+*
+* @param DOMElement $renewResponse DOM Elementet med indholdet af RenewItemResponse
+* @return array De fortolkede værdier
+*
+*/
+  private function _parse_update_request_item_response($renewResponse) {
+    $request = self::_parse_header("ResponseHeader", $renewResponse);
+    if (!empty($request["Problem"])) return $request;
+
+    $pending = $renewResponse->getElementsByTagName("Pending")->item(0);
+    if (isset($pending)) {
+      $dateOfExpectedReply = $pending->getElementsByTagName("DateOfExpectedReply")->item(0)->nodeValue;
+      if (isset($dateOfExpectedReply)) $request["DateOfExpectedReply"] = strtotime($dateOfExpectedReply);
+      return $request;
+    }
+    $request = array_merge($request, self::_parse_unique_id_header($renewResponse, "Item"));
+    if (!empty($request["Problem"])) return $request;
+    $dateDue = $renewResponse->getElementsByTagName("DateDue")->item(0)->nodeValue;
+    if (isset($dateDue)) $request["DateDue"] = strtotime($dateDue);
+    return $request;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /** \brief _get_child_elements
