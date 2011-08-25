@@ -65,26 +65,34 @@ class search_profiles {
             $curl = new curl();
             $curl->set_option(CURLOPT_TIMEOUT, 10);
             $res_xml = $curl->get(sprintf($this->agency_uri, $agency));
-            $dom = new DomDocument();
-            $dom->preserveWhiteSpace = false;
-            if (@ $dom->loadXML($res_xml)) {
-                foreach ($dom->getElementsByTagName('profile') as $profile) {
-                    $p_name = '';
-                    $p_val = array();
-                    foreach ($profile->childNodes as $p)
-                    if ($p->nodeName == 'profileName')
-                        $p_name = $p->nodeValue;
-                    elseif ($p->nodeName == 'source') {
-                        foreach ($p->childNodes as $s)
-                        $r[$s->nodeName] = $s->nodeValue;
-                        $p_val[] = $r;
-                    }
-                    $this->profiles[strtolower($p_name)] = $p_val;
-                }
+            $curl_err = $curl->get_status();
+            if ($curl_err['http_code'] < 200 || $curl_err['http_code'] > 299) {
+                $this->profiles[strtolower($p_name)] = FALSE;
+                if (method_exists('verbose','log'))
+                  verbose::log(FATAL, __FUNCTION__ . '():: Cannot fetch profile ' . $profile_name . 
+                                        ' from ' . sprintf($this->agency_uri, $agency));
             } else {
-                $this->profiles = array();
-            }
+                $dom = new DomDocument();
+                $dom->preserveWhiteSpace = false;
+                if (@ $dom->loadXML($res_xml)) {
+                    foreach ($dom->getElementsByTagName('profile') as $profile) {
+                        $p_name = '';
+                        $p_val = array();
+                        foreach ($profile->childNodes as $p)
+                        if ($p->nodeName == 'profileName')
+                            $p_name = $p->nodeValue;
+                        elseif ($p->nodeName == 'source') {
+                            foreach ($p->childNodes as $s)
+                            $r[$s->nodeName] = $s->nodeValue;
+                            $p_val[] = $r;
+                        }
+                        $this->profiles[strtolower($p_name)] = $p_val;
+                    }
+                } else {
+                    $this->profiles = array();
+                }
 
+            }
             if ($this->profile_cache)
                 $this->profile_cache->set($cache_key, $this->profiles, $this->cache_seconds);
         }
