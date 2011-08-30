@@ -60,6 +60,7 @@ class verbose {
     static $verbose_mask;
     static $date_format;
     static $my_pid = '';
+    static $tracking_id = '';
 
     private function __construct() {}
     private function __destruct() {}
@@ -72,6 +73,7 @@ class verbose {
      **/
 
     public function open($verbose_file_name, $verbose_mask, $date_format='') {
+        self::$tracking_id = date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid();
         if (!self::$date_format = $date_format)
             self::$date_format='H:i:s-d/m/y';
         self::$verbose_file_name=$verbose_file_name;
@@ -127,7 +129,7 @@ class verbose {
 
             if ($fp = @ fopen(self::$verbose_file_name,'a')) {
                 if (!ereg("\n\$", $str)) $str .= "\n";
-                fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ': ' . $str);
+                fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ' ' . self::$tracking_id . ' ' . $str);
                 fclose($fp);
             } else
                 die('FATAL: Cannot open ' . self::$verbose_file_name);
@@ -140,10 +142,9 @@ class verbose {
      * @param t_id Current tracking_id
      */
 
-    public function make_tracking_id($t_service_prefix, $t_id = '') {
-        return $t_service_prefix . ':' .
-               date('Y-m-d\TH:i:s:') . substr((string)microtime(), 2, 6) . ':' . getmypid() .
-               ($t_id ? '<' . $t_id : '');
+    public function set_tracking_id($t_service_prefix, $t_id = '') {
+        self::$tracking_id = $t_service_prefix . ':' .  self::$tracking_id .  ($t_id ? '<' . $t_id : '');
+        return self::$tracking_id;
     }
 
 }
