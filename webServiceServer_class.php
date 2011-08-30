@@ -105,8 +105,8 @@ abstract class webServiceServer {
             die($this->version);
         } elseif ($_SERVER['QUERY_STRING'] == 'HowRU') {
             $this->HowRU();
-        } elseif ($_SERVER['QUERY_STRING'] == 'RegressionTest') {
-            $this->RegressionTest();
+        } elseif (substr($_SERVER['QUERY_STRING'], 0, 14) == 'RegressionTest') {
+            $this->RegressionTest($_GET['RegressionTest']);
         } elseif (isset($_POST['xml'])) {
             $xml=trim(stripslashes($_POST['xml']));
             $this->soap_request($xml);
@@ -245,7 +245,7 @@ abstract class webServiceServer {
     /** \brief RegressionTest tests the webservice
     *
     */
-    private function RegressionTest() {
+    private function RegressionTest($arg='') {
         if (! is_dir($this->xmldir.'/regression'))
             die('No regression catalouge');
 
