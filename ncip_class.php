@@ -531,18 +531,10 @@ class ncip extends http_wrapper {
     }
   }
 
-
-
-
-
-
-
-
-
 /** \brief _create_update_request_item_request
 *
 * Opbyg en "UpdateRequestItem" ncip request
-* NB: Denne version kan udelukkende opdatere afhentningsstedet - dvs. 
+* NB: Denne version kan udelukkende opdatere afhentningsstedet
 * Parametrene til ncip beskeden hentes fra $this->parameters. 
 * 
 * @param DOMElement $xml Det element, hvortil den aktuelle xml info skal tilføjes
@@ -550,8 +542,6 @@ class ncip extends http_wrapper {
 */
   private function _create_update_request_item_request($xml) {
     $xml->appendChild(self::_create_header("InitiationHeader"));
-    $xml->appendChild(self::_create_unique_id("User", $this->parameters));
-    $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
     $xml->appendChild(self::_create_unique_id("Request", $this->parameters));
   }
 
@@ -565,6 +555,7 @@ class ncip extends http_wrapper {
 *
 */
   private function _create_update_request_item_response($xml) {
+// Endnu ikke implementeret
     $xml->appendChild(self::_create_header("ResponseHeader"));
     $xml_problem = self::_create_problem();
     if (!empty($xml_problem)) {
@@ -583,19 +574,6 @@ class ncip extends http_wrapper {
       $xml->appendChild($xml_pending);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /** \brief _create_scheme_value_pair
 *
@@ -1115,82 +1093,42 @@ class ncip extends http_wrapper {
     return $request;
   }
 
-
-
-
-
-
-
-
-
-
-
-
 /** \brief _parse_update_request_item_request
 *
 * Fortolker UpdateRequestItem request, og returnerer et array med resultatet
 *
-* @param DOMElement $renewRequest DOM Elementet med indholdet af RenewItemRequest
+* @param DOMElement $updateRequestItem DOM Elementet med indholdet af UpdateRequestItem
 * @return array De fortolkede værdier
 *
 */
-  private function _parse_update_request_item_request($renewRequest) {
-    $request = self::_parse_header("InitiationHeader", $renewRequest);
+  private function _parse_update_request_item_request($updateRequestItem) {
+// Endnu ikke implementeret
+    $request = self::_parse_header("InitiationHeader", $updateRequestItem);
     if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "User"));
-    if (!empty($request["Problem"])) return $request;
-    $request = array_merge($request, self::_parse_unique_id_header($renewRequest, "Item"));
+    $request = array_merge($request, self::_parse_unique_id_header($updateRequestItem, "Request"));
     return $request;
   }
-
 
 /** \brief _parse_update_request_item_response
 *
 * Fortolker UpdateRequestItem response, og returnerer et array med resultatet
 *
-* @param DOMElement $renewResponse DOM Elementet med indholdet af RenewItemResponse
+* @param DOMElement $updateRequestItemResponse DOM Elementet med indholdet af RenewItemResponse
 * @return array De fortolkede værdier
 *
 */
-  private function _parse_update_request_item_response($renewResponse) {
-    $request = self::_parse_header("ResponseHeader", $renewResponse);
-    if (!empty($request["Problem"])) return $request;
+  private function _parse_update_request_item_response($updateRequestItemResponse) {
+    $response = self::_parse_header("ResponseHeader", $updateRequestItemResponse);
+    if (!empty($response["Problem"])) return $response;
+    $response = array_merge($response, self::_parse_problem($updateRequestItemResponse));
+    if (!empty($response["Problem"])) return $response;
+#    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "Item"));
+#    if (!empty($response["Problem"])) return $response;
+#    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "User"));
+#    if (!empty($response["Problem"])) return $response;
 
-    $pending = $renewResponse->getElementsByTagName("Pending")->item(0);
-    if (isset($pending)) {
-      $dateOfExpectedReply = $pending->getElementsByTagName("DateOfExpectedReply")->item(0)->nodeValue;
-      if (isset($dateOfExpectedReply)) $request["DateOfExpectedReply"] = strtotime($dateOfExpectedReply);
-      return $request;
-    }
-    $request = array_merge($request, self::_parse_unique_id_header($renewResponse, "Item"));
-    if (!empty($request["Problem"])) return $request;
-    $dateDue = $renewResponse->getElementsByTagName("DateDue")->item(0)->nodeValue;
-    if (isset($dateDue)) $request["DateDue"] = strtotime($dateDue);
-    return $request;
+    return $response;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /** \brief _get_child_elements
 *
