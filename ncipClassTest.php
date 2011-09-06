@@ -7,8 +7,11 @@ require_once('ncip_class.php');
 class ncipClassTest extends PHPUnit_Framework_TestCase
 {
 
+//==============================================================================
+//==============================================================================
+
   // ---------------------------------------------------------------------------
-  // Test NCIP Requests
+  // Test parse requests
   // ---------------------------------------------------------------------------
 
   public static function parseRequests() {
@@ -44,7 +47,7 @@ array('
 			</AuthenticationDataFormatType>
 			<AuthenticationInputType>
 				<Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm</Scheme>
-				<Value>User ID</Value>
+				<Value>User Id</Value>
 			</AuthenticationInputType>
 		</AuthenticationInput>
 		<AuthenticationInput>
@@ -64,7 +67,6 @@ array('
 		</UserElementType>
 		<LoanedItemsDesired/>
 		<RequestedItemsDesired/>
-
 	</LookupUser>
 </NCIPMessage>
 ',
@@ -73,7 +75,7 @@ array(
   'FromAgencyId' => 'DK-190101',
   'FromAgencyAuthentication' => '[PASSWORD]',
   'ToAgencyId' => 'DK-710100',
-  'UserId' => '',
+  'UserId' => '1231231230',
   'UserPIN' => '1234',
   'UserElementType' => 'Name Information',
   'LoanedItemsDesired' => 1,
@@ -1129,7 +1131,7 @@ array('
 			</AuthenticationDataFormatType>
 			<AuthenticationInputType>
 				<Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm</Scheme>
-				<Value>User ID</Value>
+				<Value>User Id</Value>
 			</AuthenticationInputType>
 		</AuthenticationInput>
 		<AuthenticationInput>
@@ -1160,7 +1162,7 @@ array(
   'FromAgencyId' => 'DK-190101',
   'FromAgencyAuthentication' => '[PASSWORD]',
   'ToAgencyId' => 'DK-710100',
-  'UserId' => '',
+  'UserId' => '1231231230',
   'UserPIN' => '1234',
   'UserElementType' => 'Name Information',
   'LoanedItemsDesired' => 1,
@@ -1311,7 +1313,6 @@ array('
 				<UniqueAgencyId>
 					<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
 					<Value>DK-190101</Value>
-
 				</UniqueAgencyId>
 			</FromAgencyId>
 			<FromAgencyAuthentication>[PASSWORD]</FromAgencyAuthentication>
@@ -1319,7 +1320,6 @@ array('
 				<UniqueAgencyId>
 					<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
 					<Value>DK-715700</Value>
-
 				</UniqueAgencyId>
 			</ToAgencyId>
 		</InitiationHeader>
@@ -1328,7 +1328,6 @@ array('
 				<Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
 				<Value>DK-190101</Value>
 			</UniqueAgencyId>
-
 			<RequestIdentifierValue>23770051</RequestIdentifierValue>
 		</UniqueRequestId>
 		<DeleteRequestFields>
@@ -1338,7 +1337,6 @@ array('
 						<District></District>
 						<Locality>hb</Locality>  
 					</StructuredAddress>
-
 					<PhysicalAddressType>
 						<Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/physicaladdresstype/physicaladdresstype.scm</Scheme>
 						<Value>Postal Address</Value>
@@ -1347,7 +1345,6 @@ array('
 			</ShippingInformation>
 		</DeleteRequestFields>
 		<AddRequestFields>
-
 			<ShippingInformation>
 				<PhysicalAddress>
 					<StructuredAddress>
@@ -1356,7 +1353,6 @@ array('
 					</StructuredAddress>
 					<PhysicalAddressType>
 						<Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/physicaladdresstype/physicaladdresstype.scm</Scheme>
-
 						<Value>Postal Address</Value>
 					</PhysicalAddressType>
 				</PhysicalAddress>
@@ -1366,12 +1362,58 @@ array('
 </NCIPMessage>
 ',
 array(
-  'Problem' => Array (
-          'Error' => 'MessagingError',
-          'Type' => 'Unsupported Service',
-          'Element' => 'UpdateRequestItem',
-          'Scheme' => 'NCIP General Processing Error Scheme',
-      ),
+    'Ncip' => 'UpdateRequestItem',
+    'FromAgencyId' => 'DK-190101',
+    'FromAgencyAuthentication' => '[PASSWORD]',
+    'ToAgencyId' => 'DK-715700',
+    'UniqueRequestId' => Array
+        (
+            'RequestIdentifierValue' => '23770051',
+            'UniqueAgencyId' => 'DK-190101',
+        ),
+)),
+
+//------------------------------------------------------------------------------
+// UpdateRequestItem fra Anders-Henriks notat
+// Skal lige opdateres, da det expectede output ikke er rigtigt - det skal ikke fejle
+array('
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1.01//EN" 
+"http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+<NCIPMessage version="http://ncip.envisionware.com/documentation/ncip_v1_01.dtd">
+  <UpdateRequestItem>
+    <InitiationHeader>
+      <FromAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-190101</Value>
+        </UniqueAgencyId>
+      </FromAgencyId>
+       <ToAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-716702</Value>
+        </UniqueAgencyId>
+      </ToAgencyId>
+    </InitiationHeader>
+    <UniqueRequestId>
+      <UniqueAgencyId>
+        <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+        <Value>DK-190101</Value>
+      </UniqueAgencyId>
+      <RequestIdentifierValue>23770051</RequestIdentifierValue>
+    </UniqueRequestId>
+  </UpdateRequestItem>
+</NCIPMessage>',
+array(
+    'Ncip' => 'UpdateRequestItem',
+    'FromAgencyId' => 'DK-190101',
+    'ToAgencyId' => 'DK-716702',
+    'UniqueRequestId' => Array
+        (
+            'RequestIdentifierValue' => '23770051',
+            'UniqueAgencyId' => 'DK-190101',
+        ),
 )),
 
 //------------------------------------------------------------------------------
@@ -1388,11 +1430,19 @@ array(
 
 
 
+
+
+
+
+
+
+
+
 //==============================================================================
 //==============================================================================
 
   // ---------------------------------------------------------------------------
-  // Test NCIP Responses
+  // Test parse Responses
   // ---------------------------------------------------------------------------
 
   public static function parseResponses() {
@@ -5491,6 +5541,59 @@ array(
             'UserIdentifierValue' => 'text',
             'UniqueAgencyId' => 'text',
         ),
+    'UserFiscalAccount' => Array
+        (
+            'AccountBalanceCurrency' => 'text',
+            'AccountBalanceValue' => 'text',
+            '0' => Array
+                (
+                    'AccrualDate' => 'text',
+                    'FiscalTransactionType' => 'text',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                    'UniqueItemId' => Array
+                        (
+                            'UniqueAgencyId' => 'text',
+                            'ItemIdentifierValue' => 'text',
+                        ),
+                    'Author' => 'text',
+                    'Title' => 'text',
+                    'PublicationDate' => 'text',
+                    'BibliographicRecordId' => 'text',
+                ),
+            '1' => Array
+                (
+                    'AccrualDate' => 'text',
+                    'FiscalTransactionType' => 'text',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                    'UniqueItemId' => Array
+                        (
+                            'UniqueAgencyId' => 'text',
+                            'ItemIdentifierValue' => 'text',
+                        ),
+                    'Author' => 'text',
+                    'Title' => 'text',
+                    'PublicationDate' => 'text',
+                    'BibliographicRecordId' => 'text',
+                ),
+            '2' => Array
+                (
+                    'AccrualDate' => 'text',
+                    'FiscalTransactionType' => 'text',
+                    'CurrencyCode' => 'text',
+                    'MonetaryValue' => 'text',
+                    'UniqueItemId' => Array
+                        (
+                            'UniqueAgencyId' => 'text',
+                            'ItemIdentifierValue' => 'text',
+                        ),
+                    'Author' => 'text',
+                    'Title' => 'text',
+                    'PublicationDate' => 'text',
+                    'BibliographicRecordId' => 'text',
+                ),
+        ),
     'RequestedItem' => Array
         (
             '0' => Array
@@ -5595,6 +5698,189 @@ array(
   * @dataProvider parseResponses
   */
   public function testParseResponses($input, $expected_result) {
+    $ncip = new ncip();
+    $this->assertEquals($expected_result, $ncip->parse(trim($input)));
+  }
+
+
+
+//==============================================================================
+//==============================================================================
+
+  // ---------------------------------------------------------------------------
+  // Test build requests
+  // ---------------------------------------------------------------------------
+
+  public static function buildRequests() {
+    return array(
+
+//------------------------------------------------------------------------------
+// CancelRequestItem
+array(
+  array(
+    'Ncip' => 'CancelRequestItem',
+    'FromAgencyId' => 'DK-870970',
+    'FromAgencyAuthentication' => '[PASSWORD]',
+    'ToAgencyId' => 'DK-190101',
+    'UniqueUserId' => Array (
+      'UserIdentifierValue' => '1231231230',
+      'UniqueAgencyId' => 'DK-710100',
+    ),
+    'UniqueRequestId' => Array (
+      'RequestIdentifierValue' => '87654321',
+      'UniqueAgencyId' => 'DK-710100',
+    ),
+    'RequestType' => 'Hold',
+  ),
+
+'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1//EN" "http://www.niso.org/ncip/v1_0/imp1/dtd/ncip_v1_0.dtd">
+<NCIPMessage version="http://ncip.envisionware.com/documentation/ncip_v1_0.dtd">
+  <CancelRequestItem>
+    <InitiationHeader>
+      <FromAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-870970</Value>
+        </UniqueAgencyId>
+      </FromAgencyId>
+      <FromAgencyAuthentication>[PASSWORD]</FromAgencyAuthentication>
+      <ToAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-190101</Value>
+        </UniqueAgencyId>
+      </ToAgencyId>
+    </InitiationHeader>
+    <UniqueUserId>
+      <UniqueAgencyId>
+        <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+        <Value>DK-710100</Value>
+      </UniqueAgencyId>
+      <UserIdentifierValue>1231231230</UserIdentifierValue>
+    </UniqueUserId>
+    <UniqueRequestId>
+      <UniqueAgencyId>
+        <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+        <Value>DK-710100</Value>
+      </UniqueAgencyId>
+      <RequestIdentifierValue>87654321</RequestIdentifierValue>
+    </UniqueRequestId>
+    <RequestType>
+      <Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/requesttype/requesttype.scm</Scheme>
+      <Value>Hold</Value>
+    </RequestType>
+  </CancelRequestItem>
+</NCIPMessage>
+'),
+
+
+//------------------------------------------------------------------------------
+// LookupUser
+array(
+  array(
+  'Ncip' => 'LookupUser',
+  'FromAgencyId' => 'DK-190101',
+  'FromAgencyAuthentication' => '[PASSWORD]',
+  'ToAgencyId' => 'DK-710100',
+  'UserId' => '17865',
+  'UserPIN' => '1234',
+  'UserElementType' => 'Name Information',
+  'LoanedItemsDesired' => 1,
+  'RequestedItemsDesired' => 1,
+  'UserFiscalAccountDesired' => 1,
+  ),
+
+'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE NCIPMessage PUBLIC "-//NISO//NCIP DTD Version 1//EN" "http://www.niso.org/ncip/v1_0/imp1/dtd/ncip_v1_0.dtd">
+<NCIPMessage version="http://ncip.envisionware.com/documentation/ncip_v1_0.dtd">
+  <LookupUser>
+    <InitiationHeader>
+      <FromAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-190101</Value>
+        </UniqueAgencyId>
+      </FromAgencyId>
+      <FromAgencyAuthentication>[PASSWORD]</FromAgencyAuthentication>
+      <ToAgencyId>
+        <UniqueAgencyId>
+          <Scheme>http://biblstandard.dk/isil/schemes/1.1/</Scheme>
+          <Value>DK-710100</Value>
+        </UniqueAgencyId>
+      </ToAgencyId>
+    </InitiationHeader>
+    <AuthenticationInput>
+      <AuthenticationInputData>17865</AuthenticationInputData>
+      <AuthenticationDataFormatType>
+        <Scheme>http://www.iana.org/assignments/media-types</Scheme>
+        <Value>text/plain</Value>
+      </AuthenticationDataFormatType>
+      <AuthenticationInputType>
+        <Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm</Scheme>
+        <Value>User Id</Value>
+      </AuthenticationInputType>
+    </AuthenticationInput>
+    <AuthenticationInput>
+      <AuthenticationInputData>1234</AuthenticationInputData>
+      <AuthenticationDataFormatType>
+        <Scheme>http://www.iana.org/assignments/media-types</Scheme>
+        <Value>text/plain</Value>
+      </AuthenticationDataFormatType>
+      <AuthenticationInputType>
+        <Scheme>http://www.niso.org/ncip/v1_0/imp1/schemes/authenticationinputtype/authenticationinputtype.scm</Scheme>
+        <Value>PIN</Value>
+      </AuthenticationInputType>
+    </AuthenticationInput>
+    <UserElementType>
+      <Scheme>http://www.niso.org/ncip/v1_0/schemes/userelementtype/userelementtype.scm</Scheme>
+      <Value>Name Information</Value>
+    </UserElementType>
+    <LoanedItemsDesired/>
+    <RequestedItemsDesired/>
+    <UserFiscalAccountDesired/>
+  </LookupUser>
+</NCIPMessage>
+'
+),
+
+
+//------------------------------------------------------------------------------
+
+);
+
+  }
+
+  /**
+  * @dataProvider buildRequests
+  */
+  public function testBuildRequests($input, $expected_result) {
+    $ncip = new ncip();
+    $this->assertEquals(trim($ncip->build($input)), trim($expected_result));
+  }
+
+
+
+//==============================================================================
+//==============================================================================
+
+  // ---------------------------------------------------------------------------
+  // Test build responses
+  // ---------------------------------------------------------------------------
+
+  public static function buildResponses() {
+    return array(
+
+//------------------------------------------------------------------------------
+    );
+  }
+
+  /**
+  * @dataProvider buildResponses
+  */
+  public function testBuildResponses($input, $expected_result) {
     $ncip = new ncip();
     $this->assertEquals($expected_result, $ncip->parse(trim($input)));
   }
