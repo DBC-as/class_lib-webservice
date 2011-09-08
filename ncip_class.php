@@ -49,8 +49,6 @@ require_once("http_wrapper_class.php");
 *
 */
 
-define("NCIP_DATE_FORMAT", "d.m.Y");
-
 class ncip extends http_wrapper {
   private $parameters;   // Parametre som php array
   private $dom;          // DomDocument
@@ -315,16 +313,16 @@ class ncip extends http_wrapper {
           $xml_requested_item->appendChild(self::_create_scheme_value_pair("RequestStatusType", "http://www.niso.org/ncip/v1_0/imp1/schemes/requeststatustype/requeststatustype.scm", $item["RequestStatusType"]));
         }
         if (!empty($item["DatePlaced"])) {
-          $xml_requested_item->appendChild($this->dom->createElement("DatePlaced", date(NCIP_DATE_FORMAT, $item["DatePlaced"])));
+          $xml_requested_item->appendChild($this->dom->createElement("DatePlaced", $item["DatePlaced"]));
         }
         if (!empty($item["PickupDate"])) {
-          $xml_requested_item->appendChild($this->dom->createElement("PickupDate", date(NCIP_DATE_FORMAT, $item["PickupDate"])));
+          $xml_requested_item->appendChild($this->dom->createElement("PickupDate", $item["PickupDate"]));
         }
         if (!empty($item["PickupExpiryDate"])) {
-          $xml_requested_item->appendChild($this->dom->createElement("PickupExpiryDate", date(NCIP_DATE_FORMAT, $item["PickupExpiryDate"])));
+          $xml_requested_item->appendChild($this->dom->createElement("PickupExpiryDate", $item["PickupExpiryDate"]));
         }
         if (!empty($item["ReminderLevel"])) {
-          $xml_requested_item->appendChild($this->dom->createElement("ReminderLevel", date(NCIP_DATE_FORMAT, $item["ReminderLevel"])));
+          $xml_requested_item->appendChild($this->dom->createElement("ReminderLevel", $item["ReminderLevel"]));
         }
         if (!empty($item["HoldQueuePosition"])) {
           $xml_requested_item->appendChild($this->dom->createElement("HoldQueuePosition", $item["HoldQueuePosition"]));
@@ -339,7 +337,7 @@ class ncip extends http_wrapper {
           $xml_loaned_item->appendChild($this->dom->createElement("ReminderLevel", $item["ReminderLevel"]));
         }
         if (!empty($item["DateDue"])) {
-          $xml_loaned_item->appendChild($this->dom->createElement("DateDue", date(NCIP_DATE_FORMAT, $item["DateDue"])));
+          $xml_loaned_item->appendChild($this->dom->createElement("DateDue", $item["DateDue"]));
         }
         if (isset($item["MonetaryValue"])) {
           $xml_amount = $this->dom->createElement("Amount");
@@ -522,11 +520,11 @@ class ncip extends http_wrapper {
       $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
     }
     if (!empty($this->parameters["DateDue"])) {
-      $xml->appendChild($this->dom->createElement("DateDue", date(NCIP_DATE_FORMAT, $this->parameters["DateDue"])));
+      $xml->appendChild($this->dom->createElement("DateDue", $this->parameters["DateDue"]));
     }
     if (!empty($this->parameters["DateOfExpectedReply"])) {
       $xml_pending = $this->dom->createElement("Pending");
-      $xml_pending->appendChild($this->dom->createElement("DateOfExpectedReply", date(NCIP_DATE_FORMAT, $this->parameters["DateOfExpectedReply"])));
+      $xml_pending->appendChild($this->dom->createElement("DateOfExpectedReply", $this->parameters["DateOfExpectedReply"]));
       $xml->appendChild($xml_pending);
     }
   }
@@ -566,11 +564,11 @@ class ncip extends http_wrapper {
       $xml->appendChild(self::_create_unique_id("Item", $this->parameters));
     }
     if (!empty($this->parameters["DateDue"])) {
-      $xml->appendChild($this->dom->createElement("DateDue", date(NCIP_DATE_FORMAT, $this->parameters["DateDue"])));
+      $xml->appendChild($this->dom->createElement("DateDue", $this->parameters["DateDue"]));
     }
     if (!empty($this->parameters["DateOfExpectedReply"])) {
       $xml_pending = $this->dom->createElement("Pending");
-      $xml_pending->appendChild($this->dom->createElement("DateOfExpectedReply", date(NCIP_DATE_FORMAT, $this->parameters["DateOfExpectedReply"])));
+      $xml_pending->appendChild($this->dom->createElement("DateOfExpectedReply", $this->parameters["DateOfExpectedReply"]));
       $xml->appendChild($xml_pending);
     }
   }
@@ -866,11 +864,11 @@ class ncip extends http_wrapper {
         if (isset($req)) {
           $req["RequestType"] = $item->getElementsByTagName("RequestType")->item(0)->getElementsByTagName("Value")->item(0)->nodeValue;
           $req["RequestStatusType"] = $item->getElementsByTagName("RequestStatusType")->item(0)->getElementsByTagName("Value")->item(0)->nodeValue;
-          $req["DatePlaced"] = strtotime($item->getElementsByTagName("DatePlaced")->item(0)->nodeValue);
+          $req["DatePlaced"] = $item->getElementsByTagName("DatePlaced")->item(0)->nodeValue;
           $pickupDate = $item->getElementsByTagName("PickupDate")->item(0)->nodeValue;
-          if (isset($pickupDate)) $req["PickupDate"] = strtotime($pickupDate);
+          if (isset($pickupDate)) $req["PickupDate"] = $pickupDate;
           $pickupExpiryDate = $item->getElementsByTagName("PickupExpiryDate")->item(0)->nodeValue;
-          if (isset($pickupExpiryDate)) $req["PickupExpiryDate"] = strtotime($pickupExpiryDate);
+          if (isset($pickupExpiryDate)) $req["PickupExpiryDate"] = $pickupExpiryDate;
           $reminderLevel = $item->getElementsByTagName("ReminderLevel")->item(0)->nodeValue;
           if (isset($reminderLevel)) $req["PickupReminderLevelDate"] = $reminderLevel;
           $holdQueuePosition = $item->getElementsByTagName("HoldQueuePosition")->item(0)->nodeValue;
@@ -883,7 +881,7 @@ class ncip extends http_wrapper {
         if (isset($loan)) {
           $loan["ReminderLevel"] = $item->getElementsByTagName("ReminderLevel")->item(0)->nodeValue;
           $dateDue = $item->getElementsByTagName("DateDue")->item(0)->nodeValue;
-          if (isset($dateDue)) $loan["DateDue"] = strtotime($dateDue);
+          if (isset($dateDue)) $loan["DateDue"] = $dateDue;
           $amount = $item->getElementsByTagName("Amount")->item(0);
           if (isset($amount)) {
             $currencyCode = $amount->getElementsByTagName("CurrencyCode")->item(0);
@@ -946,9 +944,9 @@ class ncip extends http_wrapper {
     $item = array_merge($item, self::_parse_unique_id_header($lookupResponse, "Item"));  // Optional
     unset($item['Problem']); // Neither of these headers need to be there, so if not - clear the error
     self::_get_element($item, $lookupResponse, "HoldPickupDate");  // Optional
-    if (isset($item["HoldPickupDate"])) $item["HoldPickupDate"] = strtotime($item["HoldPickupDate"]);
+    if (isset($item["HoldPickupDate"])) $item["HoldPickupDate"] = $item["HoldPickupDate"];
     self::_get_element($item, $lookupResponse, "DateRecalled");  // Optional
-    if (isset($item["DateRecalled"])) $item["DateRecalled"] = strtotime($item["DateRecalled"]);
+    if (isset($item["DateRecalled"])) $item["DateRecalled"] = $item["DateRecalled"];
     $item = array_merge($item, self::_parse_item_transaction($lookupResponse));
     $item = array_merge($item, self::_parse_item_optional_fields($lookupResponse));
     return $item;
@@ -994,17 +992,17 @@ class ncip extends http_wrapper {
     self::_get_element($request, $lookupResponse, "HoldQueuePosition");  // Optional
     $request = array_merge($request, self::_parse_shipping_information($lookupResponse));
     self::_get_element($request, $lookupResponse, "EarliestDateNeeded");  // Optional
-    if (isset($request["EarliestDateNeeded"])) $request["EarliestDateNeeded"] = strtotime($request["EarliestDateNeeded"]);
+    if (isset($request["EarliestDateNeeded"])) $request["EarliestDateNeeded"] = $request["EarliestDateNeeded"];
     self::_get_element($request, $lookupResponse, "NeedBeforeDate");  // Optional
-    if (isset($request["NeedBeforeDate"])) $request["NeedBeforeDate"] = strtotime($request["NeedBeforeDate"]);
+    if (isset($request["NeedBeforeDate"])) $request["NeedBeforeDate"] = $request["NeedBeforeDate"];
     self::_get_element($request, $lookupResponse, "PickupDate");  // Optional
-    if (isset($request["PickupDate"])) $request["PickupDate"] = strtotime($request["PickupDate"]);
+    if (isset($request["PickupDate"])) $request["PickupDate"] = $request["PickupDate"];
     self::_get_element($request, $lookupResponse, "PickupExpiryDate");  // Optional
-    if (isset($request["PickupExpiryDate"])) $request["PickupExpiryDate"] = strtotime($request["PickupExpiryDate"]);
+    if (isset($request["PickupExpiryDate"])) $request["PickupExpiryDate"] = $request["PickupExpiryDate"];
     self::_get_element($request, $lookupResponse, "DateOfUserRequest");  // Optional
-    if (isset($request["DateOfUserRequest"])) $request["DateOfUserRequest"] = strtotime($request["DateOfUserRequest"]);
+    if (isset($request["DateOfUserRequest"])) $request["DateOfUserRequest"] = $request["DateOfUserRequest"];
     self::_get_element($request, $lookupResponse, "DateAvailable");  // Optional
-    if (isset($request["DateAvailable"])) $request["DateAvailable"] = strtotime($request["DateAvailable"]);
+    if (isset($request["DateAvailable"])) $request["DateAvailable"] = $request["DateAvailable"];
     $request = array_merge($request, self::_parse_amount($lookupResponse, 'AcknowledgedFeeAmount'));
     $request = array_merge($request, self::_parse_amount($lookupResponse, 'PaidFeeAmount'));
     $request = array_merge($request, self::_parse_item_optional_fields($lookupResponse));   // Optional
@@ -1083,13 +1081,13 @@ class ncip extends http_wrapper {
     $pending = $renewResponse->getElementsByTagName("Pending")->item(0);
     if (isset($pending)) {
       $dateOfExpectedReply = $pending->getElementsByTagName("DateOfExpectedReply")->item(0)->nodeValue;
-      if (isset($dateOfExpectedReply)) $request["DateOfExpectedReply"] = strtotime($dateOfExpectedReply);
+      if (isset($dateOfExpectedReply)) $request["DateOfExpectedReply"] = $dateOfExpectedReply;
       return $request;
     }
     $request = array_merge($request, self::_parse_unique_id_header($renewResponse, "Item"));
     if (!empty($request["Problem"])) return $request;
     $dateDue = $renewResponse->getElementsByTagName("DateDue")->item(0)->nodeValue;
-    if (isset($dateDue)) $request["DateDue"] = strtotime($dateDue);
+    if (isset($dateDue)) $request["DateDue"] = $dateDue;
     return $request;
   }
 
@@ -1122,10 +1120,10 @@ class ncip extends http_wrapper {
     if (!empty($response["Problem"])) return $response;
     $response = array_merge($response, self::_parse_problem($updateRequestItemResponse));
     if (!empty($response["Problem"])) return $response;
-#    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "Item"));
-#    if (!empty($response["Problem"])) return $response;
-#    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "User"));
-#    if (!empty($response["Problem"])) return $response;
+//    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "Item"));
+//    if (!empty($response["Problem"])) return $response;
+//    $response = array_merge($response, self::_parse_unique_id_header($updateRequestItemResponse, "User"));
+//    if (!empty($response["Problem"])) return $response;
 
     return $response;
   }
