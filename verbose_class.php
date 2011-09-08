@@ -70,6 +70,7 @@ class verbose {
      * \brief Sets loglevel and logfile
      * @param verbose_file_name (string)
      * @param verbose_mask (string or integer)
+     * @param date_format (string) - format-string for date()
      **/
 
     public function open($verbose_file_name, $verbose_mask, $date_format='') {
