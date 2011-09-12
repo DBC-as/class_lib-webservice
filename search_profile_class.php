@@ -36,14 +36,10 @@ class search_profiles {
     private $profile_cache;		    // cache object
     private $profiles;		        // profiles for $agency
     private $agency_uri;	        // uri of openagency service
-    private $cache_seconds;		    // number of seconds to cache
-    private $error_cache_seconds;	// number of seconds to cache answer after an error
 
     public function __construct($open_agency, $cache_host, $cache_port='', $cache_seconds = 0) {
         if ($cache_host) {
-            $this->profile_cache = new cache($cache_host, $cache_port);
-            if (!$this->cache_seconds = $cache_seconds)
-                $this->cache_seconds = 600;
+            $this->profile_cache = new cache($cache_host, $cache_port, $cache_seconds);
         }
         $this->agency_uri = $open_agency;
     }
@@ -94,7 +90,7 @@ class search_profiles {
 
             }
             if ($this->profile_cache)
-                $this->profile_cache->set($cache_key, $this->profiles, $this->cache_seconds);
+                $this->profile_cache->set($cache_key, $this->profiles);
         }
 
         if ($p = &$this->profiles[strtolower($profile_name)])
