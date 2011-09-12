@@ -48,9 +48,9 @@ class xmlconvert {
             if ($node->nodeName == "#comment")
                 continue;
             elseif ($node->nodeName == "#text")
-                $ret = $node->nodeValue;
+                $ret = trim($node->nodeValue);
             elseif ($node->nodeName == "#cdata-section")
-                $ret = $node->nodeValue;
+                $ret = trim($node->nodeValue);
             else {
                 $i = strpos($node->nodeName, ":");
                 $nodename = ($i ? substr($node->nodeName, $i+1) : $node->nodeName);
