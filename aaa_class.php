@@ -47,6 +47,7 @@ class aaa {
     private $password;				// Password if any
     private $ip;			    	// IP address
     private $vip_credentials;     // connect to VIP
+    public $aaa_ip_groups = array();
 
     public function __construct($fors_credentials, $cache_addr = '', $cache_seconds = 0, $ip_rights='', $use_vip=FALSE) {
         $this->fors_credentials = $fors_credentials;
@@ -93,7 +94,9 @@ class aaa {
                 return FALSE;
             }
 
-            $q='select distinct d.domain from user_domains d, navision_tab n where n.navision_product=37003100 and d.delete_date is null';
+            $q='SELECT distinct d.domain 
+                  FROM user_domains d, navision_tab n 
+                 WHERE n.navision_product=37003100 AND d.delete_date is null';
             $this->vip_oci->set_query($q);
             while ($list=$this->vip_oci->fetch_into_assoc()) {
                 $this->vip_rights['dbc']['ip_list'].=$list['DOMAIN'].';';
@@ -101,15 +104,17 @@ class aaa {
         }
 
         if ($ip && is_array($this->ip_rights)) {
-            foreach ($this->ip_rights as $rights)
-            if (ip_func::ip_in_interval($ip, $rights['ip_list']))
-                if (isset($rights['ressource']))
-                    foreach ($rights['ressource'] as $ressource => $right) {
-                    $rights = explode(',', $right);
-                    foreach ($rights as $r) {
-                        $r = trim($r);
-                        $this->rights->$ressource->$r = TRUE;
-                    }
+            foreach ($this->ip_rights as $group => $rights)
+                $this->aaa_ip_groups[$group] = TRUE;
+                if (ip_func::ip_in_interval($ip, $rights['ip_list'])) {
+                    if (isset($rights['ressource']))
+                        foreach ($rights['ressource'] as $ressource => $right) {
+                            $rights = explode(',', $right);
+                            foreach ($rights as $r) {
+                                $r = trim($r);
+                                $this->rights->$ressource->$r = TRUE;
+                            }
+                        }
                 }
             if ($this->rights)
                 return TRUE;   // do no cache when found in ip-rights (ini-file)
