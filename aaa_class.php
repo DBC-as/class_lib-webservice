@@ -105,8 +105,8 @@ class aaa {
 
         if ($ip && is_array($this->ip_rights)) {
             foreach ($this->ip_rights as $group => $rights)
-                $this->aaa_ip_groups[$group] = TRUE;
                 if (ip_func::ip_in_interval($ip, $rights['ip_list'])) {
+                    $this->aaa_ip_groups[$group] = TRUE;
                     if (isset($rights['ressource']))
                         foreach ($rights['ressource'] as $ressource => $right) {
                             $rights = explode(',', $right);
