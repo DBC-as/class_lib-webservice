@@ -129,7 +129,7 @@ class verbose {
             }
 
             if ($fp = @ fopen(self::$verbose_file_name,'a')) {
-                if (substr($s, strlen($s)-1, 1) <> "\n") $str .= "\n";
+                if (substr($str, strlen($str)-1, 1) <> "\n") $str .= "\n";
                 fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ' ' . self::$tracking_id . ' ' . $str);
                 fclose($fp);
             } else
