@@ -75,13 +75,13 @@ class search_profiles {
                         $p_name = '';
                         $p_val = array();
                         foreach ($profile->childNodes as $p)
-                        if ($p->nodeName == 'profileName')
-                            $p_name = $p->nodeValue;
-                        elseif ($p->nodeName == 'source') {
-                            foreach ($p->childNodes as $s)
-                            $r[$s->nodeName] = $s->nodeValue;
-                            $p_val[] = $r;
-                        }
+                            if ($p->localName == 'profileName')
+                                $p_name = $p->nodeValue;
+                            elseif ($p->localName == 'source') {
+                                foreach ($p->childNodes as $s)
+                                    $r[$s->nodeName] = $s->nodeValue;
+                                $p_val[] = $r;
+                            }
                         $this->profiles[strtolower($p_name)] = $p_val;
                     }
                 } else {
