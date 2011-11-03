@@ -79,7 +79,7 @@ class search_profiles {
                                 $p_name = $p->nodeValue;
                             elseif ($p->localName == 'source') {
                                 foreach ($p->childNodes as $s)
-                                    $r[$s->nodeName] = $s->nodeValue;
+                                    $r[$s->localName] = $s->nodeValue;
                                 $p_val[] = $r;
                             }
                         $this->profiles[strtolower($p_name)] = $p_val;
