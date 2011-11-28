@@ -73,13 +73,15 @@
 
         public function __construct($connectionstring)
         {
+            $cred = array('user'=>'','password'=>'','dbname'=>'','host'=>'','port'=>'');
             $part=explode(" ",$connectionstring);
             foreach( $part as $key=>$val )
             {
+                if (!trim($val)) continue;
                 $pair=explode('=',$val);
                 $cred[$pair[0]]=$pair[1];
             }
-
+//            print_r($cred);
             parent::__construct($cred["user"],$cred["password"],$cred["dbname"],$cred["host"],$cred["port"]);
         } 
 
@@ -90,6 +92,8 @@
 
         private function connectionstring()
         {
+            $ret = "";
+            
             if($this->host)
                 $ret.="host=".$this->host;
             if( $this->port )
@@ -108,7 +112,7 @@
 
         public function open()
         {
-            if( ($this->connection=@pg_pconnect($this->connectionstring()))===false )
+            if( ($this->connection=pg_pconnect($this->connectionstring()))===false )
                 throw new fetException("no connection");
         }
 
