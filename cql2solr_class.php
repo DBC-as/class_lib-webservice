@@ -31,7 +31,7 @@ class cql2solr extends tokenizer {
     var $solr_escapes_from = array();
     var $solr_escapes_to = array();
 
-    function cql2solr($xml, $config='') {
+    public function cql2solr($xml, $config='') {
         $this->dom = new DomDocument();
         $this->dom->Load($xml);
 
@@ -41,7 +41,7 @@ class cql2solr extends tokenizer {
         $this->indexes = $this->get_indexes();
         $this->ignore = array('/^prox\//');
 
-        $this->map = array('and' => 'AND', 'not' => 'NOT', 'or' => 'OR', '=' => ':');
+        $this->map = array('and' => 'AND', 'not' => 'NOT', 'or' => 'OR', '=' => ':', 'adj' => ':');
 
         if ($config)
             $this->raw_index = $config->get_value('raw_index', 'setup');
@@ -53,7 +53,7 @@ class cql2solr extends tokenizer {
     }
 
 
-    function get_indexes() {
+    private function get_indexes() {
         $indexInfo = $this->dom->getElementsByTagName('indexInfo');
 
         $i = 0;
@@ -72,7 +72,7 @@ class cql2solr extends tokenizer {
         return $indexes;
     }
 
-    function get_operators() {
+    private function get_operators() {
         $supports = $this->dom->getElementsByTagName('supports');
 
         $i = 0;
@@ -86,7 +86,7 @@ class cql2solr extends tokenizer {
         return $operators;
     }
 
-    function dump() {
+    public function dump() {
         echo '<PRE>';
         print_r($this->tokenlist);
     }
@@ -95,7 +95,7 @@ class cql2solr extends tokenizer {
     /**
      * Maybe Dijkstra's shunting yard algorithm should be used to analyze the search properly
      */
-    function build_tree($tl) {
+    private function build_tree($tl) {
         /*
           action 1: Operand is pushed
                  2: Operand is popped
@@ -123,10 +123,38 @@ class cql2solr extends tokenizer {
 
         }
     }
+    public function edismax_convert($query, $rank=NULL) {
+        $this->tokenlist = $this->tokenize(str_replace('\"','"',$query));
+        $num_operands = 0;
+        foreach($this->tokenlist as $k => $v) {
+            switch ($v['type']) {
+                case 'OPERATOR':
+                    if ($v['value'] == 'adj') 
+                        $proximity = TRUE;
+                    $edismax_q .= $this->map[strtolower($v['value'])];
+                    break;
+                case 'OPERAND':
+                    $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, $v['value']);
+                    if (trim($v['value'])) {
+                        $num_operands++;
+                        if ($proximity) {
+                            $edismax_q .= '~10';
+                            $proximity = TRUE;
+                        }
+                    }
+                    break;
+                case 'INDEX':
+                    $current_index = $v['value'];
+                    $edismax_q .= $v['value'];
+                    break;
+            }
+        }
+        return array('edismax' => $edismax_q, 'operands' => $num_operands);
+    }
     /** \brief Parse a cql-query and build the solr search string
      * @param query the cql-query
      */
-    function convert($query, $rank=NULL) {
+    public function convert($query, $rank=NULL) {
 
         $dismax_boost = $this->dismax($rank);
 //var_dump($dismax_boost);
@@ -199,7 +227,7 @@ class cql2solr extends tokenizer {
      * @param query the cql-query
      * @param rank the rank-settings
      */
-    function dismax($rank) {
+    private function dismax($rank) {
         if (!is_array($rank))
             if ($boost = substr($rank, 12))
                 return '_query_:%%22{!dismax+' . $boost .  '}%s%%22';
@@ -220,7 +248,7 @@ class cql2solr extends tokenizer {
     /** \brief build a boost string
      * @param boosts boost registers and values
      */
-    private function make_boost($boosts) {
+    public function make_boost($boosts) {
         if (is_array($boosts))
             foreach ($boosts as $idx => $val)
             if ($idx && $val)
