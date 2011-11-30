@@ -220,6 +220,7 @@
             $total = 0;
             $cntfields = 0;
             $adrss = "";
+            $data = "";
             foreach($this->marc_array as $field) {
                 //echo "field:" . $field['field'] . "\n";
                 if ( $field['field'] == '000' ) {

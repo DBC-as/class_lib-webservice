@@ -123,7 +123,7 @@
         public function error() {
             return $this->error();
         }
-        
+
         /**
         * returns a value from a section
         * if $section is omitted, returns the value of first $key found
@@ -312,7 +312,9 @@
                 if ( !isset($res_array[$key]) )
                     $res_array[$key] = array();
                 $eval_this = '$res_array["'.$key.'"]'.$key_suffix.' = $this->parse_constants($this->parse_reserved_words(\''.$value.'\'));';
+//                echo "**********\n key_suffix:$key_suffix\n" . $eval_this . "\n";
                 eval($eval_this);
+//                exit;
             } else {
                 $value = $this->parse_reserved_words($value);
                 $value = $this->parse_constants($value);
