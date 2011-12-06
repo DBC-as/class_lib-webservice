@@ -47,8 +47,8 @@ class cql2solr extends tokenizer {
             $this->raw_index = $config->get_value('raw_index', 'setup');
 
         foreach ($this->solr_escapes as $ch) {
-            $this->solr_escapes_from[] = urlencode($ch);
-            $this->solr_escapes_to[] = urlencode('\\' . $ch);
+            $this->solr_escapes_from[] = $ch;
+            $this->solr_escapes_to[] = '\\' . $ch;
         }
     }
 
