@@ -27,7 +27,7 @@ class cql2solr extends tokenizer {
     var $dom;
     var $map;
     //var $solr_escapes = array('+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\');
-    var $solr_escapes = array('+', '-', ':');
+    var $solr_escapes = array('+', '-', ':', '!');
     var $solr_escapes_from = array();
     var $solr_escapes_to = array();
 
