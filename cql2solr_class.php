@@ -124,7 +124,7 @@ class cql2solr extends tokenizer {
         }
     }
     public function edismax_convert($query, $rank=NULL) {
-        $this->tokenlist = $this->tokenize(str_replace('\"','"',$query));
+        $this->tokenlist = $this->tokenize(str_replace('\"','"',strtolower($query)));
         $num_operands = 0;
         foreach($this->tokenlist as $k => $v) {
             switch ($v['type']) {
