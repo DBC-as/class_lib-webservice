@@ -273,20 +273,36 @@ abstract class webServiceServer {
 
     /** \brief HowRU tests the webservice and answers "Gr8" if none of the tests fail. The test cases resides in the inifile.
     *
+    *  Handles zero or more set of tests. 
+    *  Each set, can contain one or more tests, where just one of them has to succeed
+    *  If all tests in a given set fails, the corresponding error will be displayed
     */
     private function HowRU() {
         $curl = new curl();
         $curl->set_option(CURLOPT_POST, 1);
         $tests = $this->config->get_value('test', 'howru');
         if ($tests) {
-            $reg_match = $this->config->get_value('preg_match', 'howru');
-            $reg_error = $this->config->get_value('error', 'howru');
+            $reg_matchs = $this->config->get_value('preg_match', 'howru');
+            $reg_errors = $this->config->get_value('error', 'howru');
             $url = $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-            foreach ($tests as $k=>$v) {
-                $reply=$curl->get($url.'?action='.$v);
-                $preg_match=$reg_match[$k];
-                if (!preg_match("/$preg_match/",$reply))
-                    die($reg_error[$k]);
+            foreach ($tests as $i_test => $test) {
+                if (is_array($test)) {
+                    $reg_match = $reg_matchs[$i_test];
+                } else {
+                    $test = array($test);
+                    $reg_match = array($reg_matchs[$i_test]);
+                }
+                $error = $reg_errors[$i_test];
+                foreach ($test as $i => $t) {
+                    $reply=$curl->get($url.'?action='.$t);
+                    $preg_match=$reg_match[$i];
+                    if (preg_match("/$preg_match/",$reply)) {
+                        unset($error);
+                        break;
+                    }
+                }
+                if ($error)
+                    die($error);
             }
             $curl->close();
         }
