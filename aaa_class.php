@@ -49,17 +49,17 @@ class aaa {
     private $vip_credentials;     // connect to VIP
     public $aaa_ip_groups = array();
 
-    public function __construct($fors_credentials, $cache_addr = '', $cache_seconds = 0, $ip_rights='', $use_vip=FALSE) {
-        $this->fors_credentials = $fors_credentials;
-        if ($cache_addr) {
-            $this->aaa_cache = new cache($cache_addr);
-            if (!$this->cache_seconds = $cache_seconds)
+    public function __construct($aaa_setup) {
+        $this->fors_credentials = $aaa_setup['aaa_credentials'];
+        if ($aaa_setup['aaa_cache_address']) {
+            $this->aaa_cache = new cache($aaa_setup['aaa_cache_address']);
+            if (!$this->cache_seconds = $aaa_setup['aaa_cache_seconds'])
                 $this->cache_seconds = 3600;
             $this->error_cache_seconds = 60;
         }
-        $this->ip_rights = $ip_rights;
-        if ($use_vip) {
-            $this->vip_credentials = $fors_credentials;
+        $this->ip_rights = $aaa_setup['aaa_ip_rights'];
+        if ($aaa_setup['aaa_use_vip']) {
+            $this->vip_credentials = $this->fors_credentials;
         }
     }
 

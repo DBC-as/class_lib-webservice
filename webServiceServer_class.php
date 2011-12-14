@@ -83,14 +83,7 @@ abstract class webServiceServer {
         $this->output_type = $this->config->get_value('default_output_type', 'setup');
         $this->dump_timer = $this->config->get_value('dump_timer', 'setup');
 
-        if ($aaa_oci = $this->config->get_value('aaa_credentials', 'aaa')) {
-            $this->aaa = new aaa($aaa_oci,
-                                 $this->config->get_value('aaa_cache_address', 'aaa'),
-                                 $this->config->get_value('aaa_cache_seconds', 'aaa'),
-                                 $this->config->get_value('aaa_ip_rights', 'aaa'),
-                                 $this->config->get_value('aaa_use_vip', 'aaa')
-																 );
-        }
+        $this->aaa = new aaa($this->config->get_section('aaa'));
     }
 
     public function __destruct() { }
