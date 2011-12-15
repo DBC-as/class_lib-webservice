@@ -105,7 +105,11 @@ abstract class webServiceServer {
             $this->soap_request($xml);
         } elseif (!empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
             $this->soap_request($GLOBALS['HTTP_RAW_POST_DATA']);
-        } elseif (!empty($_SERVER['QUERY_STRING']) ) {
+        } elseif (!empty($_SERVER['QUERY_STRING'])) {
+            $this->rest_request();
+        } elseif (!empty($_POST)) {
+            foreach ($_POST as $k => $v)
+                $_SERVER['QUERY_STRING'] .= ($_SERVER['QUERY_STRING'] ? '&' : '') . $k . '=' . $v;
             $this->rest_request();
         } elseif ($this->in_house()
                   || $this->config->get_value('show_samples', 'setup')

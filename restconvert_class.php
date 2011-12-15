@@ -23,13 +23,13 @@
 
 class restconvert {
 
-    //private $charset = "ISO-8859-1";
+    //private $charset = 'ISO-8859-1';
     private $charset = "utf-8";
     private $soap_header;
     private $soap_footer;
-    private $default_namespace = "";
+    private $default_namespace = '';
 
-    public function __construct($namespace="") {
+    public function __construct($namespace='') {
         $this->soap_header='<?xml version="1.0" encoding="%s"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"%s><SOAP-ENV:Body>';
         $this->soap_footer='</SOAP-ENV:Body></SOAP-ENV:Envelope>';
         if ($namespace)
@@ -40,17 +40,18 @@ class restconvert {
      *
      */
     public function rest2soap(&$config) {
-        $soap_actions = $config->get_value("soapAction", "setup");
-        $action_pars = $config->get_value("action", "rest");
-        if (!$all_actions = $action_pars["ALL"]) $all_actions = array();
-        if (is_array($soap_actions) && is_array($action_pars)
-                && $_GET["action"]
-                && $soap_actions[$_GET["action"]] && $action_pars[$_GET["action"]]) {
-            if ($_GET["charset"]) $this->charset = $_GET["charset"];
-            if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$_GET["action"]]),
-                                               explode("&", $_SERVER["QUERY_STRING"]))) {
+        $soap_actions = $config->get_value('soapAction', 'setup');
+        $action_pars = $config->get_value('action', 'rest');
+        $action = $this->get_post('action');
+        if (!$all_actions = $action_pars['ALL']) $all_actions = array();
+        if ($action
+          && is_array($soap_actions) && is_array($action_pars)
+          && $soap_actions[$action] && $action_pars[$action]) {
+            if ($this->get_post('charset')) $this->charset = $this->get_post('charset');
+            if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$action]),
+                                               explode('&', $_SERVER['QUERY_STRING']))) {
                 return sprintf($this->soap_header, $this->charset, $this->default_namespace) .
-                       $this->rest_tag_me($soap_actions[$_GET["action"]], $node_value) .
+                       $this->rest_tag_me($soap_actions[$action], $node_value) .
                        $this->soap_footer;
             }
         }
@@ -70,15 +71,19 @@ class restconvert {
         return $ret;
     }
 
+    private function get_post($par) {
+        return ($_GET[$par] ? $_GET[$par] : $_POST[$par]);
+    }
+
     private function par_split($parval) {
-        list($par, $val) = explode("=", $parval, 2);
+        list($par, $val) = explode('=', $parval, 2);
         return array(preg_replace("/\[[^]]*\]/", "", urldecode($par)), urldecode($val));
     }
 
     function rest_tag_me($tag, $val) {
         if (empty($val)) return;
 
-        if ($i = strrpos($tag, "."))
+        if ($i = strrpos($tag, '.'))
             $tag = substr($tag, $i+1);
         return "<$tag>$val</$tag>";
     }
