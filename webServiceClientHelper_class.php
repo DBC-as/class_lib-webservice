@@ -3,7 +3,7 @@ require_once("xmlconvert_class.php");
 require_once("objconvert_class.php");
 require_once("curl_class.php");
 
-class WebserviceClientHelper {
+class webServiceClientHelper {
 
 	private $xml_request_path;
 	private $request_objects;
