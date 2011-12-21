@@ -3,17 +3,39 @@ require_once("xmlconvert_class.php");
 require_once("objconvert_class.php");
 require_once("curl_class.php");
 
-class webServiceClientHelper {
+class webServiceClientUtils {
 
 	private $xml_request_path;
-	private $request_objects;
-	private $xmlconvert;
-	private $objconvert;
+	public $request_objects;
+	public $xmlconvert;
+	public $objconvert;
+  public $request_action;
 
-	function __construct () {
-		$this->xml_request_path='xml/request/';
+	function __construct ($xml_request_path) {
+		$this->xml_request_path=$xml_request_path;
 		$this->xmlconvert = new xmlconvert();
 		$this->objconvert = new objconvert();
+	}
+
+  protected function fetch_request_object($request_name) {
+    $this->load_request($request_name);
+    return $req_obj=&$this->get_request_object($request_name);
+  }
+
+  public function set_request_action($request_action) {
+    $this->request_action=$request_action;
+  }
+
+	public function check_error($obj, &$error=FALSE) {
+		 foreach ($obj as $k=>$v) {
+     	if($k=="error") {
+				$error=TRUE;
+      }
+		 	if(is_object($v)) {
+      	$this->check_error($v, $error);
+    	}
+    }
+		return $error;
 	}
 
 	public function load_request($request_name) {
@@ -37,6 +59,19 @@ class webServiceClientHelper {
 			} 
 		}
 	}
+
+  public function delete_tag(&$request_object, $target_tag_name) {
+    foreach ($request_object as $k=>$v) {
+      if($k==$target_tag_name) {
+				unset($request_object->$k);
+        break;
+      }
+      if(is_object($v)) {
+        $this->delete_tag($v, $target_tag_name);
+      }
+    }
+  }
+
 
 	public function get_request_object($request_name) {
 		return $this->request_objects[$request_name];
