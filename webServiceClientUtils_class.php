@@ -17,14 +17,13 @@ class webServiceClientUtils {
 		$this->objconvert = new objconvert();
 	}
 
-  protected function fetch_request_object($request_name) {
-    $this->load_request($request_name);
-    return $req_obj=&$this->get_request_object($request_name);
-  }
-
   public function set_request_action($request_action) {
     $this->request_action=$request_action;
   }
+
+	public function insert_tag($parent_tag, $tag_name, $tag_namespace, $tag_value) {
+
+	}
 
 	public function check_error($obj, &$error=FALSE) {
 		 foreach ($obj as $k=>$v) {
@@ -42,10 +41,6 @@ class webServiceClientUtils {
 		$request=file_get_contents($this->xml_request_path.$request_name.'.xml');
 		$obj=$this->xmlconvert->soap2obj($request);
 		$this->request_objects[$request_name]=$obj;
-	}
-
-	public function get_request($request_name) {
-		return $xml=$this->objconvert->obj2xml($this->request_objects[$request_name]);
 	}
 
 	public function change_tag_value(&$request_object, $target_tag_name, $target_tag_value) {
@@ -84,7 +79,7 @@ class webServiceClientUtils {
 	public function send_request($request_name, $request_action) {
 		$curl = new curl(); 
 		$curl->set_timeout(30);
-		$xml=$this->get_request($request_name);
+		echo $xml=$this->objconvert->obj2xml($this->request_objects[$request_name]);
 		$curl->set_post_xml($xml);  
 		return $res = $curl->get($request_action);
 	}
