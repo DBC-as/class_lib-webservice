@@ -21,8 +21,28 @@ class webServiceClientUtils {
     $this->request_action=$request_action;
   }
 
-	public function insert_tag($parent_tag, $tag_name, $tag_namespace, $tag_value) {
+	public function insert_tag(&$request_object, $parent_tag, $tag_name, $tag_value, $tag_namespace) {
+   foreach ($request_object as $k=>$v) {
+      if($k==$parent_tag) {
+				if(!isset($v->_value->$tag_name)) {
+					$target_array=&$v->_value->$tag_name;
+					$target_array[0]->_namespace=$tag_namespace;
+          $target_array[0]->_value=$tag_value;	
+				} else if(is_array($v->_value->$tag_name)) {
+					$target_array=&$v->_value->$tag_name;
+					if(isset($target_array[0])) {
+						$i=count($target_array)+1;
+						$target_array[$i]->_namespace=$tag_namespace;	
+						$target_array[$i]->_value=$tag_value;	
+					}
+				}
 
+        break;
+      }
+      if(is_object($v)) {
+        $this->insert_tag($v, $parent_tag, $tag_name, $tag_value, $tag_namespace);
+      }
+    }
 	}
 
 	public function check_error($obj, &$error=FALSE) {
@@ -79,7 +99,7 @@ class webServiceClientUtils {
 	public function send_request($request_name, $request_action) {
 		$curl = new curl(); 
 		$curl->set_timeout(30);
-		echo $xml=$this->objconvert->obj2xml($this->request_objects[$request_name]);
+		$xml=$this->objconvert->obj2xml($this->request_objects[$request_name]);
 		$curl->set_post_xml($xml);  
 		return $res = $curl->get($request_action);
 	}
