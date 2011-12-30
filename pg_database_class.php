@@ -119,19 +119,19 @@
         /**
         wrapper for private function _execute
         */
-        public function execute()
+        public function execute($statement_key=null)
         {
             // set pagination
             if( $this->offset>-1 && $this->limit )
                 $this->query.=' LIMIT '.$this->limit.' OFFSET '.$this->offset;	
 
-            try{$this->_execute();}
-            catch(Exception $e)
-            {	
-                throw new fetException($e->__toString());
+            try{$this->_execute($statement_key);}
+            catch(Exception $e) {	
+	      throw new fetException($e->__toString());
             }
         }
 
+	// @todo fix this; return a proper key for the query
         private function _queryname()
         {
             return "testhest";
@@ -154,9 +154,8 @@
             // check for bind-variables
             if( !empty($this->bind_list) )
             {
-
-                $this->query_name = $this->_queryname();
-                //if( @pg_prepare($this->connection,"my_query",$this->query)===false)
+	      $this->query_name =  isset($statement_key) ? $statement_key : $this->_queryname();
+	      //if( @pg_prepare($this->connection,"my_query",$this->query)===false)
                 // use sql as statement-name
                 if( @pg_prepare($this->connection,$this->query_name,$this->query)===false)
                 {
