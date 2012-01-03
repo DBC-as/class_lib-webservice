@@ -133,7 +133,7 @@ class aaa {
             }
             $int_ip = $this->ip2int($ip);
             try {
-                $this->fors_oci->bind('bind_ipval', &$int_ip,-1,SQLT_LNG);
+                $this->fors_oci->bind('bind_ipval', $int_ip,-1,SQLT_LNG);
                 $this->fors_oci->set_query('SELECT userid, ipend
                                            FROM domuserid
                                            WHERE ipstart <= :bind_ipval
@@ -149,7 +149,7 @@ class aaa {
 
             if (!empty($fors_userid)) {
                 try {
-                    $this->fors_oci->bind('bind_userid', &$fors_userid);
+                    $this->fors_oci->bind('bind_userid', $fors_userid);
                     $this->fors_oci->set_query('SELECT userids.userid, userids.state, logins_logingroup.groupname
                                                FROM logins_logingroup, userids
                                                WHERE userids.userid = logins_logingroup.userid
@@ -178,8 +178,8 @@ class aaa {
                 return FALSE;
             }
             try {
-                $this->fors_oci->bind('bind_username', &$user);
-                $this->fors_oci->bind('bind_usergroup', &$group);
+                $this->fors_oci->bind('bind_username', $user);
+                $this->fors_oci->bind('bind_usergroup', $group);
                 $this->fors_oci->set_query('SELECT userids.userid, userids.state, crypttype, password
                                            FROM logins_logingroup, userids
                                            WHERE userids.userid = logins_logingroup.userid
@@ -262,7 +262,7 @@ class aaa {
             return $rights;
         }
         try {
-            $this->fors_oci->bind('bind_userid', &$userid);
+            $this->fors_oci->bind('bind_userid', $userid);
             $this->fors_oci->set_query('SELECT t.functiontypeid, objecttypename2
                                        FROM table(fors_pkg.fors_get_rights (:bind_userid)) t, map1
                                        WHERE t.objectclassid = map1.objecttypeattr1
@@ -271,7 +271,7 @@ class aaa {
             foreach ($buf as $val)
             $rights->$val['OBJECTTYPENAME2']->$val['FUNCTIONTYPEID'] = TRUE;
             try {
-                $this->fors_oci->bind('bind_bibnr', &$group);
+                $this->fors_oci->bind('bind_bibnr', $group);
                 $this->fors_oci->set_query('SELECT bib_nr FROM vip WHERE kmd_nr = :bind_bibnr');
                 $buf = $this->fors_oci->fetch_all_into_assoc();
                 $rights->vipInfo->agencyId->$group = TRUE;
