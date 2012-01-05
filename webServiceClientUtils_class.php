@@ -47,7 +47,7 @@ class webServiceClientUtils {
 
 	public function check_error($obj, &$error=FALSE) {
 		 foreach ($obj as $k=>$v) {
-     	if($k=="error") {
+     	if($k=="error" || $k=="faultstring") {
 				$error=TRUE;
       }
 		 	if(is_object($v)) {
@@ -99,7 +99,7 @@ class webServiceClientUtils {
 	public function send_request($request_name, $request_action) {
 		$curl = new curl(); 
 		$curl->set_timeout(30);
-		$xml=$this->objconvert->obj2soap($this->request_objects[$request_name]);
+		$xml=$this->objconvert->obj2xml($this->request_objects[$request_name]);
 		$curl->set_post_xml($xml);  
 		return $res = $curl->get($request_action);
 	}
