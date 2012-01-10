@@ -48,7 +48,7 @@ class restconvert {
           && is_array($soap_actions) && is_array($action_pars)
           && $soap_actions[$action] && $action_pars[$action]) {
             if ($this->get_post('charset')) $this->charset = $this->get_post('charset');
-            if ($node_value = $this->build_xml(array_merge($all_actions, &$action_pars[$action]),
+            if ($node_value = $this->build_xml(array_merge($all_actions, $action_pars[$action]),
                                                explode('&', $_SERVER['QUERY_STRING']))) {
                 return sprintf($this->soap_header, $this->charset, $this->default_namespace) .
                        $this->rest_tag_me($soap_actions[$action], $node_value) .
