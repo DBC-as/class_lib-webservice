@@ -48,6 +48,7 @@ abstract class webServiceServer {
     protected $soap_action;
     protected $dump_timer;
     protected $output_type='';
+    protected $debug;
 
 
     /** \brief Webservice constructer
@@ -71,6 +72,7 @@ abstract class webServiceServer {
 
         libxml_use_internal_errors(TRUE);
 
+        $this->debug = $_REQUEST['debug'];
         verbose::open($this->config->get_value('logfile', 'setup'),
                       $this->config->get_value('verbose', 'setup'));
         $this->watch = new stopwatch('', ' ', '', '%s:%01.3f');
@@ -105,7 +107,7 @@ abstract class webServiceServer {
             $this->soap_request($xml);
         } elseif (!empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
             $this->soap_request($GLOBALS['HTTP_RAW_POST_DATA']);
-        } elseif (!empty($_SERVER['QUERY_STRING'])) {
+        } elseif (!empty($_SERVER['QUERY_STRING']) && $_REQUEST['action']) {
             $this->rest_request();
         } elseif (!empty($_POST)) {
             foreach ($_POST as $k => $v)
@@ -457,6 +459,8 @@ abstract class webServiceServer {
                     foreach ($reqs as $key => $req)
                     echo '<option value="' . $key . '">'.$names[$key].'</option>';
                     echo '</select> &nbsp; <input type="submit" name="subm" value="Try me">';
+                    if ($_GET['debug'] && $this->in_house())
+                      echo '<input type="hidden" name="debug" value="' . $_GET['debug'] . '">';
                     echo '</form>';
                     echo $info;
                 } else {
