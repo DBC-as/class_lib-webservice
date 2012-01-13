@@ -72,7 +72,8 @@ abstract class webServiceServer {
 
         libxml_use_internal_errors(TRUE);
 
-        $this->debug = $_REQUEST['debug'];
+        if ($this->in_house())
+            $this->debug = $_REQUEST['debug'];
         verbose::open($this->config->get_value('logfile', 'setup'),
                       $this->config->get_value('verbose', 'setup'));
         $this->watch = new stopwatch('', ' ', '', '%s:%01.3f');
