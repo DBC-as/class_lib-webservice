@@ -144,7 +144,7 @@ class ncip extends http_wrapper {
     $this->dom->formatOutput = true;
     $this->dom_xml = $this->dom->saveXML();
 
-    if ($this->debug > 0) {
+    if (strtolower($this->debug) == 'ncip') {
       echo "<h1>NCIP Request:</h1><pre>" . htmlentities($this->dom_xml) . "</pre>";
     }
 
@@ -163,7 +163,7 @@ class ncip extends http_wrapper {
 *
 */
   public function parse(&$ncip_str) {
-    if ($this->debug > 0) {
+    if (strtolower($this->debug) == 'ncip') {
       echo "<h1>NCIP Response:</h1><pre>" . htmlentities($ncip_str) . "</pre><hr>";
     }
     
