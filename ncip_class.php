@@ -50,10 +50,11 @@ require_once("http_wrapper_class.php");
 */
 
 class ncip extends http_wrapper {
+  private $debug;        // Debug logging boolean
   private $parameters;   // Parametre som php array
   private $dom;          // DomDocument
   private $dom_xml="";   // The XML ncip structure
-  
+
   private $createMessages =
     array( "LookupUser"                => "_create_lookup_user_request",
            "LookupUserResponse"        => "_create_lookup_user_response",
@@ -87,7 +88,11 @@ class ncip extends http_wrapper {
 * Constructoren er tom
 *
 */
-  public function __construct() {}
+  public function __construct() {
+    global $_DEBUG;
+    parent::__construct();
+    $this->debug = $_DEBUG;
+  }
 
 
 /** \brief Destructor
@@ -95,7 +100,9 @@ class ncip extends http_wrapper {
 * Destructoren er tom
 *
 */
-  public function __destruct() {}
+  public function __destruct() {
+    parent::__destruct();
+  }
 
 
 
@@ -137,8 +144,9 @@ class ncip extends http_wrapper {
     $this->dom->formatOutput = true;
     $this->dom_xml = $this->dom->saveXML();
 
-// Må ikke komme med i drift
-//echo "NCIP Request:\n\n" . $this->dom_xml . "\n\n\n";
+    if ($this->debug > 0) {
+      echo "<h1>NCIP Request:</h1><pre>" . htmlentities($this->dom_xml) . "</pre>";
+    }
 
     return $this->dom_xml;
   }
@@ -155,10 +163,10 @@ class ncip extends http_wrapper {
 *
 */
   public function parse(&$ncip_str) {
-
-// Må ikke komme med i drift
-//echo "NCIP Response:\n\n$ncip_str\n\n=========================\n\n\n";
-
+    if ($this->debug > 0) {
+      echo "<h1>NCIP Response:</h1><pre>" . htmlentities($ncip_str) . "</pre><hr>";
+    }
+    
     $this->parameters = array();
     $this->dom = DOMDocument::loadXML($ncip_str,  LIBXML_NOERROR);
 
