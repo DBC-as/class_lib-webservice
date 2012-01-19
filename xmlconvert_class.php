@@ -22,69 +22,76 @@
 
 class xmlconvert {
 
-    public function __construct() {
-    }
+  public function __construct() {
+  }
 
-    /** \brief Create an ols--object out of SOAP xml
-     *
-    *
-     */
-    public function soap2obj(&$request) {
-        if (empty($request)) return FALSE;
+  /** \brief Create an ols--object out of SOAP xml
+   *
+  *
+   */
+  public function soap2obj(&$request) {
+    if (empty($request)) return FALSE;
 
-        $dom = new DomDocument();
-        $dom->preserveWhiteSpace = false;
-        if (@ $dom->loadXML($request))
-            return $this->xml2obj($dom);
-    }
+    $dom = new DomDocument();
+    $dom->preserveWhiteSpace = false;
+    if (@ $dom->loadXML($request))
+      return $this->xml2obj($dom);
+  }
 
-    /** \brief Converts domdocument object to object.
-    *
-    *
-    */
+  /** \brief Converts domdocument object to object.
+  *
+  *
+  */
 
-    public function xml2obj($domobj, $force_NS="") {
-        foreach ($domobj->childNodes as $node) {
-            if ($node->nodeName == "#comment")
-                continue;
-            elseif ($node->nodeName == "#text")
-                $ret = trim($node->nodeValue);
-            elseif ($node->nodeName == "#cdata-section")
-                $ret = trim($node->nodeValue);
-            else {
-                $i = strpos($node->nodeName, ":");
-                $nodename = ($i ? substr($node->nodeName, $i+1) : $node->nodeName);
-                if ($force_NS)
-                    $help->_namespace = $force_NS;
-                elseif ($node->namespaceURI)
-                    $help->_namespace = $node->namespaceURI;
-                $help->_value = $this->xml2obj($node, $force_NS);
-                if ($node->hasAttributes())
-                    foreach ($node->attributes as $attr) {
-                        $i = strpos($attr->nodeName, ":");
-                        $a_nodename = ($i ? substr($attr->nodeName, $i+1) : $attr->nodeName);
-                        if ($attr->namespaceURI)
-                            $help->_attributes-> {$a_nodename}->_namespace = $attr->namespaceURI;
-                        $help->_attributes-> {$a_nodename}->_value = $attr->nodeValue;
-                    }
-                if (is_array($ret-> {$nodename}))
-                    $ret-> {$nodename}[] = $help;
-                elseif (isset($ret->$nodename)) {
-                    $tmp = $ret->$nodename;
-                    unset($ret->$nodename);
-                    $ret-> {$nodename}[] = $tmp;
-                    $ret-> {$nodename}[] = $help;
-                } else {
-                    $ret->$nodename = $help;
-                }
-                unset($help);
-            }
+  public function xml2obj($domobj, $force_NS="") {
+    foreach ($domobj->childNodes as $node) {
+      if ($node->nodeName == "#comment") {
+        continue;
+      }
+      elseif ($node->nodeName == "#text") {
+        $ret = trim($node->nodeValue);
+      }
+      elseif ($node->nodeName == "#cdata-section") {
+        $ret = trim($node->nodeValue);
+      }
+      else {
+        $i = strpos($node->nodeName, ":");
+        $nodename = ($i ? substr($node->nodeName, $i+1) : $node->nodeName);
+        if ($force_NS) {
+          $help->_namespace = $force_NS;
         }
-        return $ret;
+        elseif ($node->namespaceURI) {
+          $help->_namespace = $node->namespaceURI;
+        }
+        $help->_value = $this->xml2obj($node, $force_NS);
+        if ($node->hasAttributes()) {
+          foreach ($node->attributes as $attr) {
+            $i = strpos($attr->nodeName, ":");
+            $a_nodename = ($i ? substr($attr->nodeName, $i+1) : $attr->nodeName);
+            if ($attr->namespaceURI)
+              $help->_attributes-> {$a_nodename}->_namespace = $attr->namespaceURI;
+            $help->_attributes-> {$a_nodename}->_value = $attr->nodeValue;
+          }
+        }
+        if (is_array($ret-> {$nodename})) {
+          $ret-> {$nodename}[] = $help;
+        }
+        elseif (isset($ret->$nodename)) {
+          $tmp = $ret->$nodename;
+          unset($ret->$nodename);
+          $ret-> {$nodename}[] = $tmp;
+          $ret-> {$nodename}[] = $help;
+        }
+        else {
+          $ret->$nodename = $help;
+        }
+        unset($help);
+      }
     }
+    return $ret;
+  }
 
 }
-
 
 
 ?>
