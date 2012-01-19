@@ -24,7 +24,7 @@
 *
 * Example usage:
 *  if (ip_func::ip_in_interval("1.2.3.4", "1.2.2.2-1.2.2.9;1.2.3.1-1.2.3.8")) ...
-* 
+*
 *
 **/
 
@@ -32,8 +32,8 @@ class ip_func {
 
   private static $_instance;
 
-  private function __construct(){}
-  
+  private function __construct() {}
+
   /**
   * \brief returns true if ip is found in intervals
   *
@@ -56,7 +56,7 @@ class ip_func {
 
     return FALSE;
   }
-  
+
   private function ip2int($ip) {
     list($a, $b, $c, $d) = explode(".", $ip);
     return (($a * 256 + $b) * 256 + $c) * 256 + $d;
