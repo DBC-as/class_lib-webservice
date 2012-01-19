@@ -87,68 +87,69 @@ class verbose {
         if ($vm == 'PID') self::$my_pid = ' [' . getmypid() . ']';
       }
     }
-
-    /**
-     * \brief Logs to a file, or prints out log message.
-     * @param verbose_level Level of verbose output (string)
-     * @param str Log string to write (string)
-     */
-
-    public function log($verbose_level, $str) {
-      if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
-        switch ($verbose_level) {
-          case WARNING :
-            $vtext = 'WARNING';
-            break;
-          case ERROR :
-            $vtext = 'ERROR';
-            break;
-          case FATAL :
-            $vtext = 'FATAL';
-            break;
-          case STAT :
-            $vtext = 'STAT';
-            break;
-          case TIMER :
-            $vtext = 'TIMER';
-            break;
-          case DEBUG :
-            $vtext = 'DEBUG';
-            break;
-          case TRACE :
-            $vtext = 'TRACE';
-            break;
-          case Z3950 :
-            $vtext = 'Z3950';
-            break;
-          case OCI :
-            $vtext = 'OCI';
-            break;
-          default :
-            $vtext = 'UNKNOWN';
-            break;
-        }
-
-        if ($fp = @ fopen(self::$verbose_file_name,'a')) {
-          if (substr($str, strlen($str)-1, 1) <> "\n") $str .= "\n";
-          fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ' ' . self::$tracking_id . ' ' . $str);
-          fclose($fp);
-        }
-        else
-          die('FATAL: Cannot open ' . self::$verbose_file_name);
-      }
-    }
-
-    /**
-     * \brief Make a unique tracking id
-     * @param t_service_prefix Service prefix that identifies the service
-     * @param t_id Current tracking_id
-     */
-
-    public function set_tracking_id($t_service_prefix, $t_id = '') {
-      self::$tracking_id = $t_service_prefix . ':' .  self::$tracking_id .  ($t_id ? '<' . $t_id : '');
-      return self::$tracking_id;
-    }
-
   }
-  ?>
+
+  /**
+   * \brief Logs to a file, or prints out log message.
+   * @param verbose_level Level of verbose output (string)
+   * @param str Log string to write (string)
+   */
+
+  public function log($verbose_level, $str) {
+    if (self::$verbose_file_name && $verbose_level & self::$verbose_mask) {
+      switch ($verbose_level) {
+        case WARNING :
+          $vtext = 'WARNING';
+          break;
+        case ERROR :
+          $vtext = 'ERROR';
+          break;
+        case FATAL :
+          $vtext = 'FATAL';
+          break;
+        case STAT :
+          $vtext = 'STAT';
+          break;
+        case TIMER :
+          $vtext = 'TIMER';
+          break;
+        case DEBUG :
+          $vtext = 'DEBUG';
+          break;
+        case TRACE :
+          $vtext = 'TRACE';
+          break;
+        case Z3950 :
+          $vtext = 'Z3950';
+          break;
+        case OCI :
+          $vtext = 'OCI';
+          break;
+        default :
+          $vtext = 'UNKNOWN';
+          break;
+      }
+
+      if ($fp = @ fopen(self::$verbose_file_name,'a')) {
+        if (substr($str, strlen($str)-1, 1) <> "\n") $str .= "\n";
+        fwrite($fp, $vtext . self::$my_pid . ' ' . date(self::$date_format) . ' ' . self::$tracking_id . ' ' . $str);
+        fclose($fp);
+      }
+      else
+        die('FATAL: Cannot open ' . self::$verbose_file_name);
+    }
+  }
+
+  /**
+   * \brief Make a unique tracking id
+   * @param t_service_prefix Service prefix that identifies the service
+   * @param t_id Current tracking_id
+   */
+
+  public function set_tracking_id($t_service_prefix, $t_id = '') {
+    self::$tracking_id = $t_service_prefix . ':' .  self::$tracking_id .  ($t_id ? '<' . $t_id : '');
+    return self::$tracking_id;
+  }
+
+}
+?>
