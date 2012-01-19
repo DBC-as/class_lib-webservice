@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  *
  * This file is part of Open Library System.
@@ -72,7 +72,7 @@ class stopwatch {
    *  @param   $ignore (bool)	Ignore already started timer (default false)
    *************/
   function start($s, $ignore = 1) {
-    if($ignore == 0 && $this->timers[$s])
+    if ($ignore == 0 && $this->timers[$s])
       die("FATAL: Cannot start timer $s... already running");
     $this->timers[$s] = microtime();
   }
@@ -83,7 +83,7 @@ class stopwatch {
    * @param    $ignore (bool)	Ignore not running timer (default false)
    *************/
   function stop($s, $ignore = 1) {
-    if($ignore == 0 && !$this->timers[$s])
+    if ($ignore == 0 && !$this->timers[$s])
       die("FATAL: Cannot stop timer $s... not running");
     list($usec_stop,  $sec_stop) = explode(" ", microtime());
     list($usec_start, $sec_start) = explode(" ", $this->timers[$s]);
@@ -95,11 +95,11 @@ class stopwatch {
   /**
   *  \brief splittime
    * @param    $s		Name of timer
-	 * @return splittime
+   * @return splittime
    *************/
   function splittime($s) {
     $add = 0;
-    if($this->timers[$s]) {
+    if ($this->timers[$s]) {
       list($usec_stop,  $sec_stop) = explode(" ", microtime());
       list($usec_start, $sec_start) = explode(" ", $this->timers[$s]);
       $add = ((float)$usec_stop - (float)$usec_start) + (float)($sec_stop - $sec_start);
@@ -112,22 +112,25 @@ class stopwatch {
    * @param    $format	name of default format (file, screen or perl);
    *************/
   function format($format) {
-    if($format == "perl") {
+    if ($format == "perl") {
       $this->prefix  = "{ 'url' => '" . urlencode($_SERVER["PHP_SELF"]) . "', 'ts' => " . time() .  ", ";
       $this->delim   = ", ";
       $this->postfix = " }";
       $this->format  = "'%s' => %0.6f";
-    } else if($format == "file") {
+    }
+    else if ($format == "file") {
       $this->prefix  = urlencode($_SERVER["REQUEST_URI"]) . ": ";
       $this->delim   = " ";
       $this->postfix = "";
       $this->format  = "%s => %0.6f";
-    } else if($format == "screen") {
+    }
+    else if ($format == "screen") {
       $this->prefix  = "<pre>\nTimings for: " . urlencode($_SERVER["REQUEST_URI"]) . ":\n";
       $this->delim   = "\n";
       $this->postfix = "\n</pre>";
       $this->format  = "%20s => %0.6f";
-    } else {
+    }
+    else {
       die("FATAL: Unknown format in stopwatch");
     }
   }
@@ -138,27 +141,28 @@ class stopwatch {
    *	@return Dump of timers;
    *************/
   function dump($delim = null) {
-    foreach($this->timers as $k => $v)
-      if(!is_null($v))
-	$this->stop($k);
+    foreach($this->timers as $k => $v) {
+      if (!is_null($v))
+        $this->stop($k);
+    }
 
     $prefix  = $this->prefix;
     $postfix = $this->postfix;
     $format  = $this->format;
-    if(is_null($delim))   $delim   = $this->delim;				// Get delimitor or constructor delimitor
+    if (is_null($delim))   $delim   = $this->delim;				// Get delimitor or constructor delimitor
     // If unset: get defalut values
-    if(is_null($delim))   $delim   = "\n\t";
-    if(is_null($format))  $format  = "%s => %01.6f";
-    if(is_null($prefix))  $prefix  = "Timings for: " . $_SERVER['REQUEST_URI'] . (preg_match("/\n/", $delim) ? $delim : " ");
-    if(is_null($postfix)) $postfix = "\n";
-    if(!preg_match("/\n\$/", $postfix)) $postfix .= "\n";				// Make sure postfix ends in a newline
+    if (is_null($delim))   $delim   = "\n\t";
+    if (is_null($format))  $format  = "%s => %01.6f";
+    if (is_null($prefix))  $prefix  = "Timings for: " . $_SERVER['REQUEST_URI'] . (preg_match("/\n/", $delim) ? $delim : " ");
+    if (is_null($postfix)) $postfix = "\n";
+    if (!preg_match("/\n\$/", $postfix)) $postfix .= "\n";				// Make sure postfix ends in a newline
 
     $ret = Array();
     //natcasesort($keys = array_keys($this->sums));
     $keys = array_keys($this->sums);
-    foreach($keys as $k)
+    foreach($keys as $k) {
       array_push($ret, sprintf($format, $k, $this->sums[$k]));
-
+    }
     return $prefix . join($delim, $ret) . $postfix;
   }
 
@@ -174,9 +178,9 @@ class stopwatch {
     $format  = $this->format;
     $delim   = $this->delim;
 
-    if(! is_null($logformat))
+    if (! is_null($logformat))
       $this->format($logformat);
-    if($fd = fopen($file, "a")) {
+    if ($fd = fopen($file, "a")) {
       fwrite($fd, $this->dump());
       fclose($fd);
     }
