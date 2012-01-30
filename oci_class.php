@@ -512,7 +512,7 @@ class oci {
   }
 
 
-  function bind($name, &$value, $maxlength=-1, $type=SQLT_CHR) {
+  function bind($name, $value, $maxlength=-1, $type=SQLT_CHR) {
     $bind_array['name']=($name[0] == ':'? $name : ':'.$name);
     $bind_array['value']=&$value;
     $bind_array['maxlength']=$maxlength;
