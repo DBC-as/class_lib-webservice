@@ -3,7 +3,7 @@
  *
  * This file is part of Open Library System.
  * Copyright © 2009, Dansk Bibliotekscenter a/s,
- * Tempovej 7-11, DK-2750 Ballerup, Denmark. 
+ * Tempovej 7-11, DK-2750 Ballerup, Denmark.
  *
  * Open Library System is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -121,28 +121,46 @@ class cql2solr extends tokenizer {
   public function edismax_convert($query, $rank=NULL) {
     $this->tokenlist = $this->tokenize(str_replace('\"','"',$query));
     $num_operands = 0;
+    $level_operands = 0;
+    $level_paren = 0;
+    //if (DEBUG_ON) var_dump($this->tokenlist);
     foreach($this->tokenlist as $k => $v) {
+      $trim_value = trim($v['value']);
       switch ($v['type']) {
         case 'OPERATOR':
           if ($v['value'] == 'adj')
             $proximity = TRUE;
           $edismax_q .= $this->map[strtolower($v['value'])];
+          $level_operands = 0;
           break;
         case 'OPERAND':
-          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, utf8_decode($v['value']));
-          if (trim($v['value'])) {
-            $num_operands++;
+          if ($trim_value == '(') {
+            $level_paren++;
+          }
+          elseif ($trim_value == ')') {
+            $level_paren--;
+            $level_operands = 0;
+          }
+          elseif ($trim_value) {
             if ($proximity) {
               $edismax_q .= '~10';
               $proximity = TRUE;
+            } 
+            elseif ($level_paren && $level_operands) {
+              $edismax_q .= ' AND ';
             }
+            $level_operands++;
+            $num_operands++;
           }
+          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, utf8_decode($v['value']));
           break;
         case 'INDEX':
           $current_index = $v['value'];
           $edismax_q .= $v['value'];
+          $level_operands = 0;
           break;
       }
+      //if (DEBUG_ON) echo $level_paren . ' ' . $num_operands . ' trim: /' . $trim_value . '/ edismax_q: ' . $edismax_q . ' <br/>';
     }
     return array('edismax' => $edismax_q, 'operands' => $num_operands);
   }
