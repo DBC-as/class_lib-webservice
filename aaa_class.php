@@ -80,8 +80,10 @@ class aaa {
     $this->ip = $ip;
     if ($this->aaa_cache) {
       $cache_key = 'AAA_'.md5($user . '_' . $group . '_' . $passw . '_' . $ip);
-      if ($this->rights = $this->aaa_cache->get($cache_key))
+      if ($rights = $this->aaa_cache->get($cache_key)) {
+        $this->rights = json_decode($rights);
         return !empty($this->rights);
+      }
     }
 
     if (!empty($this->vip_credentials)) {
@@ -209,7 +211,7 @@ class aaa {
       }
     }
     if ($this->aaa_cache)
-      $this->aaa_cache->set($cache_key, $this->rights, (isset($error) ? $this->error_cache_seconds : $this->cache_seconds));
+      $this->aaa_cache->set($cache_key, json_encode($this->rights), (isset($error) ? $this->error_cache_seconds : $this->cache_seconds));
     return !empty($this->rights);
   }
 
@@ -236,7 +238,7 @@ class aaa {
   * @returns boolean
   **/
   public function has_right($ressource, $right) {
-    return $this->rights->$ressource->$right == TRUE;
+    return ($this->rights->$ressource->$right == TRUE);
   }
 
 
