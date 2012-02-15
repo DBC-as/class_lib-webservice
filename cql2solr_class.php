@@ -136,6 +136,7 @@ class cql2solr extends tokenizer {
         case 'OPERAND':
           if ($trim_value == '(') {
             $level_paren++;
+            $level_operands = 0;
           }
           elseif ($trim_value == ')') {
             $level_paren--;
