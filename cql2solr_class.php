@@ -144,8 +144,8 @@ class cql2solr extends tokenizer {
           }
           elseif ($trim_value) {
             if ($proximity) {
-              $edismax_q .= '~10';
-              $proximity = TRUE;
+              $add_prox = '~10';
+              $proximity = FALSE;
             } 
             elseif ($level_paren && $level_operands) {
               $edismax_q .= ' AND ';
@@ -153,7 +153,8 @@ class cql2solr extends tokenizer {
             $level_operands++;
             $num_operands++;
           }
-          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, utf8_decode($v['value']));
+          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, utf8_decode($v['value'])) . $add_prox;
+          $add_prox = '';
           break;
         case 'INDEX':
           $current_index = $v['value'];
