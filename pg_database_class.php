@@ -81,8 +81,8 @@
                 $pair=explode('=',$val);
                 $cred[$pair[0]]=$pair[1];
             }
-//            print_r($cred);
-            parent::__construct($cred["user"],$cred["password"],$cred["dbname"],$cred["host"],$cred["port"]);
+//         print_r($cred);
+         parent::__construct($cred["user"],$cred["password"],$cred["dbname"],$cred["host"],$cred["port"]);
         } 
 
         private function set_large_object()
