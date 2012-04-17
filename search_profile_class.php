@@ -48,10 +48,11 @@ class search_profiles {
   * \brief Get a given profile for the agency
   *
   * @param $profile_name       name of profile
+  * @param $profile_version    version of profile: 2 or 3
   *
   * @returns profile if found, FALSE otherwise
   **/
-  public function get_profile($agency, $profile_name) {
+  public function get_profile($agency, $profile_name, $profile_version) {
     if ($this->profile_cache) {
       $cache_key = 'PROFILE_' . $agency;
       $this->profiles = $this->profile_cache->get($cache_key);
@@ -60,7 +61,7 @@ class search_profiles {
     if (!$this->profiles) {
       $curl = new curl();
       $curl->set_option(CURLOPT_TIMEOUT, 10);
-      $res_xml = $curl->get(sprintf($this->agency_uri, $agency));
+      $res_xml = $curl->get(sprintf($this->agency_uri, $agency, $profile_version));
       $curl_err = $curl->get_status();
       if ($curl_err['http_code'] < 200 || $curl_err['http_code'] > 299) {
         $this->profiles[strtolower($p_name)] = FALSE;
