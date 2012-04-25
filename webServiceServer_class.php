@@ -300,6 +300,7 @@ abstract class webServiceServer {
       $reg_matchs = $this->config->get_value('preg_match', 'howru');
       $reg_errors = $this->config->get_value('error', 'howru');
       $url = $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
+      if ($_SERVER['HTTPS'] == 'on') $url = 'https://' . $url;
       foreach ($tests as $i_test => $test) {
         if (is_array($test)) {
           $reg_match = $reg_matchs[$i_test];
