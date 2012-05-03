@@ -22,17 +22,25 @@
     */
     class fetException extends Exception implements IException
     {
+        private $addMessage;
         /* constructor can be used to initialize custom objects(like logging)*/
         public function __construct($message=null, $code=0)
         {
             parent::__construct($message, $code);
+            $this->addMessage = '';
         }
 
         /* __toString-method can be used for custom messages */
         public function __toString()
         {
-            return parent::__toString()."\n";
+            return $this->getMessage().(isset($this->addMessage) ? ' '.$this->addMessage : '');
+            //return parent::__toString()."\n";
         }
+        
+        public function __addToMessage( $message ) {
+        $this->addMessage = $message;
+        }
+
 
         public function log($filename)
         {}
