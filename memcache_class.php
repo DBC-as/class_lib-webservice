@@ -75,13 +75,15 @@ class cache {
    * @param data (string)
    **/
 
-  public function set($key,$data) {
-    if (is_object($this->memcache))
-      if ($this->memcache->replace($key, $data, FALSE, $this->expire))
+  public function set($key,$data, $expire = NULL) {
+    if (is_object($this->memcache)) {
+      if (empty($expire))
+        $expire = $this->expire;
+      if ($this->memcache->replace($key, $data, FALSE, $expire))
         return TRUE;
       else
-        return $this->memcache->set($key, $data, FALSE, $this->expire);
-    else
+        return $this->memcache->set($key, $data, FALSE, $expire);
+    } else
       return FALSE;
 
   }
