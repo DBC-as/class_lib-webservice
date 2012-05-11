@@ -82,12 +82,10 @@ class objconvert {
       if ($prefix)
         $o_ns->$prefix = $ns;
       else
-        $o_ns-> {'$'
-                }
-        = $ns;
+        $o_ns->{'$'} = $ns;
     }
     $json_obj = $this->obj2badgerfish_obj($obj);
-    $json_obj-> {'@namespaces'} = $o_ns;
+    $json_obj->{'@namespaces'} = $o_ns;
     return json_encode($json_obj);
   }
 
@@ -98,7 +96,7 @@ class objconvert {
       foreach ($obj as $key => $o) {
         if (is_array($o)) {
           foreach ($o as $o_i) {
-            $ret-> {$key}[] = $this->build_json_obj($o_i);
+            $ret->{$key}[] = $this->build_json_obj($o_i);
           }
         }
         else
@@ -112,16 +110,16 @@ class objconvert {
   	*/
   private function build_json_obj($obj) {
     if (is_scalar($obj->_value))
-      $ret-> {'$'} = html_entity_decode($obj->_value);
+      $ret->{'$'} = html_entity_decode($obj->_value);
     else
       $ret = $this->obj2badgerfish_obj($obj->_value);
     if ($obj->_attributes) {
       foreach ($obj->_attributes as $aname => $aval) {
-        $ret-> {'@'.$aname} = $this->build_json_obj($aval);
+        $ret->{'@'.$aname} = $this->build_json_obj($aval);
       }
     }
     if ($obj->_namespace)
-      $ret-> {'@'} = $this->get_namespace_prefix($obj->_namespace);
+      $ret->{'@'} = $this->get_namespace_prefix($obj->_namespace);
     return $ret;
   }
 
