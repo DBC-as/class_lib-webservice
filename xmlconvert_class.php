@@ -69,20 +69,21 @@ class xmlconvert {
             $i = strpos($attr->nodeName, ":");
             $a_nodename = ($i ? substr($attr->nodeName, $i+1) : $attr->nodeName);
             if ($attr->namespaceURI)
-              $help->_attributes-> {$a_nodename}->_namespace = $attr->namespaceURI;
-            $help->_attributes-> {$a_nodename}->_value = $attr->nodeValue;
+              $help->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
+            $help->_attributes->{$a_nodename}->_value = $attr->nodeValue;
           }
         }
-        if (is_array($ret-> {$nodename})) {
-          $ret-> {$nodename}[] = $help;
+        if (is_array($ret->{$nodename})) {
+          $ret->{$nodename}[] = $help;
         }
         elseif (isset($ret->$nodename)) {
           $tmp = $ret->$nodename;
           unset($ret->$nodename);
-          $ret-> {$nodename}[] = $tmp;
-          $ret-> {$nodename}[] = $help;
+          $ret->{$nodename}[] = $tmp;
+          $ret->{$nodename}[] = $help;
         }
         else {
+          if (is_scalar($ret)) unset($ret);  // defensive approach
           $ret->$nodename = $help;
         }
         unset($help);
