@@ -101,9 +101,11 @@ class tokenizer {
   }
 
   function is_raw_index($idx) {
-    foreach ($this->raw_index as $i)
-    if (substr($idx, 0, strlen($i)) == $i)
-      return TRUE;
+    if (is_array($this->raw_index)) {
+      foreach ($this->raw_index as $i) {
+        if (substr($idx, 0, strlen($i)) == $i) {
+          return TRUE;
+    } } }
 
     return FALSE;
   }
