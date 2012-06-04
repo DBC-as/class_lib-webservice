@@ -48,51 +48,52 @@ class xmlconvert {
       if ($node->nodeName == "#comment") {
         continue;
       }
-      elseif ($node->nodeName == "#text") {
-        $ret = trim($node->nodeValue);
+      if ($force_NS) {
+        $subnode->_namespace = $force_NS;
       }
-      elseif ($node->nodeName == "#cdata-section") {
-        $ret = trim($node->nodeValue);
+      elseif ($node->namespaceURI) {
+        $subnode->_namespace = $node->namespaceURI;
+      }
+      if ($node->nodeName == "#text" || $node->nodeName == "#cdata-section") {
+        $subnode->_value = $node->nodeValue;
+        $localName = '#text';
       }
       else {
-        $i = strpos($node->nodeName, ":");
-        $nodename = ($i ? substr($node->nodeName, $i+1) : $node->nodeName);
-        if ($force_NS) {
-          $help->_namespace = $force_NS;
-        }
-        elseif ($node->namespaceURI) {
-          $help->_namespace = $node->namespaceURI;
-        }
-        $help->_value = $this->xml2obj($node, $force_NS);
+        $localName = $node->localName;
+        $subnode->_value = $this->xml2obj($node, $force_NS);
         if ($node->hasAttributes()) {
           foreach ($node->attributes as $attr) {
             $i = strpos($attr->nodeName, ":");
-            $a_nodename = ($i ? substr($attr->nodeName, $i+1) : $attr->nodeName);
+            $a_nodename = $attr->localName;
             if ($attr->namespaceURI)
-              $help->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
-            $help->_attributes->{$a_nodename}->_value = $attr->nodeValue;
+              $subnode->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
+            $subnode->_attributes->{$a_nodename}->_value = $attr->nodeValue;
           }
         }
-        if (is_array($ret->{$nodename})) {
-          $ret->{$nodename}[] = $help;
+      }
+      $ret->{$localName}[] = $subnode;
+      unset($subnode);
+    }
+
+    // remove unnecessary level(s) for text-nodes and non-repeated tags
+    if ($ret) {
+      if (count((array)$ret) == 1 && isset($ret->{'#text'})) {
+        $ret = $ret->{'#text'}[0]->_value;
+      }
+      else {
+        foreach ($ret as $tag => $obj) {
+          if (count($obj) == 1) {
+            $ret->$tag = $obj[0];
+          }
         }
-        elseif (isset($ret->$nodename)) {
-          $tmp = $ret->$nodename;
-          unset($ret->$nodename);
-          $ret->{$nodename}[] = $tmp;
-          $ret->{$nodename}[] = $help;
-        }
-        else {
-          if (is_scalar($ret)) unset($ret);  // defensive approach
-          $ret->$nodename = $help;
-        }
-        unset($help);
+        reset($ret);
       }
     }
+
     return $ret;
+
   }
 
 }
 
 
-?>

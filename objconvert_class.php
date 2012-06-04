@@ -287,12 +287,17 @@ class objconvert {
   /** \brief produce balanced xml
   	*/
   public function tag_me($tag, $attr, $val) {
-    if ($attr && $attr[0] <> " ") $space = " ";
-    return '<' . $tag . $space . $attr . '>' . $val . '</' . $tag . '>';
+    if ($tag == '#text') {
+      return $val;
+    }
+    else {
+      if ($attr && $attr[0] <> " ") $space = " ";
+      return '<' . $tag . $space . $attr . '>' . $val . '</' . $tag . '>';
+    }
   }
 
 }
 
 
 
-?>
+
