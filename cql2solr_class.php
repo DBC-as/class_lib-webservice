@@ -36,7 +36,7 @@ class cql2solr extends tokenizer {
     $this->indexes = $this->get_indexes();
     $this->ignore = array('/^prox\//');
 
-    if ($language == 'dan') {
+    if ($language == 'cqldan') {
       $this->map = array('og' => 'AND', 'ikke' => 'NOT', 'eller' => 'OR', '=' => ':', 'adj' => ':');
     }
     else {
@@ -72,13 +72,14 @@ class cql2solr extends tokenizer {
     return $indexes;
   }
 
-  private function get_operators($lingo) {
+  private function get_operators($language) {
     $supports = $this->dom->getElementsByTagName('supports');
 
+    $boolean_lingo = ($language == 'cqldan' ? 'dan' : 'eng');
     $i = 0;
     foreach ($supports as $support_key) {
       $type = $supports->item($i)->getAttribute('type');
-      if ($type == $lingo . 'BooleanModifier' || $type == 'relation')
+      if ($type == $boolean_lingo . 'BooleanModifier' || $type == 'relation')
         $operators[] = $supports->item($i)->nodeValue;
 
       $i++;
