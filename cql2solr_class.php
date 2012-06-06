@@ -26,17 +26,22 @@ class cql2solr extends tokenizer {
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
 
-  public function cql2solr($xml, $config='') {
+  public function cql2solr($xml, $config='', $language='') {
     $this->dom = new DomDocument();
     $this->dom->Load($xml);
 
     $this->case_insensitive = TRUE;
     $this->split_expression = '/([ ()=])/';
-    $this->operators = $this->get_operators();
+    $this->operators = $this->get_operators($language);
     $this->indexes = $this->get_indexes();
     $this->ignore = array('/^prox\//');
 
-    $this->map = array('and' => 'AND', 'not' => 'NOT', 'or' => 'OR', '=' => ':', 'adj' => ':');
+    if ($language == 'dan') {
+      $this->map = array('og' => 'AND', 'ikke' => 'NOT', 'eller' => 'OR', '=' => ':', 'adj' => ':');
+    }
+    else {
+      $this->map = array('and' => 'AND', 'not' => 'NOT', 'or' => 'OR', '=' => ':', 'adj' => ':');
+    }
 
     if ($config)
       $this->raw_index = $config->get_value('raw_index', 'setup');
@@ -67,13 +72,13 @@ class cql2solr extends tokenizer {
     return $indexes;
   }
 
-  private function get_operators() {
+  private function get_operators($lingo) {
     $supports = $this->dom->getElementsByTagName('supports');
 
     $i = 0;
     foreach ($supports as $support_key) {
       $type = $supports->item($i)->getAttribute('type');
-      if ($type == 'booleanModifier' || $type == 'relation')
+      if ($type == $lingo . 'BooleanModifier' || $type == 'relation')
         $operators[] = $supports->item($i)->nodeValue;
 
       $i++;
