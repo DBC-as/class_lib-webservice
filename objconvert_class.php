@@ -64,11 +64,11 @@ class objconvert {
   private $namespaces=array();
   private $used_namespaces=array();
 
-  public function __construct($xmlns="", $tag_seq="") {
+  public function __construct($xmlns='', $tag_seq='') {
     if ($xmlns) {
       foreach ($xmlns as $prefix => $ns) {
-        if ($prefix == "NONE" || $prefix == "0")
-          $prefix = "";
+        if ($prefix == 'NONE' || $prefix == '0')
+          $prefix = '';
         $this->add_namespace($ns, $prefix);
       }
     }
@@ -138,7 +138,7 @@ class objconvert {
       if ($this->used_namespaces[$ns] || empty($prefix))
         $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     }
-    if ($used_ns && $i = strpos($xml, ">"))
+    if ($used_ns && $i = strpos($xml, '>'))
       $xml = substr($xml, 0, $i) . $used_ns . substr($xml, $i);
     return $this->xml_header() . $xml;
   }
@@ -169,7 +169,7 @@ class objconvert {
   	*/
   public function obj2xml($obj) {
     $this->check_tag_sequence();
-    $ret = "";
+    $ret = '';
     if ($obj) {
       foreach ($obj as $tag => $o) {
         if (is_array($o)) {
@@ -187,13 +187,13 @@ class objconvert {
   /** \brief handles one node
   	*/
   private function build_xml($tag, $obj) {
-    $ret = "";
+    $ret = '';
     if ($obj->_attributes) {
       foreach ($obj->_attributes as $a_name => $a_val) {
         if ($a_val->_namespace)
           $a_prefix = $this->set_prefix_separator($this->get_namespace_prefix($a_val->_namespace));
         else
-          $a_prefix = "";
+          $a_prefix = '';
         $attr .= ' ' . $a_prefix . $a_name . '="' . htmlspecialchars($a_val->_value) . '"';
 // prefix in value hack
         $this->set_used_prefix($a_val->_value);
@@ -213,7 +213,7 @@ class objconvert {
   /** \brief Updates used_namespaces from prefix in $val
   	*/
   private function set_used_prefix($val) {
-    if ($p = strpos($val, ":")) {
+    if ($p = strpos($val, ':')) {
       foreach ($this->namespaces as $ns => $prefix) {
         if ($prefix == substr($val, 0, $p)) {
           $this->used_namespaces[$ns] = TRUE;
@@ -228,8 +228,8 @@ class objconvert {
   private function get_namespace_prefix($ns) {
     if (empty($this->namespaces[$ns])) {
       $i = 1;
-      while (in_array("ns".$i, $this->namespaces)) $i++;
-      $this->namespaces[$ns] = "ns".$i;
+      while (in_array('ns'.$i, $this->namespaces)) $i++;
+      $this->namespaces[$ns] = 'ns'.$i;
     }
     $this->used_namespaces[$ns] = TRUE;
     return $this->namespaces[$ns];
@@ -246,7 +246,7 @@ class objconvert {
   	*/
   private function check_tag_sequence() {
     if ($this->tag_sequence && is_scalar($this->tag_sequence)) {
-      require_once("OLS_class_lib/schema_class.php");
+      require_once('OLS_class_lib/schema_class.php');
       $schema_parser = new schema_something();
       $this->tag_sequence = $schema_parser->parse($this->tag_sequence);
     }
@@ -256,6 +256,7 @@ class objconvert {
   	*/
   public function add_namespace($namespace,$prefix) {
     $this->namespaces[$namespace]=$prefix;
+    asort($this->namespaces);
   }
 
   /** \brief Returns used namespaces
@@ -291,7 +292,7 @@ class objconvert {
       return $val;
     }
     else {
-      if ($attr && $attr[0] <> " ") $space = " ";
+      if ($attr && $attr[0] <> ' ') $space = ' ';
       return '<' . $tag . $space . $attr . '>' . $val . '</' . $tag . '>';
     }
   }
