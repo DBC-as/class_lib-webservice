@@ -65,9 +65,10 @@ class search_profiles {
       $curl_err = $curl->get_status();
       if ($curl_err['http_code'] < 200 || $curl_err['http_code'] > 299) {
         $this->profiles[strtolower($p_name)] = FALSE;
-        if (method_exists('verbose','log'))
+        if (method_exists('verbose','log')) {
           verbose::log(FATAL, __FUNCTION__ . '():: Cannot fetch profile ' . $profile_name .
                        ' from ' . sprintf($this->agency_uri, $agency));
+        }
       }
       else {
         $dom = new DomDocument();
@@ -77,15 +78,28 @@ class search_profiles {
             $p_name = '';
             $p_val = array();
             foreach ($profile->childNodes as $p) {
-              if ($p->localName == 'profileName')
+              if ($p->localName == 'profileName') {
                 $p_name = $p->nodeValue;
+              }
               elseif ($p->localName == 'source') {
-                foreach ($p->childNodes as $s)
-                $r[$s->localName] = $s->nodeValue;
-                $p_val[] = $r;
+                foreach ($p->childNodes as $s) {
+                  if ($s->localName == 'relation') {
+                    foreach ($s->childNodes as $r) {
+                      $rels[$r->localName] = $r->nodeValue;
+                    }
+                    $source[$s->localName][] = $rels;
+                    unset($rels);
+                  }
+                  else {
+                    $source[$s->localName] = $s->nodeValue;
+                  }
+                }
+                $p_val[] = $source;
+                unset($source);
               }
             }
             $this->profiles[strtolower($p_name)] = $p_val;
+            unset($p_val);
           }
         }
         else {
@@ -93,14 +107,17 @@ class search_profiles {
         }
 
       }
-      if ($this->profile_cache)
+      if ($this->profile_cache) {
         $this->profile_cache->set($cache_key, $this->profiles);
+      }
     }
 
-    if ($p = &$this->profiles[strtolower($profile_name)])
+    if ($p = &$this->profiles[strtolower($profile_name)]) {
       return $p;
-    else
+    }
+    else {
       return FALSE;
+    }
   }
 
 }
