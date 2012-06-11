@@ -70,6 +70,11 @@ abstract class webServiceServer {
       die($http_error);
     }
 
+    if ($this->config->get_value('only_https', 'setup') && empty($_SYSTEM['HTTPS'])) {
+      header('HTTP/1.0 403.4 SSL Required');
+      die('HTTP/1.0 403.4 SSL Required');
+    }
+
     libxml_use_internal_errors(TRUE);
 
     if ($this->in_house())
