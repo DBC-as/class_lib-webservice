@@ -75,6 +75,7 @@ class stopwatch {
     if ($ignore == 0 && $this->timers[$s])
       die("FATAL: Cannot start timer $s... already running");
     $this->timers[$s] = microtime();
+    if (!isset($this->sums[$s])) $this->sums[$s] = 0;
   }
 
   /**
@@ -119,13 +120,21 @@ class stopwatch {
       $this->format  = "'%s' => %0.6f";
     }
     else if ($format == "file") {
-      $this->prefix  = urlencode($_SERVER["REQUEST_URI"]) . ": ";
+      if (isset($_SERVER["REQUEST_URI"])) {
+        $this->prefix  = urlencode($_SERVER["REQUEST_URI"]) . ": ";
+      } else {
+        $this->prefix  = $_SERVER["PHP_SELF"] . ": ";
+      }
       $this->delim   = " ";
       $this->postfix = "";
       $this->format  = "%s => %0.6f";
     }
     else if ($format == "screen") {
-      $this->prefix  = "<pre>\nTimings for: " . urlencode($_SERVER["REQUEST_URI"]) . ":\n";
+      if (isset($_SERVER["REQUEST_URI"])) {
+        $this->prefix  = "<pre>\nTimings for: " . urlencode($_SERVER["REQUEST_URI"]) . ":\n";
+      } else {
+        $this->prefix  = "<pre>\nTimings for: " . $_SERVER["PHP_SELF"] . ":\n";
+      }
       $this->delim   = "\n";
       $this->postfix = "\n</pre>";
       $this->format  = "%20s => %0.6f";
