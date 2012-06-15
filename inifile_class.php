@@ -298,8 +298,10 @@ class inifile {
       }
     }
 
-    for ( $j=0; $j<$i; $j++ )
-      $result[ $sections[ $j ] ] = $values[ $j ];
+    for ( $j=0; $j<$i; $j++ ) {
+      if (isset($values[ $j ]))
+        $result[ $sections[ $j ] ] = $values[ $j ];
+    }
 
     return $result + $globals;
   }
