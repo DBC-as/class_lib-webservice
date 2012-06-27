@@ -377,7 +377,7 @@ class marc implements Iterator {
     foreach ($this->marc_array as $field) {
       if ($field['field'] == '000')
         continue;
-      $strng .= $field['field'] . " " . $field['indicator'] . " ";
+      $strng .= $field['field'] . " " . $field['indicator'] ;
       foreach ($field['subfield'] as $subfield) {
         $strng .= "*" . $subfield;
       }
