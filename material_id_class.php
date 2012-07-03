@@ -71,6 +71,10 @@ class materialId {
                 case '5': case '6': case '7': case '8': case '9':
                     $res[] = $c;
                     break;
+                default:
+                  if (!strpbrk(" \t-", $c)) {  // Whitespace and dash is legal
+                    break 2;  // If any illegal characters are found, we stop searching => exit loop
+                  }
             }
         }
         return implode($res);
@@ -118,6 +122,10 @@ class materialId {
                 case '5': case '6': case '7': case '8': case '9':
                     $res[] = $c;
                     break;
+                default:
+                  if (!strpbrk(" \t-", $c)) {  // Whitespace and dash is legal
+                    break 2;  // If any illegal characters are found, we stop searching => exit loop
+                  }
             }
         }
         return implode($res);
@@ -160,6 +168,10 @@ class materialId {
                 case '5': case '6': case '7': case '8': case '9':
                     $res[] = $c;
                     break;
+                default:
+                  if (!strpbrk(" \t-", $c)) {  // Whitespace and dash is legal
+                    break 2;  // If any illegal characters are found, we stop searching => exit loop
+                  }
             }
         }
         return implode($res);
@@ -202,6 +214,10 @@ class materialId {
                 case '5': case '6': case '7': case '8': case '9':
                     $res[] = $c;
                     break;
+                default:
+                  if (!strpbrk(" \t-", $c)) {  // Whitespace and dash is legal
+                    break 2;  // If any illegal characters are found, we stop searching => exit loop
+                  }
             }
         }
         if (count($res) == 7) {
