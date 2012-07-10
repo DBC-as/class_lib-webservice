@@ -116,6 +116,15 @@
                 throw new fetException("no connection");
         }
 
+        public function prepare($query_name, $query) {
+          if (@pg_prepare($this->connection, $query_name, $query)===false) {
+            $message=pg_last_error();
+            if ($this->transaction)
+              @pg_query($this->connection, "ROLLBACK");
+            @pg_query($this->connection, "DEALLOCATE ".$this->query_name);
+          }
+        }
+
         /**
         wrapper for private function _execute
         */
@@ -134,51 +143,46 @@
 	// @todo fix this; return a proper key for the query
         private function _queryname()
         {
-            return "testhest";
             //echo $this->query;
             $name = str_replace(' ','_',$this->query);
             $name = str_replace(',','_',$name);
             $name = str_replace('(','_',$name);
             $name = str_replace(')','_',$name);
+            $name = str_replace(')','$',$name);
             return $name;	
         }
 
         private function _execute($statement_key=null)
         {
-
-
             // use transaction if set
             if( $this->transaction )
                 @pg_query($this->connection,"START TRANSACTION");
 
             // check for bind-variables
-            if( !empty($this->bind_list) )
-            {
-	      $this->query_name =  isset($statement_key) ? $statement_key : $this->_queryname();
-	      //if( @pg_prepare($this->connection,"my_query",$this->query)===false)
-                // use sql as statement-name
-                if( @pg_prepare($this->connection,$this->query_name,$this->query)===false)
-                {
-                    $message=pg_last_error();
-                    if( $this->transaction )
-                        @pg_query($this->connection,"ROLLBACK");
-                    @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
-
-                    throw new fetException($message);
+            if (!empty($this->bind_list)) {
+              if (isset($statement_key)) {
+                $this->query_name = $statement_key;
+              } else {
+                $this->query_name = $this->_queryname();
+                if (@pg_prepare($this->connection,$this->query_name,$this->query)===false) {
+                  $message=pg_last_error();
+                  if( $this->transaction )
+                    @pg_query($this->connection,"ROLLBACK");
+                  @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
+                  throw new fetException($message);
                 }
-                $bind=array();
-
-                foreach( $this->bind_list as $binds)
-                    array_push($bind,$binds["value"]);
-
-                if( ($this->result=@pg_execute($this->connection,$this->query_name,$bind))===false)
-                {
-                    $message=pg_last_error();
-                    if( $this->transaction )
-                        @pg_query($this->connection,"ROLLBACK");
-                    @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
-                    throw new fetException($message);
-                }
+              }
+              $bind=array();
+              foreach( $this->bind_list as $binds)
+                array_push($bind,$binds["value"]);
+              unset($this->bind_list);
+              if (($this->result=@pg_execute($this->connection,$this->query_name,$bind))===false) {
+                $message=pg_last_error();
+                if ($this->transaction)
+                  @pg_query($this->connection,"ROLLBACK");
+                @pg_query($this->connection,"DEALLOCATE ".$this->query_name);
+                throw new fetException($message);
+              }
             }
             else  
                 // if no bind-variables - just query
