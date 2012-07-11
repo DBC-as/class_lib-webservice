@@ -183,9 +183,22 @@ class marc implements Iterator {
   /**
    * 
    */
-  function remField() {
+  function remField($field = '', $index = 0) {
+    if ($field) {
+      $indx = 0;
+      foreach ($this->marc_array as $key => $m) {
+        if ($m['field'] == $field) {
+          if ($indx == $index) {
+            $this->marc_arrayIndex = $key;
+            break;
+          }
+          $indx++;
+        }
+      }
+    }
     if (!$this->marc_arrayIndex)
       return false;
+
     $newMarcArray = array();
     for ($i = 0; $i < count($this->marc_array); $i++) {
       if ($i == $this->marc_arrayIndex)
@@ -377,7 +390,7 @@ class marc implements Iterator {
     foreach ($this->marc_array as $field) {
       if ($field['field'] == '000')
         continue;
-      $strng .= $field['field'] . " " . $field['indicator'] ;
+      $strng .= $field['field'] . " " . $field['indicator'];
       foreach ($field['subfield'] as $subfield) {
         $strng .= "*" . $subfield;
       }
