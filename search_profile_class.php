@@ -94,8 +94,10 @@ class search_profiles {
                     $source[$s->localName] = $s->nodeValue;
                   }
                 }
-                $p_val[] = $source;
-                unset($source);
+                if ($source) {
+                  $p_val[] = $source;
+                  unset($source);
+                }
               }
             }
             $this->profiles[strtolower($p_name)] = $p_val;
