@@ -21,7 +21,7 @@
 
 /**
  * Default global options
- * Should be defined in config.php or similiar
+ * Should be defined in some config-file
  * @var    mixed
  */
 
@@ -38,45 +38,45 @@ $curl_default_options = array(
 * Example:
 *
 * $curl = new curl(); \n
-* print_r( $curl->get(array("http://checkip.dbc.dk/","http://no.such_domain.net")) ); // returns array \n
+* print_r($curl->get(array("http://checkip.dbc.dk/","http://no.such_domain.net"))); // returns array \n
 * $curl->close(); \n
 *
 * Example:
 *
 * $curl = new curl(); \n
-* $curl->set_url( "http://checkip.dbc.dk/",0 );     // returns true | false \n
+* $curl->set_url("http://checkip.dbc.dk/",0);     // returns TRUE | FALSE \n
 * $handle_id = $curl->get_next_handle(); \n
-* $curl->set_url( "http://no.such_domain.net",$handle_id );  // returns true | false \n
-* print_r( $curl->get() );                          // returns array \n
+* $curl->set_url("http://no.such_domain.net",$handle_id);  // returns TRUE | FALSE \n
+* print_r($curl->get());                          // returns array \n
 * $curl->close(); \n
 *
 * Example:
 *
 * $curl = new curl(); \n
-* print_r( $curl->get("http://checkip.dbc.dk/") );     // returns string \n
-* print_r( $curl->get("http://kundeservice.dbc.dk") ); // returns string \n
-* print_r( $curl->get("http://no.such_domain.net") );  // returns string \n
+* print_r($curl->get("http://checkip.dbc.dk/"));     // returns string \n
+* print_r($curl->get("http://kundeservice.dbc.dk")); // returns string \n
+* print_r($curl->get("http://no.such_domain.net"));  // returns string \n
 * $curl->close(); \n
 *
 * Example:
 *
 * $curl = new curl(); \n
-* set_url("http://lxr.php.net/");                 // returns true | false \n
-* set_option(CURLOPT_PROXY,"phobos.dbc.dk:3128"); // returns true | false \n
+* set_url("http://lxr.php.net/");                 // returns TRUE | FALSE \n
+* set_option(CURLOPT_PROXY,"phobos.dbc.dk:3128"); // returns TRUE | FALSE \n
 * echo $res = $curl->get();                       // returns string \n
 * $curl->get_option();                            // returns array \n
 * $curl->get_status();                            // returns array \n
 * $curl->get_status('http_code');                 // returns string \n
-* $curl->has_error();                             // returns string | false \n
+* $curl->has_error();                             // returns string | FALSE \n
 * $curl->close(); \n
 *
 * Example:
 *
 * $curl = new curl(); \n
-* $curl->set_multiple_options($options_array)  // returns true | false \n
-* $curl->set_option($option,$value,$n)         // returns true | false \n
-* $curl->set_proxy("phobos.dbc.dk:3128", $n)   // returns true | false \n
-* $curl->set_url("http://lxr.php.net/");       // returns true | false \n
+* $curl->set_multiple_options($options_array)  // returns TRUE | FALSE \n
+* $curl->set_option($option,$value,$n)         // returns TRUE | FALSE \n
+* $curl->set_proxy("phobos.dbc.dk:3128", $n)   // returns TRUE | FALSE \n
+* $curl->set_url("http://lxr.php.net/");       // returns TRUE | FALSE \n
 * $res = $curl->get();                         // returns array \n
 * $curl->get_option();                         // returns array \n
 * $curl->get_option(CURLOPT_URL);              // returns array \n
@@ -85,22 +85,22 @@ $curl_default_options = array(
 * $curl->get_status('http_code');              // returns array \n
 * $curl->get_status('http_code',$n);           // returns string \n
 * $curl->has_error();                          // returns array \n
-* $curl->has_error($n);                        // returns string | false \n
+* $curl->has_error($n);                        // returns string | FALSE \n
 * $curl->close(); \n
 *
 *
 * Example:
 * $curl = new curl(); \n
-* $curl->set_timeout(10);                    // returns true | false \n
-* $curl->set_proxy("someproxy.dk:1020", $n); // returns true | false \n
-* $curl->set_post_xml("<xml>foobar</xml>");  // returns true | false \n
+* $curl->set_timeout(10);                    // returns TRUE | FALSE \n
+* $curl->set_proxy("someproxy.dk:1020", $n); // returns TRUE | FALSE \n
+* $curl->set_post_xml("<xml>foobar</xml>");  // returns TRUE | FALSE \n
 * $res = $curl->get();                       // returns array \n
 * $curl->close(); \n
 *
 *
 * Example:
 * $curl = new curl(); \n
-* $curl->set_post(array("foo" => "bar"); // returns true | false \n
+* $curl->set_post(array("foo" => "bar"); // returns TRUE | FALSE \n
 * $res = $curl->get();                   // returns array \n
 * $curl->close(); \n
 *
@@ -158,38 +158,38 @@ class cURL {
    * @param $url [optional] the URL to be accessed by this instance of the class. (string)
    */
 
-  public function curl( $url=NULL ) {
+  public function curl($url=NULL) {
     global $curl_default_options;
 
     $this->curl_options = null;
     $this->curl_status = null;
     $this->wait_for_connections = PHP_INT_MAX;
 
-    if ( !function_exists('curl_init') ) {
-      if (method_exists('verbose','log')) {
+    if (!function_exists('curl_init')) {
+      if (method_exists('verbose', 'log')) {
         verbose::log(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
       }
       elseif (function_exists('verbose')) {
         verbose(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
       }
-      return false;
+      return FALSE;
     }
 
-    if ( !isset($curl_default_options) ) {
-      if (method_exists('verbose','log')) {
+    if (!isset($curl_default_options)) {
+      if (method_exists('verbose', 'log')) {
         verbose::log(ERROR, '$curl_default_options is not defined. See the class description for usage');
       }
       elseif (function_exists('verbose')) {
         verbose(ERROR, '$curl_default_options is not defined. See the class description for usage');
       }
-      return false;
+      return FALSE;
     }
     else
       $this->curl_default_options = $curl_default_options;
 
     $this->curl_handle[] = curl_init();
 
-    $this->set_multiple_options( $this->curl_default_options );
+    $this->set_multiple_options($this->curl_default_options);
 
   }
 
@@ -205,22 +205,22 @@ class cURL {
    *               ignoring any future options in the options array.
    */
 
-  public function set_multiple_options( $options=NULL ) {
+  public function set_multiple_options($options=NULL) {
 
-    if ( !$options ) return false;
+    if (!$options) return FALSE;
 
-    foreach ( $this->curl_handle as $key => $handle ) {
+    foreach ($this->curl_handle as $key => $handle) {
       $res = curl_setopt_array($this->curl_handle[$key], $options);
-      if ( !$res )
-        return false;
+      if (!$res)
+        return FALSE;
     }
     reset($this->curl_handle);
-    foreach ( $this->curl_handle as $key => $handle ) {
-      foreach ( $options as $option => $value ) {
+    foreach ($this->curl_handle as $key => $handle) {
+      foreach ($options as $option => $value) {
         $this->curl_options[$key][$option] = $value;
       }
     }
-    return true;
+    return TRUE;
   }
 
 
@@ -240,21 +240,27 @@ class cURL {
    *                settings of the various curl options).
    */
 
-  public function get( $urls=false ) {
+  public function get($urls = FALSE) {
 
-    if ( $urls )
+    if ($urls)
       $this->set_url($urls);
 
-    // close previous curl_multi_handle, if any
-    if ( is_resource($this->curl_multi_handle) )
-      curl_multi_close($this->curl_multi_handle);
-
-    //create a new multiple cURL handle
-    $this->curl_multi_handle = curl_multi_init();
+    // remove previous curl_multi_handle, if any
+    if (is_resource($this->curl_multi_handle)) {
+      if (is_array($this->curl_handle)) {
+        foreach ($this->curl_handle as $key => $handle) {
+          curl_multi_remove_handle($this->curl_multi_handle, $this->curl_handle[$key]);
+        }
+      }
+    }
+    else {
+      //create a new multiple cURL handle
+      $this->curl_multi_handle = curl_multi_init();
+    }
 
     //add the handles
-    foreach ( $this->curl_handle as $key => $handle ) {
-      curl_multi_add_handle($this->curl_multi_handle,$this->curl_handle[$key]);
+    foreach ($this->curl_handle as $key => $handle) {
+      curl_multi_add_handle($this->curl_multi_handle, $this->curl_handle[$key]);
     }
 
     // execute the handles
@@ -276,20 +282,20 @@ class cURL {
     }
     while ($this->wait_for_connections && ($status === CURLM_CALL_MULTI_PERFORM || $active));
 
-    foreach ( $this->curl_handle as $key => $handle ) {
+    foreach ($this->curl_handle as $key => $handle) {
       $this->curl_status[$key]          = curl_getinfo($this->curl_handle[$key]) ;
       $this->curl_status[$key]['errno'] = curl_errno($this->curl_handle[$key]) ;
       $this->curl_status[$key]['error'] = curl_error($this->curl_handle[$key]) ;
       // If there has been a curl error, just return a null string.
-      if ( $this->curl_status[$key]['errno'] )
-        return false;
+      if ($this->curl_status[$key]['errno'])
+        return FALSE;
     }
 
-    foreach ( $this->curl_handle as $key => $handle ) {
+    foreach ($this->curl_handle as $key => $handle) {
       $this->curl_content[$key] = curl_multi_getcontent($handle);
     }
 
-    if ( sizeof($this->curl_handle) == 1 )
+    if (sizeof($this->curl_handle) == 1)
       return $this->curl_content[0];
     else
       return $this->curl_content;
@@ -309,13 +315,13 @@ class cURL {
 
   public function get_option($option=null, $handle_no=0) {
 
-    foreach ( $this->curl_handle as $key => $handle ) {
-      if ( !$handle_no || $key == $handle_no ) {
-        if ( empty($option) ) {
+    foreach ($this->curl_handle as $key => $handle) {
+      if (!$handle_no || $key == $handle_no) {
+        if (empty($option)) {
           $option_values[] = $this->curl_options[$key] ;
         }
         else {
-          if ( isset($this->curl_options[$key][$option]) )
+          if (isset($this->curl_options[$key][$option]))
             $option_values[] = $this->curl_options[$key][$option] ;
           else
             $option_values[] = null ;
@@ -323,7 +329,7 @@ class cURL {
       }
     }
 
-    if ( $handle_no || sizeof($this->curl_handle) == 1 )
+    if ($handle_no || sizeof($this->curl_handle) == 1)
       return $option_values[0];
     else
       return $option_values ;
@@ -343,17 +349,17 @@ class cURL {
 
   public function set_option($option, $value, $handle_no=null) {
 
-    if ( $handle_no === null ) {
-      foreach ( $this->curl_handle as $key => $handle ) {
+    if ($handle_no === null) {
+      foreach ($this->curl_handle as $key => $handle) {
         $this->curl_options[$key][$option] = $value;
-        $res = curl_setopt( $this->curl_handle[$key], $option, $value );
-        if ( !$res ) return false;
+        $res = curl_setopt($this->curl_handle[$key], $option, $value);
+        if (!$res) return FALSE;
       }
     }
     else {
       $this->handle_check($handle_no);
       $this->curl_options[$handle_no][$option] = $value;
-      $res = curl_setopt( $this->curl_handle[$handle_no], $option, $value );
+      $res = curl_setopt($this->curl_handle[$handle_no], $option, $value);
     }
     return $res;
 
@@ -368,8 +374,8 @@ class cURL {
    */
 
   public function set_url($value, $handle_no=0) {
-    if ( is_array($value) ) {
-      foreach ( $value as $key => $url ) {
+    if (is_array($value)) {
+      foreach ($value as $key => $url) {
         $this->set_option(CURLOPT_URL, $url, $key);
       }
     }
@@ -493,8 +499,8 @@ class cURL {
 
   public function get_next_handle() {
     $next_handle_no = 0;
-    foreach ( $this->curl_handle as $key => $handle ) {
-      if ( $key > $next_handle_no )
+    foreach ($this->curl_handle as $key => $handle) {
+      if ($key > $next_handle_no)
         $next_handle_no = $key;
     }
     return $next_handle_no + 1;
@@ -509,29 +515,29 @@ class cURL {
    *                     of the status information desired.
    *                     If omitted the array of status
    *                     information is returned.  If a non-existent
-   *                     status field is requested, false is returned.
+   *                     status field is requested, FALSE is returned.
    * @param $handle_no  Handle number. (integer)
    * @returns mixed
    */
 
   public function get_status($field=null,$handle_no=0) {
 
-    foreach ( $this->curl_handle as $key => $handle ) {
-      if ( !$handle_no || $key == $handle_no ) {
-        if ( empty($field) ) {
+    foreach ($this->curl_handle as $key => $handle) {
+      if (!$handle_no || $key == $handle_no) {
+        if (empty($field)) {
           $status[] = $this->curl_status[$key] ;
         }
         else {
-          if ( isset($this->curl_status[$key][$field]) ) {
+          if (isset($this->curl_status[$key][$field])) {
             $status[] = $this->curl_status[$key][$field];
           }
           else
-            return false ;
+            return FALSE ;
         }
       }
     }
 
-    if ( $handle_no || sizeof($this->curl_handle) == 1 )
+    if ($handle_no || sizeof($this->curl_handle) == 1)
       return $status[0];
     else
       return $status ;
@@ -546,22 +552,22 @@ class cURL {
    *
    * @param $handle_no    - Handle number. (integer)
    * @return mixed  The error message associated with the error if an error
-   *                occurred, false otherwise.
+   *                occurred, FALSE otherwise.
    */
 
   public function has_error($handle_no=0) {
 
-    foreach ( $this->curl_handle as $key => $handle ) {
-      if ( !$handle_no || $key == $handle_no ) {
-        if ( isset($this->curl_status[$key]['error']) ) {
-          $has_error[] = ( empty($this->curl_status[$key]['error']) ? false : $this->curl_status[$key]['error'] );
+    foreach ($this->curl_handle as $key => $handle) {
+      if (!$handle_no || $key == $handle_no) {
+        if (isset($this->curl_status[$key]['error'])) {
+          $has_error[] = (empty($this->curl_status[$key]['error']) ? FALSE : $this->curl_status[$key]['error']);
         }
         else
-          $has_error[] = false;
+          $has_error[] = FALSE;
       }
     }
 
-    if ( $handle_no || sizeof($this->curl_handle) == 1 )
+    if ($handle_no || sizeof($this->curl_handle) == 1)
       return $has_error[0];
     else
       return $has_error ;
@@ -578,13 +584,14 @@ class cURL {
    */
 
   public function close() {
-    foreach ( $this->curl_handle as $key => $handle ) {
+    foreach ($this->curl_handle as $key => $handle) {
       curl_multi_remove_handle($this->curl_multi_handle, $this->curl_handle[$key]);
-      curl_close( $this->curl_handle[$key] );
+      curl_close($this->curl_handle[$key]);
     }
-    curl_multi_close($this->curl_multi_handle);
     $this->curl_handle = null ;
-    $this->curl_multi_handle = null ;
+// keep the multihandle in order to reuse sockets
+    //curl_multi_close($this->curl_multi_handle);
+    //$this->curl_multi_handle = null ;
   }
 
 
@@ -601,10 +608,10 @@ class cURL {
 
   private function handle_check($handle_no) {
 
-    if ( !isset($this->curl_handle[$handle_no]) ) {
+    if (!isset($this->curl_handle[$handle_no])) {
       $this->curl_handle[$handle_no] = curl_init() ;
-      foreach ( $this->curl_default_options as $option => $option_value ) {
-        $this->set_option($option, $option_value, $handle_no );
+      foreach ($this->curl_default_options as $option => $option_value) {
+        $this->set_option($option, $option_value, $handle_no);
       }
     }
   }
