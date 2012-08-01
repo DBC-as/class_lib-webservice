@@ -159,7 +159,7 @@ class cql2solr extends tokenizer {
             $level_operands++;
             $num_operands++;
           }
-          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, utf8_decode($v['value'])) . $add_prox;
+          $edismax_q .= str_replace($this->solr_escapes_from, $this->solr_escapes_to, $v['value']) . $add_prox;
           $add_prox = '';
           break;
         case 'INDEX':
