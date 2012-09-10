@@ -31,7 +31,7 @@ class cql2solr extends tokenizer {
     $this->dom->Load($xml);
 
     $this->case_insensitive = TRUE;
-    $this->split_expression = '/([ ()=])/';
+    $this->split_expression = '/(<=|>=|[ <>=()[\]])/';
     $this->operators = $this->get_operators($language);
     $this->indexes = $this->get_indexes();
     $this->ignore = array('/^prox\//');
@@ -42,6 +42,18 @@ class cql2solr extends tokenizer {
     else {
       $this->map = array('and' => 'AND', 'not' => 'NOT', 'or' => 'OR', '=' => ':', 'adj' => ':');
     }
+    $this->map['<='] = ':';
+    $this->map['>='] = ':';
+    $this->map['='] = ':';
+    $this->map['adj'] = ':';
+    $this->map['<'] = ':';
+    $this->map['>'] = ':';
+
+    $this->interval = array('<' => '[* TO %s]', 
+                            '<=' => '[* TO %s]', 
+                            '>' => '[%s TO *]', 
+                            '>=' => '[%s TO *]');
+    $this->adjust_interval = array('<' => -1, '<=' => 0, '>' => 1, '>=' => 0);
 
     if ($config)
       $this->raw_index = $config->get_value('raw_index', 'setup');
@@ -136,6 +148,12 @@ class cql2solr extends tokenizer {
         case 'OPERATOR':
           if ($v['value'] == 'adj')
             $proximity = TRUE;
+    //$this->interval = array('<' => '[%s TO *], '<=' => '[%s TO *], '>' => '[* TO %s], '>=' => '[* TO %s]);
+    //$this->adjust_interval = array('<' => -1, '<=' => 0, '>' => 1, '>=' => 0);
+          if (array_key_exists($v['value'], $this->interval)) {
+            $interval = $this->interval[$v['value']];
+            $interval_adjust = $this->adjust_interval[$v['value']];
+          }
           $edismax_q .= $this->map[strtolower($v['value'])];
           $level_operands = 0;
           break;
@@ -153,6 +171,22 @@ class cql2solr extends tokenizer {
               $add_prox = '~10';
               $proximity = FALSE;
             } 
+            elseif ($interval) {
+              $v_len = strlen($v['value']) - 1;
+              $v['value'] = sprintf($interval, substr($v['value'], 0, $v_len) . 
+                                               chr(ord(substr($v['value'],$v_len)) + $interval_adjust));
+/* Above will make 1000 to 100/ if adjusted with -1
+   Below will instead make 1000 to 999 if adjusted with -1
+              if (is_numeric($v['value'])) {
+                $v['value'] = sprintf($interval, intval($v['value']) + $interval_adjust);
+              }
+              else {
+                $v['value'] = sprintf($interval, substr($v['value'], 0, $v_len) . 
+                                                 chr(ord(substr($v['value'],$v_len)) + $interval_adjust));
+              }
+*/
+              $interval = FALSE;
+            }
             elseif ($level_paren && $level_operands) {
               $edismax_q .= ' AND ';
             }
