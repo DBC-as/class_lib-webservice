@@ -167,10 +167,10 @@ class cURL {
 
     if (!function_exists('curl_init')) {
       if (method_exists('verbose', 'log')) {
-        verbose::log(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
+        verbose::log(FATAL, "PHP was not built with curl, rebuild PHP to use the curl class.");
       }
       elseif (function_exists('verbose')) {
-        verbose(ERROR, "PHP was not built with curl, rebuild PHP to use the curl class.");
+        verbose(FATAL, "PHP was not built with curl, rebuild PHP to use the curl class.");
       }
       return FALSE;
     }
