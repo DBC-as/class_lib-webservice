@@ -32,6 +32,7 @@
  *  $normalizedEan = materialId::normalizeEAN($ean);
  *  $normalizedIssn = materialId::normalizeISSN($issn);
  *  $normalizedFaust = materialId::normalizeFaust($faust);
+ *  $normalizedFaustWithSpaces = matrialId::normalizeFaust($faust,true);
  *  if (materialId::validateISBN($isbn)) { ... }
  *  if (materialId::validateEAN($ean)) { ... }
  *  if (materialId::validateISSN($issn)) { ... }
@@ -206,7 +207,7 @@ class materialId {
      * @param $faust the Faust number to normalize
      * @return the normalized Faust number
      * */
-    function normalizeFaust($faust) {
+    function normalizeFaust($faust, $withSpaces = false) {
         $res = array();
         foreach (str_split($faust) as $c) {  // Remove any characters except numbers
             switch ($c) {
@@ -219,6 +220,14 @@ class materialId {
                     break 2;  // If any illegal characters are found, we stop searching => exit loop
                   }
             }
+        }
+          $ln = count($res);
+        if ( $ln < 7 || $ln > 8 ) 
+          return false;
+        if ( $withSpaces) {
+          $res[$ln-1] = ' ' . $res[$ln-1];
+          $res[$ln-4] = ' ' . $res[$ln-4];
+          $res[$ln-7] = ' ' . $res[$ln-7];
         }
         if (count($res) == 7) {
             return '0' . implode($res);
