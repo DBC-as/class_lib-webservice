@@ -325,7 +325,7 @@ class marc implements Iterator {
             if (!$rest .= @fread($this->fp, $yy))
                 throw new marcException("reading error - something is missing?");
             $yy = $xx - strlen($rest);
-            if ( $yy < 0 ) {
+            if ($yy < 0) {
                 throw new marcException("reading error - Shit");
             }
 //            echo "xx:$xx, yy:$yy\n";
@@ -337,9 +337,12 @@ class marc implements Iterator {
     }
 
     function openMarcFile($isofile) {
-        if (get_resource_type($isofile) == 'stream') {
-            $this->fp = $isofile;
-            return true;
+        if (is_resource($isofile)) {
+            if (get_resource_type($isofile) == 'stream') {
+                $this->fp = $isofile;
+                return true;
+            }
+            return false;
         }
         if (!$this->fp = @fopen($isofile, "r")) {
             throw new marcException("Error while opening file:$isofile");
