@@ -43,9 +43,9 @@ class xmlconvert {
   *
   */
 
-  public function xml2obj($domobj, $force_NS="") {
+  public function xml2obj($domobj, $force_NS='') {
     foreach ($domobj->childNodes as $node) {
-      if ($node->nodeName == "#comment") {
+      if ($node->nodeName == '#comment') {
         continue;
       }
       if ($force_NS) {
@@ -54,7 +54,10 @@ class xmlconvert {
       elseif ($node->namespaceURI) {
         $subnode->_namespace = $node->namespaceURI;
       }
-      if ($node->nodeName == "#text" || $node->nodeName == "#cdata-section") {
+      if ($node->nodeName == '#text' || $node->nodeName == '#cdata-section') {
+        if (!trim($node->nodeValue)) {
+          continue;
+        }
         $subnode->_value = $node->nodeValue;
         $localName = '#text';
       }
@@ -63,7 +66,7 @@ class xmlconvert {
         $subnode->_value = $this->xml2obj($node, $force_NS);
         if ($node->hasAttributes()) {
           foreach ($node->attributes as $attr) {
-            $i = strpos($attr->nodeName, ":");
+            $i = strpos($attr->nodeName, ':');
             $a_nodename = $attr->localName;
             if ($attr->namespaceURI)
               $subnode->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
