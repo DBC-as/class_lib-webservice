@@ -372,7 +372,7 @@ class marc implements Iterator {
         if (!$found) {
 // make an empty field
             $newfield = array();
-            $newfield['field'] = $subfield;
+            $newfield['field'] = $field;
             $newfield['indicator'] = $indicators;
             $subfields = array();
             $subfields[] = $subfield . $data;
