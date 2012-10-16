@@ -55,7 +55,7 @@ class xmlconvert {
         $subnode->_namespace = $node->namespaceURI;
       }
       if ($node->nodeName == '#text' || $node->nodeName == '#cdata-section') {
-        if (!trim($node->nodeValue)) {
+        if (trim($node->nodeValue) == '') {
           continue;
         }
         $subnode->_value = $node->nodeValue;
