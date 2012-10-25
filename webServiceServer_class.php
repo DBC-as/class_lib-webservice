@@ -229,7 +229,8 @@ abstract class webServiceServer {
   */
   private function rest_request() {
     // convert to soap
-    $xmlns = ($this->xmlns['NONE'] ? $this->xmlns['NONE'] : $this->xmlns['0']);
+    $prefix = $this->config->get_value('rest_namespace_prefix', 'setup');
+    $xmlns = ($this->xmlns[$prefix] ? $this->xmlns[$prefix] : $this->xmlns['0']);
     $rest = new restconvert($xmlns);
     $xml=$rest->rest2soap($this->config);
     $this->soap_request($xml);
