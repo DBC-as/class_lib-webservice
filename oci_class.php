@@ -165,15 +165,18 @@ class oci {
 
   function oci($username,$password='',$database='') {
     
-    if($password=='' && $database=='') {
-      
-      
+    if ($password=='' && $database=='') {
+      $this->username='';
+      $this->password='';
+      $this->database='';
       $expl=explode('/', $username,2);
       $this->username=$expl[0];
-      $expl=explode('@', $expl[1]);
-      $this->password=$expl[0];
-      $this->database=$expl[1];
-      
+      if (isset($expl[1])) {
+        $expl=explode('@', $expl[1]);
+        $this->password=$expl[0];
+        if (isset($expl[1]))
+          $this->database=$expl[1];        
+      }
     } else {
       $this->username=$username;
       $this->password=$password;
