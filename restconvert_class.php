@@ -81,7 +81,7 @@ class restconvert {
     }
 
     function rest_tag_me($tag, $val) {
-        if (empty($val)) return;
+        if (!isset($val)) return;
 
         if ($i = strrpos($tag, '.'))
             $tag = substr($tag, $i+1);
