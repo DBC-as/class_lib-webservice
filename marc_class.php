@@ -389,17 +389,19 @@ class marc implements Iterator {
      */
     function insert($field_array) {
 // find where to insert
-        foreach ($this->marc_array as $key => $value) {
-            if ($value['field'] > $field_array['field']) {
-                break;
-            }
-        }
-        $this->position = $key;
+        $this->position = count($this->marc_array);
+        if (!empty($this->marc_array)) {
+          foreach ($this->marc_array as $key => $value) {
+              if ($value['field'] > $field_array['field']) {
+                  $this->position = $key;
+                  break;
+              }
+          }
 
-        $this->marc_array[] = array();
-        for ($cnt = count($this->marc_array) - 1; $cnt >= $this->position; $cnt--) {
-//            echo "cnt = $cnt\n";
-            $this->marc_array[$cnt] = $this->marc_array[$cnt - 1];
+          $this->marc_array[] = array();
+          for ($cnt = count($this->marc_array) - 1; $cnt && ($cnt >= $this->position); $cnt--) {
+              $this->marc_array[$cnt] = $this->marc_array[$cnt - 1];
+          }
         }
         $this->marc_array[$this->position] = $field_array;
         $this->position++;
