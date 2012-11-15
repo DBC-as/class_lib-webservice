@@ -55,7 +55,7 @@ class ftp {
   }
 
   public function __destruct() {
-    if (is_ressource($this->connection)) {
+    if (is_resource($this->connection)) {
       ftp_close($this->connection);
     }
   }
