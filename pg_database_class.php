@@ -117,11 +117,14 @@
         }
 
         public function prepare($query_name, $query) {
-          if (@pg_prepare($this->connection, $query_name, $query)===false) {
+          if (pg_prepare($this->connection, $query_name, $query)===false) {
             $message=pg_last_error();
-            if ($this->transaction)
-              @pg_query($this->connection, "ROLLBACK");
-            @pg_query($this->connection, "DEALLOCATE ".$this->query_name);
+            throw new fetException("Prepare fejler : $message\n");
+			 // Følgende giver ikke rigtig nogen mening idet det også vil blive 
+				  // udført hvis man kommer til at prepare samme statement to gange.
+            // if ($this->transaction)
+              // @pg_query($this->connection, "ROLLBACK");
+            // @pg_query($this->connection, "DEALLOCATE ".$this->query_name);
           }
         }
 
