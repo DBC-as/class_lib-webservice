@@ -60,13 +60,13 @@ class ftp {
   public function __construct($host, $credentials, $timeout = 90, $port = 21) {
     $this->connection = ftp_connect($host, $port, $timeout);
     if ($this->connection === FALSE) {
-      throw new ftpException('Error making a connection for ' . $host);
+      throw new ftpException("Error making a connection for $host");
     }
     if ($credentials && strpos($credentials, '/')) {
       list($this->user_name, $this->user_pass) = explode('/', $credentials);
     }
-    if (@ ! ftp_login($this->connection, $this->user_name, $this->user_pass)) {
-      throw new ftpException('Error logging in to ' . $host);
+    if (! ftp_login($this->connection, $this->user_name, $this->user_pass)) {
+      throw new ftpException("Error logging in to $host");
     }
   }
 
@@ -76,6 +76,16 @@ class ftp {
   public function __destruct() {
     if (is_resource($this->connection)) {
       ftp_close($this->connection);
+    }
+  }
+
+  /**
+   * Deletes a file on the remote FTP server
+   * @param string $remote Remote file name
+   */
+  public function delete($remote) {
+    if (! ftp_delete($this->connection, $remote)) {
+      throw new ftpException("Error deleting remote file $remote");
     }
   }
 
@@ -105,11 +115,45 @@ class ftp {
    */
   private function _put($local, $remote, $mode) {
     if (!is_resource($this->connection)) {
-      throw new ftpException('Attempt to use an illegal ftp resource');
+      throw new ftpException('Attempt to use an illegal ftp resource in put');
     }
-    if (!ftp_put($this->connection, $remote, $local, $mode)) {
-      throw new ftpException('Error putting file ' . $local);
+    if (! ftp_put($this->connection, $remote, $local, $mode)) {
+      throw new ftpException("Error putting file $local");
     }
   }
+
+  /**
+   * Gets an ASCII file from the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   */
+  public function get_ascii($local, $remote) {
+    $this->_get($local, $remote, FTP_ASCII);
+  }
+
+  /**
+   * Gets a binary file from the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   */
+  public function get_binary($local, $remote) {
+    $this->_get($local, $remote, FTP_BINARY);
+  }
+
+  /**
+   * Gets a file from the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   * @param int $mode FTP_ASCII or FTP_BINARY
+   */
+  private function _get($local, $remote, $mode) {
+    if (!is_resource($this->connection)) {
+      throw new ftpException('Attempt to use an illegal ftp resource in get');
+    }
+    if (! ftp_get($this->connection, $local, $remote, $mode)) {
+      throw new ftpException("Error getting file $local");
+    }
+  }
+
 }
 
