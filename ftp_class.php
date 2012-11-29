@@ -27,60 +27,88 @@
  * <?
  * require('ftp_class.php');
  *
- * $ftp = new ftp('some_ftp_host.dk', 'my_name/my_password');
- * $ftp->put_ascii('local_file_name', 'remote_file_name');
- *
+ * try {
+ *   $ftp = new ftp('some_ftp_host.dk', 'my_name/my_password');
+ *   $ftp->put_ascii('local_file_name', 'remote_file_name');
+ * } catch (ftpException $e) {
+ *   echo "FTP Error: " . $e->getMessage();
+ * }
+ * 
+ */ 
+ 
+/**
+ * ftpException class
  */
+class ftpException extends Exception {}
 
-
+/**
+ * ftp class
+ */
 class ftp {
-
   private $connection; 
   private $user_name = 'anonymous'; 
   private $user_pass = 'anonymous'; 
-  private $error_message = FALSE;
 
+  /**
+   * Constructor
+   * @param string $host Hostname
+   * @param string $credentials Credential information in the form username/password
+   * @param integer $timeout Timeout value in seconds (default value=90)
+   * @param integer $port Port number (default value=21)
+   * @throws ftpException
+   */  
   public function __construct($host, $credentials, $timeout = 90, $port = 21) {
-    if ($this->connection = ftp_connect($host, $port, $timeout)) {
-      if ($credentials && strpos($credentials, '/')) {
-        list($this->user_name, $this->user_pass) = explode('/', $credentials);
-      }
-      if (@ ! ftp_login($this->connection, $this->user_name, $this->user_pass)) {
-        $this->error_message = 'Error logging in to ' . $host;
-      }
+    $this->connection = ftp_connect($host, $port, $timeout);
+    if ($this->connection === FALSE) {
+      throw new ftpException('Error making a connection for ' . $host);
     }
-    else {
-      $this->error_message = 'Error making a connection for ' . $host;
+    if ($credentials && strpos($credentials, '/')) {
+      list($this->user_name, $this->user_pass) = explode('/', $credentials);
+    }
+    if (@ ! ftp_login($this->connection, $this->user_name, $this->user_pass)) {
+      throw new ftpException('Error logging in to ' . $host);
     }
   }
 
+  /**
+   * Destructor
+   */
   public function __destruct() {
     if (is_resource($this->connection)) {
       ftp_close($this->connection);
     }
   }
 
+  /**
+   * Puts an ASCII file to the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   */
   public function put_ascii($local, $remote) {
-    return $this->put($local, $remote, FTP_ASCII);
+    $this->_put($local, $remote, FTP_ASCII);
   }
 
+  /**
+   * Puts a binary file to the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   */
   public function put_binary($local, $remote) {
-    return $this->put($local, $remote, FTP_BINARY);
+    $this->_put($local, $remote, FTP_BINARY);
   }
 
-  public function get_error_message() {
-    return $this->error_message;
-  }
-
-  private function put($local, $remote, $mode) {
-    if (is_resource($this->connection)) {
-      if (ftp_put($this->connection, $remote, $local, $mode)) {
-        return TRUE;
-      }
-      else {
-        $this->error_message = 'Error putting file ' . $local;
-        return FALSE;
-      }
+  /**
+   * Puts a file to the remote FTP server
+   * @param string $local Local file name
+   * @param string $remote Remote file name
+   * @param int $mode FTP_ASCII or FTP_BINARY
+   */
+  private function _put($local, $remote, $mode) {
+    if (!is_resource($this->connection)) {
+      throw new ftpException('Attempt to use an illegal ftp resource');
+    }
+    if (!ftp_put($this->connection, $remote, $local, $mode)) {
+      throw new ftpException('Error putting file ' . $local);
     }
   }
 }
