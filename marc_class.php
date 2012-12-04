@@ -123,13 +123,15 @@ class marc implements Iterator {
    * @return type Field
    */
   function stringToField($string) {
-    if ( strlen($string) < 10) return false;
+    if (strlen($string) < 10)
+      return false;
     $field = array();
-    $field['field'] = substr($string,0,3);
-    $field['indicator'] = substr($string,4,2);
-    $field['subfield'][] = substr($string,7);
+    $field['field'] = substr($string, 0, 3);
+    $field['indicator'] = substr($string, 4, 2);
+    $field['subfield'][] = substr($string, 7);
     return $field;
   }
+
   /**
    * Jeg har fejlagtigt lagt poster i phuset med et tomt delfelt.  Disse skal cleares for at kunne blive
    * fjernet.
@@ -459,18 +461,19 @@ class marc implements Iterator {
    */
   function insert($field_array) {
 // find where to insert
-    foreach ($this->marc_array as $key => $value) {
-      if ($value['field'] > $field_array['field']) {
-        break;
+    $this->position = count($this->marc_array);
+    if (!empty($this->marc_array)) {
+      foreach ($this->marc_array as $key => $value) {
+        if ($value['field'] > $field_array['field']) {
+          $this->position = $key;
+          break;
+        }
       }
-    }
-    
-    $this->position = $key;
 
-    $this->marc_array[] = array();
-    for ($cnt = count($this->marc_array) - 1; $cnt >= $this->position; $cnt--) {
-//            echo "cnt = $cnt\n";
-      $this->marc_array[$cnt] = $this->marc_array[$cnt - 1];
+      $this->marc_array[] = array();
+      for ($cnt = count($this->marc_array) - 1; $cnt && ($cnt >= $this->position); $cnt--) {
+        $this->marc_array[$cnt] = $this->marc_array[$cnt - 1];
+      }
     }
     $this->marc_array[$this->position] = $field_array;
     $this->position++;
