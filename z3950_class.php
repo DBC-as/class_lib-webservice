@@ -59,7 +59,7 @@ class z3950 {
                 yaz_element($this->z_id, $this->element);
                 $start = max($this->start, 1);	// need to be at least 1
                 $step = min($this->step, $this->hits - $this->start + 1);	// cannot excede hits
-                yaz_range($this->z_id, $start, $step);
+                yaz_range($this->z_id, intval($start), intval($step));
                 yaz_schema($this->z_id, $this->schema);
                 yaz_present($this->z_id);
                 yaz_wait($this->z_id, $wait);
