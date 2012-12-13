@@ -58,14 +58,14 @@ class ftp {
    * @throws ftpException
    */  
   public function __construct($host, $credentials, $timeout = 90, $port = 21) {
-    $this->connection = ftp_connect($host, $port, $timeout);
+    $this->connection = @ftp_connect($host, $port, $timeout);
     if ($this->connection === FALSE) {
       throw new ftpException("Error making a connection for $host");
     }
     if ($credentials && strpos($credentials, '/')) {
       list($this->user_name, $this->user_pass) = explode('/', $credentials);
     }
-    if (! ftp_login($this->connection, $this->user_name, $this->user_pass)) {
+    if (! @ftp_login($this->connection, $this->user_name, $this->user_pass)) {
       throw new ftpException("Error logging in to $host");
     }
   }
@@ -75,7 +75,7 @@ class ftp {
    */
   public function __destruct() {
     if (is_resource($this->connection)) {
-      ftp_close($this->connection);
+      @ftp_close($this->connection);
     }
   }
 
@@ -84,8 +84,8 @@ class ftp {
    * @param string $remote Remote file name
    */
   public function delete($remote) {
-    if (! ftp_delete($this->connection, $remote)) {
-      throw new ftpException("Error deleting remote file $remote");
+    if (! @ftp_delete($this->connection, $remote)) {
+      throw new ftpException("Error deleting remote file '$remote'");
     }
   }
 
@@ -117,8 +117,8 @@ class ftp {
     if (!is_resource($this->connection)) {
       throw new ftpException('Attempt to use an illegal ftp resource in put');
     }
-    if (! ftp_put($this->connection, $remote, $local, $mode)) {
-      throw new ftpException("Error putting file $local");
+    if (! @ftp_put($this->connection, $remote, $local, $mode)) {
+      throw new ftpException("Error putting file '$local'");
     }
   }
 
@@ -150,8 +150,8 @@ class ftp {
     if (!is_resource($this->connection)) {
       throw new ftpException('Attempt to use an illegal ftp resource in get');
     }
-    if (! ftp_get($this->connection, $local, $remote, $mode)) {
-      throw new ftpException("Error getting file $local");
+    if (! @ftp_get($this->connection, $local, $remote, $mode)) {
+      throw new ftpException("Error getting file '$local'");
     }
   }
 

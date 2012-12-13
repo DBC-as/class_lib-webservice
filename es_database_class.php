@@ -110,10 +110,10 @@ class es_database {
  * @param type $rec_format
  * @throws esException
  */
-  public function ship_to_ES(&$rec, &$agency, $rec_format) {
+  public function ship_to_ES(&$rec, $agency, $rec_format) {
     $databaseName = $this->config['databaseName'];
-    $format = $this->config['format'];
-    if (($database_name = $databaseName[$agency]) && ($format = $format[$agency][$rec_format])) {
+    $formats = $this->config['format'];
+    if (($database_name = $databaseName[$agency]) && ($format = $formats[$agency][$rec_format])) {
       $rec_control = html_entity_decode(sprintf($this->config['xml_control'], $agency, 'dan', $format));
       $oci = $this->oci();
       try { 
