@@ -27,18 +27,18 @@
 /*
 * Reads an .ini file and parses it into a multidimensional array
 * Ex.: $cfg = new inifile("config.ini");
-*       print_r( $cfg->get() );
+*       print_r($cfg->get());
 * Ex. outputs:
 * Array (
 *     [section1] => Array (
 *         [date] => 2009-02-12
 *         [foo]  => bar
-*       )
+*      )
 *     [section2] => Array (
 *         [int]   => 9223372036854775807
 *         [float] => 42.7078083332
-*       )
-* )
+*      )
+*)
 *
 * quotes force typecasting to strings.
 * constants integrated into the results.
@@ -94,9 +94,9 @@ class inifile {
   * @param $filename   The .ini file to be processed. (string)
   * @returns boolean
   **/
-  public function inifile( $filename ) {
+  public function inifile($filename) {
     $this->ini_filename = $filename;
-    if ( $this->ini_file_array = $this->parse_ini( $filename ) ) {
+    if ($this->ini_file_array = $this->parse_ini($filename)) {
       return true;
     }
     else {
@@ -111,12 +111,15 @@ class inifile {
   * @param $section   Section key (string)
   * @returns array
   **/
-  public function get_section( $section=NULL ) {
-    if ( is_null($section) )
+  public function get_section($section=NULL) {
+    if (is_null($section)) {
       return $this->ini_file_array;
-    else
-      if ( isset( $this->ini_file_array[$section] ) )
+    }
+    else {
+      if (isset($this->ini_file_array[$section])) {
         return $this->ini_file_array[$section];
+      }
+    }
     // raise error flag?
     return null;
   }
@@ -133,15 +136,18 @@ class inifile {
   * @param $key      Value for key in section (string)
   * @returns mixed
   **/
-  public function get_value( $key, $section=NULL ) {
-    if ( $section ) {
-      if ( !isset($this->ini_file_array[$section][$key]) ) return false;
+  public function get_value($key, $section=NULL) {
+    if ($section) {
+      if (!isset($this->ini_file_array[$section][$key])) {
+        return false;
+      }
       return $this->ini_file_array[$section][$key];
     }
     else {
-      foreach( $this->ini_file_array as $section => $section_keys ) {
-        if ( isset($section_keys[$key]) )
+      foreach($this->ini_file_array as $section => $section_keys) {
+        if (isset($section_keys[$key])) {
           return $section_keys[$key];
+        }
       }
     }
     // raise error flag?
@@ -155,9 +161,10 @@ class inifile {
   * @param $key      Value for key in section (string)
   * @returns mixed
   **/
-  public function get( $key=NULL, $section=NULL ) {
-    if ( is_null($key) )
+  public function get($key=NULL, $section=NULL) {
+    if (is_null($key)) {
       return $this->get_section($section);
+    }
     return $this->get_value($key,$section);
   }
 
@@ -168,9 +175,10 @@ class inifile {
   * @param $array    Array of keys/values (array)
   * @returns mixed
   **/
-  public function set_section( $section, $array ) {
-    if ( !is_array($array) )
+  public function set_section($section, $array) {
+    if (!is_array($array)) {
       return false;
+    }
     return $this->ini_file_array[$section] = $array;
   }
 
@@ -182,9 +190,10 @@ class inifile {
   * @param $value    Array of keys/values (mixed)
   * @returns mixed
   **/
-  public function set_value( $key, $section, $value ) {
-    if ( $this->ini_file_array[$section][$key] = $value )
+  public function set_value($key, $section, $value) {
+    if ($this->ini_file_array[$section][$key] = $value) {
       return true;
+    }
   }
 
   /**
@@ -195,9 +204,10 @@ class inifile {
   * @param $value    Array of keys/values (mixed)
   * @returns bool
   **/
-  public function set( $key, $section, $value=NULL ) {
-    if ( is_array($key) && is_null($value) )
+  public function set($key, $section, $value=NULL) {
+    if (is_array($key) && is_null($value)) {
       return $this->set_section($section, $key);
+    }
     return $this->set_value($key, $section, $value);
   }
 
@@ -207,20 +217,22 @@ class inifile {
   * @param $filename (string)
   * @returns bool
   **/
-  public function save( $filename = null ) {
-    if ( $filename == null ) $filename = $this->ini_filename;
-    if ( is_writeable( $filename ) ) {
-      $file_handle = fopen( $filename, "w" );
-      foreach( $this->ini_file_array as $section => $array ) {
-        fwrite( $file_handle, "[" . $section . "]\n" );
-        if ( is_array($array) ) {
-          foreach( $array as $key => $value ) {
-            $this -> write_value( $file_handle, $key, $value );
+  public function save($filename = null) {
+    if ($filename == null) {
+      $filename = $this->ini_filename;
+    }
+    if (is_writeable($filename)) {
+      $file_handle = fopen($filename, "w");
+      foreach($this->ini_file_array as $section => $array) {
+        fwrite($file_handle, "[" . $section . "]\n");
+        if (is_array($array)) {
+          foreach($array as $key => $value) {
+            $this -> write_value($file_handle, $key, $value);
           }
         }
-        fwrite( $file_handle, "\n" );
+        fwrite($file_handle, "\n");
       }
-      fclose( $file_handle );
+      fclose($file_handle);
       return true;
     }
     else {
@@ -236,23 +248,23 @@ class inifile {
   * @param $value (mixed)
   * @param $prefix (string)
   **/
-  private function write_value( $file_handle, $key, $value, $prefix = '' ) {
-    if ( is_array($value) ) {
+  private function write_value($file_handle, $key, $value, $prefix = '') {
+    if (is_array($value)) {
       $key = $prefix.$key;
-      foreach( $value as $n => $arr_value ) {
-        $this -> write_value( $file_handle, "[$n]", $arr_value, $key );
+      foreach($value as $n => $arr_value) {
+        $this -> write_value($file_handle, "[$n]", $arr_value, $key);
       }
     }
     else {
       $key = $prefix.$key;
-      if      ( is_null($value ) )   fwrite( $file_handle, $key. ' = null'."\n" );
-      else if ( $value === none )    fwrite( $file_handle, "$key = none\n" );
-      else if ( $value === 0 )       fwrite( $file_handle, "$key = 0\n" );
-      else if ( $value === 1 )       fwrite( $file_handle, "$key = 1\n" );
-      else if ( $value === false )   fwrite( $file_handle, "$key = false\n" );
-      else if ( $value === true )    fwrite( $file_handle, "$key = true\n" );
-      else if ( is_string($value) )  fwrite( $file_handle, "$key = \"$value\"\n" );
-      else                           fwrite( $file_handle, "$key = $value\n" );
+      if      (is_null($value))   fwrite($file_handle, $key. ' = null'."\n");
+      else if ($value === none)    fwrite($file_handle, "$key = none\n");
+      else if ($value === 0)       fwrite($file_handle, "$key = 0\n");
+      else if ($value === 1)       fwrite($file_handle, "$key = 1\n");
+      else if ($value === false)   fwrite($file_handle, "$key = false\n");
+      else if ($value === true)    fwrite($file_handle, "$key = true\n");
+      else if (is_string($value))  fwrite($file_handle, "$key = \"$value\"\n");
+      else                           fwrite($file_handle, "$key = $value\n");
     }
   }
 
@@ -263,42 +275,42 @@ class inifile {
   * @param $filepath (string)
   * @returns array
   **/
-  private function parse_ini ( $filepath ) {
-    $ini = @ file( $filepath );
-    if ( !$ini ) {
+  private function parse_ini ($filepath) {
+    $ini = @ file($filepath);
+    if (!$ini) {
       return false;
     }
     $sections = array();
     $values = array();
     $globals = array();
     $i = 0;
-    foreach( $ini as $line ) {
-      $line = trim( $line );
+    foreach($ini as $line) {
+      $line = trim($line);
       // Comments
-      if ( $line == '' || $line {0} == ';' ) {
+      if ($line == '' || $line {0} == ';') {
         continue;
       }
       // Sections
-      if ( $line {0} == '[' ) {
-        $sections[] = substr( $line, 1, -1 );
+      if ($line {0} == '[') {
+        $sections[] = substr($line, 1, -1);
         $i++;
         continue;
       }
       // Key-value pair
-      list( $key, $value ) = explode( '=', $line, 2 );
-      $key = trim( $key );
-      $value = trim( $value );
+      list($key, $value) = explode('=', $line, 2);
+      $key = trim($key);
+      $value = trim($value);
 
-      if ( $i == 0 ) {
+      if ($i == 0) {
         $globals = $this->parse_ini_array($globals,$key,$value);
       }
       else {
-        if ( ! array_key_exists($i-1,$values) ) $values[$i-1] = array();
+        if (! array_key_exists($i-1,$values)) $values[$i-1] = array();
         $values[ $i-1 ] = $this->parse_ini_array($values[$i-1],$key,$value);
       }
     }
 
-    for ( $j=0; $j<$i; $j++ ) {
+    for ($j=0; $j<$i; $j++) {
       if (isset($values[ $j ]))
         $result[ $sections[ $j ] ] = $values[ $j ];
     }
@@ -315,15 +327,19 @@ class inifile {
   * @param $value (string)
   * @returns array
   **/
-  private function parse_ini_array( $res_array, $key, $value ) {
+  private function parse_ini_array($res_array, $key, $value) {
 
-    if ( $pos = strpos($key,'[') ) {
+    if ($pos = strpos($key,'[')) {
       $key_suffix = substr($key,$pos);
+      if (strpos($key_suffix, "'") === FALSE) {
+        $key_suffix = str_replace('[', "['", $key_suffix);
+        $key_suffix = str_replace(']', "']", $key_suffix);
+      }
       $key = substr($key,0,$pos);
-      if ( !isset($res_array[$key]) )
+      if (!isset($res_array[$key]))
         $res_array[$key] = array();
-      $eval_this = '$res_array["'.$key.'"]'.$key_suffix.' = $this->parse_constants($this->parse_reserved_words(\''.$value.'\'));';
-//                echo "**********\n key_suffix:$key_suffix\n" . $eval_this . "\n";
+      $eval_this = '$res_array[\''.$key.'\']'.$key_suffix.' = $this->parse_constants($this->parse_reserved_words(\''.$value.'\'));';
+//                echo "**********\n key_suffix:$key_suffix\n" . $eval_this . "\n parse_const: " . $this->parse_constants($this->parse_reserved_words("'".$value."'")) . "\n";
       eval($eval_this);
 //                exit;
     }
@@ -349,15 +365,15 @@ class inifile {
   * @returns mixed
   **/
   private function parse_reserved_words($val) {
-    if ( substr($val,0,1) == '"' && substr($val,-1,1) == '"' )
+    if (substr($val,0,1) == '"' && substr($val,-1,1) == '"')
       return (string)$val;
-    else if ( strtolower($val) === 'null' )      return null;
-    else if ( strtolower($val) === 'no' )        return (bool)false;
-    else if ( strtolower($val) === 'yes' )       return (bool)true;
-    else if ( strtolower($val) === 'false' )     return (bool)false;
-    else if ( strtolower($val) === 'true' )      return (bool)true;
-    else if ( (string)floatval($val) === $val )  return floatval($val);
-    else if ( (string)intval($val) === $val )     return intval($val);
+    else if (strtolower($val) === 'null')      return null;
+    else if (strtolower($val) === 'no')        return (bool)false;
+    else if (strtolower($val) === 'yes')       return (bool)true;
+    else if (strtolower($val) === 'false')     return (bool)false;
+    else if (strtolower($val) === 'true')      return (bool)true;
+    else if ((string)floatval($val) === $val)  return floatval($val);
+    else if ((string)intval($val) === $val)     return intval($val);
     else return (string)$val;
   }
 
@@ -367,14 +383,14 @@ class inifile {
   * Constants may also be parsed in the ini file so if you define a constant as an
   * ini value before running parse_ini_file(), it will be integrated into the results.
   * Constants can be concatenated with strings, but the string segments must be enclosed
-  * in quotes ( note: no joining symbol is used )
+  * in quotes (note: no joining symbol is used)
   *
   * @param $val (string)
   * @returns string
   **/
   private function parse_constants($val) {
 
-    if ( defined( $val ) )
+    if (defined($val))
       return constant($val);
 
     $pos = strpos($val, '"');
@@ -382,8 +398,8 @@ class inifile {
       return $val;
 
     $parts = explode('"', $val);
-    for ( $j=0; $j<sizeof($parts); $j++ )
-      if ( defined( $parts[$j] ) )
+    for ($j=0; $j<sizeof($parts); $j++)
+      if (defined($parts[$j]))
         $parts[$j] = constant($parts[$j]);
 
     $val = implode('',$parts);
