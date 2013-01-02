@@ -276,19 +276,26 @@ class cURL {
       curl_multi_select($this->curl_multi_handle, 0.01);
       $status = curl_multi_exec($this->curl_multi_handle, $active);
       if ($info = curl_multi_info_read($this->curl_multi_handle)) {
+        $multi_status[$info['handle']] = $info['result'];
         if (curl_getinfo($info['handle'],CURLINFO_HTTP_CODE) == 200)
           $this->wait_for_connections--;
       }
     }
     while ($this->wait_for_connections && ($status === CURLM_CALL_MULTI_PERFORM || $active));
 
+    if ($info = curl_multi_info_read($this->curl_multi_handle)) {
+      $multi_status[$info['handle']] = $info['result'];
+    }
     foreach ($this->curl_handle as $key => $handle) {
       $this->curl_status[$key]          = curl_getinfo($this->curl_handle[$key]) ;
       $this->curl_status[$key]['errno'] = curl_errno($this->curl_handle[$key]) ;
       $this->curl_status[$key]['error'] = curl_error($this->curl_handle[$key]) ;
-      // If there has been a curl error, just return a null string.
-      if ($this->curl_status[$key]['errno'])
-        return FALSE;
+      if (empty($this->curl_status[$key]['errno']) && isset($multi_status[$handle])) {
+        $this->curl_status[$key]['errno'] = $multi_status[$handle];
+      }
+      if ($this->curl_status[$key]['errno'] == 28) { // CURLE_OPERATION_TIMEDOUT
+        $this->curl_status[$key]['http_code'] = 504;  // Gateway timeout
+      }
     }
 
     foreach ($this->curl_handle as $key => $handle) {
