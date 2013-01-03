@@ -334,6 +334,7 @@ class inifile {
       if (strpos($key_suffix, "'") === FALSE) {
         $key_suffix = str_replace('[', "['", $key_suffix);
         $key_suffix = str_replace(']', "']", $key_suffix);
+        $key_suffix = str_replace("['']", "[]", $key_suffix);
       }
       $key = substr($key,0,$pos);
       if (!isset($res_array[$key]))
