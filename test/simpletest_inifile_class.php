@@ -19,7 +19,7 @@ class TestOfInifileClass extends UnitTestCase {
   }
 
   function __destruct() { 
-    //unlink($this->test_ini_name);
+    unlink($this->test_ini_name);
   }
 
   function test_instantiation() {
