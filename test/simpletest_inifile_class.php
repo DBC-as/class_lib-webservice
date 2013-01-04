@@ -7,13 +7,20 @@ require_once('inifile_class.php');
 
 class TestOfInifileClass extends UnitTestCase {
   private $config;
+  private $test_ini_name = '/tmp/test_inifile.ini';
 
   function __construct() {
     parent::__construct();
-    $this->config = new inifile(str_replace('.php', '.ini', basename(__FILE__)));
+    if ($fp = fopen($this->test_ini_name, 'w')) {
+      fwrite($fp, "[setup]\n\nversion = 1.0\n\nstring = 'abc';\n\n[section]\n\narr[] = 1\narr[] = 2\n");
+      fclose($fp);
+    }
+    $this->config = new inifile($this->test_ini_name);
   }
 
-  function __destruct() { }
+  function __destruct() { 
+    //unlink($this->test_ini_name);
+  }
 
   function test_instantiation() {
     $this->assertTrue(is_object($this->config));
