@@ -1,6 +1,9 @@
 <?php
-require_once('../simpletest/autorun.php');
-require_once('../curl_class.php');
+set_include_path(get_include_path() . PATH_SEPARATOR .
+                 __DIR__ . '/../simpletest' . PATH_SEPARATOR .
+                 __DIR__ . '/..');
+require_once('simpletest/autorun.php');
+require_once('curl_class.php');
 
 class TestOfCurlClass extends UnitTestCase {
   private $curl;
