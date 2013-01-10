@@ -54,7 +54,7 @@ class search_profiles {
   **/
   public function get_profile($agency, $profile_name, $profile_version) {
     if ($this->profile_cache) {
-      $cache_key = 'PROFILE_' . $agency;
+      $cache_key = 'PROFILE_' . $agency . '_' . $profile_version;
       $this->profiles = $this->profile_cache->get($cache_key);
     }
 
