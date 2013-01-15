@@ -22,7 +22,7 @@ class cql2solr extends tokenizer {
   var $dom;
   var $map;
   //var $solr_escapes = array('+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\');
-  var $solr_escapes = array('+', '-', ':', '!');
+  var $solr_escapes = array('+', '-', ':', '!', '"');
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
 
@@ -55,8 +55,9 @@ class cql2solr extends tokenizer {
                             '>=' => '[%s TO *]');
     $this->adjust_interval = array('<' => -1, '<=' => 0, '>' => 1, '>=' => 0);
 
-    if ($config)
-      $this->raw_index = $config->get_value('raw_index', 'setup');
+    if ($config) {
+      $this->phrase_index = $config->get_value('phrase_index', 'setup');
+    }
 
     foreach ($this->solr_escapes as $ch) {
       $this->solr_escapes_from[] = $ch;
@@ -146,10 +147,9 @@ class cql2solr extends tokenizer {
       $trim_value = trim($v['value']);
       switch ($v['type']) {
         case 'OPERATOR':
-          if ($v['value'] == 'adj')
+          if ($v['value'] == 'adj') {
             $proximity = TRUE;
-    //$this->interval = array('<' => '[%s TO *], '<=' => '[%s TO *], '>' => '[* TO %s], '>=' => '[* TO %s]);
-    //$this->adjust_interval = array('<' => -1, '<=' => 0, '>' => 1, '>=' => 0);
+          }
           if (array_key_exists($v['value'], $this->interval)) {
             $interval = $this->interval[$v['value']];
             $interval_adjust = $this->adjust_interval[$v['value']];
