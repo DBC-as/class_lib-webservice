@@ -53,8 +53,8 @@ class tokenizer {
   /// Sets weather operators and indexes are case insensitive <bool>
   var $case_insensitive=FALSE;
 
-  // indexes which shold be searched as raw
-  var $raw_index=array();
+  // indexes which shold be searched as phrase
+  var $phrase_index=array();
 
   /** \brief Check if token is operator.
    *
@@ -100,9 +100,13 @@ class tokenizer {
     return FALSE;
   }
 
-  function is_raw_index($idx) {
-    if (is_array($this->raw_index)) {
-      foreach ($this->raw_index as $i) {
+  function is_phrase_index($idx) {
+    return $this->is_in_index($idx, $this->phrase_index);
+  }
+
+  function is_in_index($idx, &$indexes) {
+    if (is_array($indexes)) {
+      foreach ($indexes as $i) {
         if (substr($idx, 0, strlen($i)) == $i) {
           return TRUE;
     } } }
@@ -118,6 +122,7 @@ class tokenizer {
    */
 
   function tokenize($string) {
+    $use_phrase = FALSE;
 
     $tokens=preg_split($this->split_expression,$string, -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -131,7 +136,7 @@ class tokenizer {
     }
 
     foreach($tokens as $k=>$v) {
-      if (empty($spos) && $v[0] == '"' && substr_count($v, '"') == 1)
+      if (empty($spos) && isset($v[0]) && $v[0] == '"' && substr_count($v, '"') == 1)
         $spos = $k;
       elseif (isset($spos)) {
         $tokens[$spos] .= $v;
@@ -148,20 +153,15 @@ class tokenizer {
       //If the token is a index token
       if ($this->is_index($v)) {
         $token['type']='INDEX';
-        if ($this->is_raw_index($v)) {
-          $token['value']='_query_:"{!raw f=' . $v . '}';
-          $use_raw = TRUE;
+        if ($this->is_phrase_index($v)) {
+          $use_phrase = TRUE;
         }
-        else
-          $token['value']=$v;
+        $token['value']=$v;
 
       }
       else if ($this->is_operator($v)) {
         $token['type']='OPERATOR';
-        if ($use_raw && $v == '=')
-          $token['value']='';
-        else
-          $token['value']=$v;
+        $token['value']=$v;
 
       }
       else {
@@ -176,10 +176,10 @@ class tokenizer {
 
         if (!$ignore) {
           $token['type']='OPERAND';
-          if ($use_raw) {
+          if ($use_phrase) {
             $token['value']=str_replace('"', '', $v) . '"';
-            $token['raw_index']=TRUE;
-            $use_raw = FALSE;
+            $token['phrase_index']=TRUE;
+            $use_phrase = FALSE;
           }
           else
             $token['value']=$v;
