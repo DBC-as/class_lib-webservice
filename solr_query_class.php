@@ -14,6 +14,11 @@
  * along with Open Library System.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * Parse a cql-search and return the corresponding solr-search
+ *
+ */
+
 require_once('tokenizer_class.php');
 
 define('DEVELOP', FALSE);
@@ -29,6 +34,7 @@ class SolrQuery extends tokenizer {
 
   var $dom;
   var $map;
+  // full set of escapes as seen in the solr-doc. We use those who so far has been verified
   //var $solr_escapes = array('+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\');
   var $solr_escapes = array('+', '-', ':', '!', '"');
   var $solr_escapes_from = array();
@@ -293,7 +299,8 @@ class SolrQuery extends tokenizer {
               if (empty($curr_index)) {
                 throw new Exception('CQL-4: Unknown register');
               }
-              $operand->value = $this->implode_indexed_stack($index_stack, $curr_index, '~10');
+              $imploded = $this->implode_stack($index_stack);
+              $operand->value = $curr_index . ':"' . $imploded . '"~10';
               if ($operand->value) {
                 $folded[] = $operand;
               }
