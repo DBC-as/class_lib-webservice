@@ -7,7 +7,7 @@ require_once('solr_query_class.php');
 
 define('cql_file', '/tmp/simple_test_cql.xml');
 
-class TestOfCurlClass extends UnitTestCase {
+class TestOfSolrQueryClass extends UnitTestCase {
   private $c2s;
 
   function __construct() {
