@@ -22,7 +22,9 @@ class TestOfCurlClass extends UnitTestCase {
     $this->c2s = new SolrQuery(cql_file);
   }
 
-  function __destruct() { }
+  function __destruct() { 
+    unlink(cql_file);
+  }
 
   function test_instantiation() {
     $this->assertTrue(is_object($this->c2s));
