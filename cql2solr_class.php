@@ -14,6 +14,12 @@
  * along with Open Library System.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ *
+ * DEPRECATED - Replaced by solr_query_class
+ *
+ */
+
 require_once('tokenizer_class.php');
 
 class cql2solr extends tokenizer {
