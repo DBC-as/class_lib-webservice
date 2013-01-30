@@ -44,7 +44,7 @@ class TestOfSolrQueryClass extends UnitTestCase {
     }
   }
 
-  function test_field() {
+  function test_simple_field() {
     $tests = array('dkcclphrase.cclphrase=en' => 'dkcclphrase.cclphrase:"en"',
                    'dkcclphrase.cclphrase=en to' => 'dkcclphrase.cclphrase:"en to"',
                    'dkcclphrase.cclphrase=en AND to' => 'dkcclphrase.cclphrase:"en" AND to',
@@ -56,13 +56,41 @@ class TestOfSolrQueryClass extends UnitTestCase {
                    'dkcclterm.cclterm=en AND to' => 'dkcclterm.cclterm:(en) AND to',
                    'dkcclterm.cclterm=en OR to' => 'dkcclterm.cclterm:(en) OR to',
                    'dkcclterm.cclterm=(en OR to)' => 'dkcclterm.cclterm:(en OR to)',
+                   'facet.facet=en' => 'facet.facet:(en)',
+                   'facet.facet=en to' => 'facet.facet:(en AND to)',
                    'term.term=en' => 'term.term:(en)',
                    'term.term=en to' => 'term.term:(en AND to)',
                    'term.term=en AND to' => 'term.term:(en) AND to',
                    'term.term=en OR to' => 'term.term:(en) OR to',
                    'term.term=(en OR to)' => 'term.term:(en OR to)',
                    'phrase.xxx=to' => 'CQL-4: Unknown register',
+                   'xxx.term=to' => 'CQL-4: Unknown register',
+                   'facet.xxx=to' => 'CQL-4: Unknown register',
                    'term.xxx=to' => 'CQL-4: Unknown register');
+    foreach ($tests as $send => $recieve) {
+      $this->assertEqual($this->get_edismax($send), $recieve);
+    }
+  }
+
+  function test_adjacency() {
+    $tests = array('dkcclphrase.cclphrase adj en to' => 'dkcclphrase.cclphrase:"en to"~10',
+                   'dkcclphrase.cclphrase adj en to tre' => 'dkcclphrase.cclphrase:"en to tre"~10',
+                   'term.term adj en to' => 'term.term:"en to"~10',
+                   'term.term adj en to tre' => 'term.term:"en to tre"~10');
+    foreach ($tests as $send => $recieve) {
+      $this->assertEqual($this->get_edismax($send), $recieve);
+    }
+  }
+
+  function test_interval() {
+    $tests = array('dkcclphrase.cclphrase < en ' => 'dkcclphrase.cclphrase:[* TO em]',
+                   'dkcclphrase.cclphrase > en' => 'dkcclphrase.cclphrase:[eo TO *]',
+                   'dkcclphrase.cclphrase <= en' => 'dkcclphrase.cclphrase:[* TO en]',
+                   'dkcclphrase.cclphrase >= en' => 'dkcclphrase.cclphrase:[en TO *]',
+                   'dkcclterm.cclterm < en ' => 'dkcclterm.cclterm:[* TO em]',
+                   'dkcclterm.cclterm > en' => 'dkcclterm.cclterm:[eo TO *]',
+                   'dkcclterm.cclterm <= en' => 'dkcclterm.cclterm:[* TO en]',
+                   'dkcclterm.cclterm >= en' => 'dkcclterm.cclterm:[en TO *]');
     foreach ($tests as $send => $recieve) {
       $this->assertEqual($this->get_edismax($send), $recieve);
     }
