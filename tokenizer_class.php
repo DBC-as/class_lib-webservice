@@ -177,7 +177,7 @@ class tokenizer {
         if (!$ignore) {
           $token['type']='OPERAND';
           if ($use_phrase) {
-            $token['value']=str_replace('"', '', $v) . '"';
+            $token['value']=str_replace('"', '', $v);
             $token['phrase_index']=TRUE;
             $use_phrase = FALSE;
           }
