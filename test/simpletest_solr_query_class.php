@@ -20,6 +20,7 @@ class TestOfSolrQueryClass extends UnitTestCase {
       throw new Exception('Cannot write tmp-file: ' . cql_file);
     }
     $this->c2s = new SolrQuery(cql_file);
+    $this->c2s->phrase_index = array('dkcclphrase', 'phrase', 'facet');
   }
 
   function __destruct() { 
@@ -56,8 +57,8 @@ class TestOfSolrQueryClass extends UnitTestCase {
                    'dkcclterm.cclterm=en AND to' => 'dkcclterm.cclterm:(en) AND to',
                    'dkcclterm.cclterm=en OR to' => 'dkcclterm.cclterm:(en) OR to',
                    'dkcclterm.cclterm=(en OR to)' => 'dkcclterm.cclterm:(en OR to)',
-                   'facet.facet=en' => 'facet.facet:(en)',
-                   'facet.facet=en to' => 'facet.facet:(en AND to)',
+                   'facet.facet=en' => 'facet.facet:"en"',
+                   'facet.facet=en to' => 'facet.facet:"en to"',
                    'term.term=en' => 'term.term:(en)',
                    'term.term=en to' => 'term.term:(en AND to)',
                    'term.term=en AND to' => 'term.term:(en) AND to',
@@ -83,7 +84,7 @@ class TestOfSolrQueryClass extends UnitTestCase {
   }
 
   function test_interval() {
-    $tests = array('dkcclphrase.cclphrase < en ' => 'dkcclphrase.cclphrase:[* TO em]',
+    $tests = array('dkcclphrase.cclphrase < en' => 'dkcclphrase.cclphrase:[* TO em]',
                    'dkcclphrase.cclphrase > en' => 'dkcclphrase.cclphrase:[eo TO *]',
                    'dkcclphrase.cclphrase <= en' => 'dkcclphrase.cclphrase:[* TO en]',
                    'dkcclphrase.cclphrase >= en' => 'dkcclphrase.cclphrase:[en TO *]',
@@ -91,6 +92,13 @@ class TestOfSolrQueryClass extends UnitTestCase {
                    'dkcclterm.cclterm > en' => 'dkcclterm.cclterm:[eo TO *]',
                    'dkcclterm.cclterm <= en' => 'dkcclterm.cclterm:[* TO en]',
                    'dkcclterm.cclterm >= en' => 'dkcclterm.cclterm:[en TO *]');
+    foreach ($tests as $send => $recieve) {
+      $this->assertEqual($this->get_edismax($send), $recieve);
+    }
+  }
+
+  function test_complex() {
+    $tests = array('facet.facet=karen blixen AND term.term=bog' => 'facet.facet:"karen blixen" AND term.term:(bog)');
     foreach ($tests as $send => $recieve) {
       $this->assertEqual($this->get_edismax($send), $recieve);
     }
