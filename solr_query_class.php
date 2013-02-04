@@ -39,6 +39,7 @@ class SolrQuery extends tokenizer {
   var $solr_escapes = array('+', '-', ':', '!', '"');
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
+  var $phrase_index = array();
 
   public function __construct($xml, $config='', $language='') {
     $this->dom = new DomDocument();
@@ -80,6 +81,7 @@ class SolrQuery extends tokenizer {
       $edismax = array('error' => $e->getMessage());
     }
     if (DEVELOP) print_r($edismax);
+    //if (DEVELOP) die();
     return $edismax;
   }
 
@@ -283,6 +285,7 @@ class SolrQuery extends tokenizer {
                 $folded[] = $operand;
               }
               $curr_index = '';
+              $index_stack = array();
               break;
             case '=';
               if (empty($curr_index)) {
@@ -294,6 +297,7 @@ class SolrQuery extends tokenizer {
                 $folded[] = $operand;
               }
               $curr_index = '';
+              $index_stack = array();
               break;
             case 'adj';
               if (empty($curr_index)) {
@@ -305,6 +309,7 @@ class SolrQuery extends tokenizer {
                 $folded[] = $operand;
               }
               $curr_index = '';
+              $index_stack = array();
               break;
             default:
               if ($curr_index) {
@@ -319,7 +324,6 @@ class SolrQuery extends tokenizer {
           }
           unset($operand);
           $operand->type = 'OPERAND';
-          $in_phrase = FALSE;
           break;
         default:
           throw new Exception('CQL-5: Internal error: Unknown rpn-element-type');
@@ -337,7 +341,7 @@ class SolrQuery extends tokenizer {
    */
   private function implode_indexed_stack($stack, $index, $adjacency = '') {
     list($idx_type) = explode('.', $index);
-    if (in_array($idx_type, array('dkcclphrase', 'phrase'))) {
+    if (in_array($idx_type, $this->phrase_index)) {
       return $index . ':"' . $this->implode_stack($stack) . '"' . $adjacency;
     }
     else {
