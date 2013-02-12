@@ -20,15 +20,10 @@
  */
 
 require_once('tokenizer_class.php');
+require_once('cql2rpn_class.php');
 
 define('DEVELOP', FALSE);
 
-define('C_OP', 0);
-define('C_NO_OP', 1);
-define('C_END', 2);
-define('C_INDEX', 3);
-define('C_P_START', 4);
-define('C_P_END', 5);
 
 class SolrQuery extends tokenizer {
 
@@ -73,9 +68,10 @@ class SolrQuery extends tokenizer {
    */
   public function cql_2_edismax($query) {
     try {
-      $tokens = $this->tokenize(str_replace('\"','"',$query));
+      $tokens = $this->tokenize($query);
+var_dump($tokens); die();
       if (DEVELOP) { echo 'Query: ' . $query . "\n" . print_r($tokens, TRUE) . "\n"; }
-      $rpn = $this->cql_2_rpn($tokens);
+      $rpn = Cql2Rpn::parse_tokens($tokens);
       $edismax = $this->rpn_2_edismax($rpn);
     } catch (Exception $e) {
       $edismax = array('error' => $e->getMessage());
@@ -130,104 +126,13 @@ class SolrQuery extends tokenizer {
   }
 
 
-  /** \brief Produce a rpn-stack using the shunting yard algorithm
-   * 
-   */
-  private function cql_2_rpn($tokenlist) {
-// 0: advance, 1: stack  and advance, 2: unstack, 3: drop stack and advance, 9:error
-//                             OP  NO_OP END INDEX P_START
-    $action[C_OP]      = array( 2,  2,    1,  2,    1);
-    $action[C_NO_OP]   = array( 2,  2,    1,  1,    1);
-    $action[C_END]     = array( 2,  2,    0,  2,    9);
-    $action[C_INDEX]   = array( 1,  1,    1,  2,    1);
-    $action[C_P_START] = array( 1,  1,    1,  1,    1);
-    $action[C_P_END]   = array( 2,  2,    9,  2,    3);
-
-    $END_VALUE = '$END$END$';
-
-    $out = $stack = $rpn = array();
-    $stack[0]->state = C_END;
-    $tokenlist[] = array('type' => 'OPERATOR', 'value' => $END_VALUE);
-    $operand_no = 0;
-    $loops = 0;
-    $k = 0;
-    while ($k < count($tokenlist)) {
-      unset($o);
-      if ($loops++ > 5000) {
-        throw new Exception('CQL-1: CQL parse error');
-      }
-      if (DEVELOP) { echo "------------------\n$k-$operand_no:\ntoken: " . print_r($tokenlist[$k], TRUE); } 
-      $o->value = trim($tokenlist[$k]['value']);
-      $o->type = $tokenlist[$k]['type'];
-      if ((count($stack) == 1 && $o->value == $END_VALUE) || 
-          ($o->type == 'OPERAND' && $o->value)) {
-        if ($operand_no++) {
-          $o->type = 'OPERATOR';
-          $o->value = 'NO_OP';
-          $k--;
-        }
-      }
-      if ($o->type == 'OPERAND' || $o->type == 'INDEX') {
-        if ($o->value) {
-          $rpn[] = $o;
-        }
-        $k++;
-        continue;
-      }
-      if ($o->type == 'OPERATOR') {
-        $operand_no = 0;
-        switch ($o->value) {
-          case '=': $o->state = C_INDEX; break;
-          case '<': $o->state = C_INDEX; break;
-          case '>': $o->state = C_INDEX; break;
-          case '<=': $o->state = C_INDEX; break;
-          case '>=': $o->state = C_INDEX; break;
-          case 'adj': $o->state = C_INDEX; break;
-          case '(':   $o->state = C_P_START; break;
-          case ')':   $o->state = C_P_END; break;
-          case $END_VALUE: $o->state = C_END; break;
-          case 'NO_OP': $o->state = C_NO_OP; break;
-          default: $o->state = C_OP; break;
-        }
-      }
-
-      $top_state = $stack[count($stack) - 1]->state;
-      if (DEVELOP) { echo 'state: ' . $o->state . ' top: ' . $top_state . "\n"; }
-      switch ($action[$o->state][$top_state]) {
-        case 0: 
-          $k++;
-          break;
-        case 1: 
-          $stack[count($stack)] = $o;
-          $k++;
-          break;
-        case 2: 
-          $rpn[] = $stack[count($stack) - 1];
-          unset($stack[count($stack) - 1]);
-          break;
-        case 3: 
-          unset($stack[count($stack) - 1]);
-          $k++;
-          break;
-        case 9: 
-          throw new Exception('CQL-2: Unbalanced ()');
-          break;
-        default: 
-          throw new Exception('CQL-3: Internal error: Unhandled cql-state');
-      }
-      if (DEVELOP) { echo 'rpn: ' . print_r($rpn, TRUE) . 'stack: ' . print_r($stack, TRUE); }
-    }
-
-    return $rpn;
-  }
-
   /** \brief Makes an edismax query from the RPN-stack
    */
   private function rpn_2_edismax($rpn) {
     $folded_rpn = $this->fold_operands($rpn);
     $num_operands = 0;
     foreach ($folded_rpn as $r) {
-      if ($r->type == 'OPERAND') {
+      if ($r->type == OPERAND) {
         $num_operands++;
       }
     }
@@ -248,15 +153,15 @@ class SolrQuery extends tokenizer {
     $edismax = '';
     $index_stack = array();
     $folded = array();
-    $operand->type = 'OPERAND';
+    $operand->type = OPERAND;
     if (DEVELOP) { echo 'fold_op: ' . print_r($rpn, TRUE) . "\n"; }
     foreach ($rpn as $r) {
       if (DEVELOP) { echo $r->type . ' ' . $r->value . ' ' . print_r($operand, TRUE) . "\n"; }
       switch ($r->type) {
-        case 'INDEX':
+        case INDEX:
           $curr_index = $r->value;
           break;
-        case 'OPERAND':
+        case OPERAND:
           $r->value = str_replace($this->solr_escapes_from, $this->solr_escapes_to, $r->value);
           if ($curr_index) {
             $index_stack[] = $r;
@@ -265,7 +170,7 @@ class SolrQuery extends tokenizer {
             $folded[] = $r;
           }
           break;
-        case 'OPERATOR':
+        case OPERATOR:
           switch ($r->value) {
             case '<';
             case '>';
@@ -323,12 +228,12 @@ class SolrQuery extends tokenizer {
               }
           }
           unset($operand);
-          $operand->type = 'OPERAND';
+          $operand->type = OPERAND;
           break;
         default:
           throw new Exception('CQL-5: Internal error: Unknown rpn-element-type');
       }
-      if (DEVELOP && ($r->type == 'OPERATOR')) { echo 'folded: ' . print_r($folded, TRUE) . "\n"; }
+      if (DEVELOP && ($r->type == OPERATOR)) { echo 'folded: ' . print_r($folded, TRUE) . "\n"; }
     }
     if (isset($operand->value) && $operand->value) {
       $folded[] = $operand;
@@ -361,7 +266,7 @@ class SolrQuery extends tokenizer {
       $default_op = ' ';
     }
     foreach ($stack as $s) {
-      if ($s->type == 'OPERATOR') {
+      if ($s->type == OPERATOR) {
         if ($s->value <> 'NO_OP') {
           $ret .= $st[count($st)-2] . ' ' . $s->value . ' ' . $st[count($st)-1];
           unset($st[count($st)-1]);
@@ -385,10 +290,10 @@ class SolrQuery extends tokenizer {
     $stack = array();
     foreach ($folded as $f) {
       if (DEVELOP) { echo $f->type . ' ' . $f->value . "\n"; }
-      if ($f->type == 'OPERAND') {
+      if ($f->type == OPERAND) {
         $stack[count($stack)] = $f->value;
       }
-      if ($f->type == 'OPERATOR') {
+      if ($f->type == OPERATOR) {
         if ($f->value == 'NO_OP') {
           $f->value = 'AND';
         }
