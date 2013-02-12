@@ -69,7 +69,6 @@ class SolrQuery extends tokenizer {
   public function cql_2_edismax($query) {
     try {
       $tokens = $this->tokenize($query);
-var_dump($tokens); die();
       if (DEVELOP) { echo 'Query: ' . $query . "\n" . print_r($tokens, TRUE) . "\n"; }
       $rpn = Cql2Rpn::parse_tokens($tokens);
       $edismax = $this->rpn_2_edismax($rpn);
