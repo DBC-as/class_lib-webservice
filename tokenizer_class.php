@@ -30,6 +30,10 @@
 * $tokenlist=$t->convert;
 */
 
+define('INDEX', 'INDEX');
+define('OPERATOR', 'OPERATOR');
+define('OPERAND', 'OPERAND');
+
 class tokenizer {
 
   /// Token <string>
@@ -152,7 +156,7 @@ class tokenizer {
 
       //If the token is a index token
       if ($this->is_index($v)) {
-        $token['type']='INDEX';
+        $token['type']=INDEX;
         if ($this->is_phrase_index($v)) {
           $use_phrase = TRUE;
         }
@@ -160,7 +164,7 @@ class tokenizer {
 
       }
       else if ($this->is_operator($v)) {
-        $token['type']='OPERATOR';
+        $token['type']=OPERATOR;
         $token['value']=$v;
 
       }
@@ -175,7 +179,7 @@ class tokenizer {
         }
 
         if (!$ignore) {
-          $token['type']='OPERAND';
+          $token['type']=OPERAND;
           if ($use_phrase) {
             $token['value']=str_replace('"', '', $v);
             $token['phrase_index']=TRUE;
