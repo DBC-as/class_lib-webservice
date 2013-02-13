@@ -176,6 +176,15 @@ class z3950 {
             $this->connect_options['otherInfo0'] = '1.2.840.10003.10.1000.81.3:' . $ip;
     }
 
+    /** \brief 
+     *
+     */
+    public function set_proxy($proxy, $cookie = '') {
+        $this->connect_options['proxy'] = $proxy;
+        if ($cookie)
+            $this->connect_options['cookie'] = $cookie;
+    }
+
     /** \brief set syntax
      *
      */
