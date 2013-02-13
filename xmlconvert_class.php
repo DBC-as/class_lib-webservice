@@ -33,7 +33,8 @@ class xmlconvert {
     if (empty($request)) return FALSE;
 
     $dom = new DomDocument();
-    $dom->preserveWhiteSpace = false;
+// BUG: preserveWhiteSpace is not reliable, so trim() is done below to be defensive
+    $dom->preserveWhiteSpace = FALSE; 
     if (@ $dom->loadXML($request))
       return $this->xml2obj($dom);
   }
@@ -58,7 +59,7 @@ class xmlconvert {
         if (trim($node->nodeValue) == '') {
           continue;
         }
-        $subnode->_value = $node->nodeValue;
+        $subnode->_value = trim($node->nodeValue);
         $localName = '#text';
       }
       else {
@@ -70,7 +71,7 @@ class xmlconvert {
             $a_nodename = $attr->localName;
             if ($attr->namespaceURI)
               $subnode->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
-            $subnode->_attributes->{$a_nodename}->_value = $attr->nodeValue;
+            $subnode->_attributes->{$a_nodename}->_value = trim($attr->nodeValue);
           }
         }
       }
