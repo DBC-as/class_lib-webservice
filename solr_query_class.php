@@ -181,10 +181,16 @@ class SolrQuery extends tokenizer {
               $interval = $intervals[$r->value];
               $interval_adjust = $adjust_intervals[$r->value];
               $imploded = $this->implode_stack($index_stack);
-              $o_len = strlen($imploded) - 1;
-              $operand->value = $curr_index . ':' . 
-                                sprintf($interval, substr($imploded, 0, $o_len) . 
-                                                   chr(ord(substr($imploded,$o_len)) + $interval_adjust));
+              if (is_numeric($imploded)) {
+                $operand->value = $curr_index . ':' . 
+                                  sprintf($interval, intval($imploded) + $interval_adjust);
+              }
+              else {
+                $o_len = strlen($imploded) - 1;
+                $operand->value = $curr_index . ':' . 
+                                  sprintf($interval, substr($imploded, 0, $o_len) . 
+                                                     chr(ord(substr($imploded,$o_len)) + $interval_adjust));
+              }
               if ($operand->value) {
                 $folded[] = $operand;
               }
