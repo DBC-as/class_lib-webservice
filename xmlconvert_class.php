@@ -71,7 +71,7 @@ class xmlconvert {
             $a_nodename = $attr->localName;
             if ($attr->namespaceURI)
               $subnode->_attributes->{$a_nodename}->_namespace = $attr->namespaceURI;
-            $subnode->_attributes->{$a_nodename}->_value = trim($attr->nodeValue);
+            $subnode->_attributes->{$a_nodename}->_value = $attr->nodeValue;
           }
         }
       }
