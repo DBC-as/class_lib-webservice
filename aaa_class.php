@@ -37,6 +37,7 @@ class aaa {
 
   private $aaa_cache;				// cache object
   private $cache_seconds;			// number of seconds to cache
+  private $cache_key_prefix;
   private $error_cache_seconds;	// number of seconds to cache answer after an error
   private $ip_rights;			    // array with repeated elements: ip_list, ressource
   private $fors_oci;				// oci connection
@@ -58,6 +59,9 @@ class aaa {
       $this->error_cache_seconds = 60;
     }
     $this->ip_rights = $aaa_setup['aaa_ip_rights'];
+    if (!$this->cache_key_prefix = $aaa_setup['aaa_cache_key_prefix']) {
+      $this->cache_key_prefix = 'AAA';
+    }
     if (isset($aaa_setup['aaa_use_vip']) and $aaa_setup['aaa_use_vip']) {
       $this->vip_credentials = $this->fors_credentials;
     }
@@ -79,7 +83,7 @@ class aaa {
     $this->password = $passw;
     $this->ip = $ip;
     if ($this->aaa_cache) {
-      $cache_key = 'AAA_'.md5($this->user . '_' . $this->group . '_' . $this->password . '_' . $this->ip);
+      $cache_key = $this->cache_key_prefix . '_'.md5($this->user . '_' . $this->group . '_' . $this->password . '_' . $this->ip);
       if ($rights = $this->aaa_cache->get($cache_key)) {
         $this->rights = json_decode($rights);
         return !empty($this->rights);
