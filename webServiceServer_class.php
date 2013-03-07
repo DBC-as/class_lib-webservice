@@ -44,6 +44,7 @@ abstract class webServiceServer {
   protected $objconvert; // OLS object to xml convert
   protected $xmlconvert; // xml to OLS object convert
   protected $xmlns; // namespaces and prefixes
+  protected $default_namespace;
   protected $tag_sequence; // tag sequence according to XSD or noame of XSD
   protected $soap_action;
   protected $dump_timer;
@@ -86,6 +87,7 @@ abstract class webServiceServer {
     if ($this->config->get_value('xmldir'))
       $this->xmldir=$this->config->get_value('xmldir');
     $this->xmlns = $this->config->get_value('xmlns', 'setup');
+    $this->default_namespace = $this->xmlns[$this->config->get_value('default_namespace_prefix', 'setup')];
     $this->tag_sequence = $this->config->get_value('tag_sequence', 'setup');
     $this->version = $this->config->get_value('version', 'setup');
     $this->output_type = $this->config->get_value('default_output_type', 'setup');
@@ -166,7 +168,8 @@ abstract class webServiceServer {
       }
 
       // initialize objconvert and load namespaces
-      $this->objconvert=new objconvert($this->xmlns, $this->tag_sequence);
+      $this->objconvert = new objconvert($this->xmlns, $this->tag_sequence);
+      $this->objconvert->set_default_namespace($this->default_namespace);
 
       // handle request
       if ($response_xmlobj=$this->call_xmlobj_function($request_xmlobj)) {
@@ -229,9 +232,7 @@ abstract class webServiceServer {
   */
   private function rest_request() {
     // convert to soap
-    $prefix = $this->config->get_value('default_namespace_prefix', 'setup');
-    $xmlns = $this->xmlns[$prefix] ? $this->xmlns[$prefix] : $this->xmlns['0'];
-    $rest = new restconvert($xmlns);
+    $rest = new restconvert($this->default_namespace);
     $xml=$rest->rest2soap($this->config);
     $this->soap_request($xml);
   }
