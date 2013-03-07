@@ -63,6 +63,7 @@ class objconvert {
   private $tag_sequence=array();
   private $namespaces=array();
   private $used_namespaces=array();
+  private $default_namespace;
 
   public function __construct($xmlns='', $tag_seq='') {
     if ($xmlns) {
@@ -73,6 +74,13 @@ class objconvert {
       }
     }
     $this->tag_sequence = $tag_seq;
+  }
+
+  public function set_default_namespace($ns) {
+    $this->default_namespace = $ns;
+    if ($this->default_namespace == $this->namespaces['']) {
+      unset($this->namespaces['']);         // remove deprecated setup
+    }
   }
 
   /** \brief Convert ols-object to json
@@ -134,10 +142,7 @@ class objconvert {
   public function obj2xmlNs($obj) {
     $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
-    foreach ($this->namespaces as $ns => $prefix) {
-      if ($this->used_namespaces[$ns] || empty($prefix))
-        $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
-    }
+    $used_ns = $this->get_used_namespaces_as_header();
     if ($used_ns && $i = strpos($xml, '>'))
       $xml = substr($xml, 0, $i) . $used_ns . substr($xml, $i);
     return $this->xml_header() . $xml;
@@ -148,11 +153,23 @@ class objconvert {
   public function obj2soap($obj, $soap_ns = 'http://schemas.xmlsoap.org/soap/envelope/') {
     $this->used_namespaces = array();
     $xml = $this->obj2xml($obj);
+    return $this->xml_header() . 
+           '<SOAP-ENV:Envelope xmlns:SOAP-ENV="' . $soap_ns . '"' . 
+           $this->get_used_namespaces_as_header() . '><SOAP-ENV:Body>' . 
+           $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
+  }
+
+  /** \brief
+   */
+  private function get_used_namespaces_as_header() {
     foreach ($this->namespaces as $ns => $prefix) {
       if ($this->used_namespaces[$ns] || empty($prefix))
         $used_ns .= ' xmlns' . ($prefix ? ':'.$prefix : '') . '="' . $ns . '"';
     }
-    return $this->xml_header() . '<SOAP-ENV:Envelope xmlns:SOAP-ENV="' . $soap_ns . '"' . $used_ns . '><SOAP-ENV:Body>' . $xml . '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
+    if ($this->default_namespace) {
+      $used_ns .= ' xmlns="' . $this->default_namespace . '"';
+    }
+    return $used_ns;
   }
 
   /** \brief UTF-8 header
