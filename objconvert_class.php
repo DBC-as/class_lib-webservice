@@ -78,7 +78,7 @@ class objconvert {
 
   public function set_default_namespace($ns) {
     $this->default_namespace = $ns;
-    if (isset($this->namespaces[$ns])) {
+    if ($this->namespaces[$ns] == '') {
       unset($this->namespaces[$ns]);         // remove deprecated setup
     }
   }
