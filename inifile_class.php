@@ -283,6 +283,7 @@ class inifile {
     $sections = array();
     $values = array();
     $globals = array();
+    $result = array();
     $i = 0;
     foreach($ini as $line) {
       $line = trim($line);
