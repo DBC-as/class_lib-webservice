@@ -55,7 +55,7 @@ class Cql2Rpn {
       $token = new stdClass();
       $token->value = trim($tokenlist[$token_no]['value']);
       $token->type = $tokenlist[$token_no]['type'];
-      if ((count($stack) == 1 && $token->value == END_VALUE) || 
+      if ((count($rpn) > 1 && count($stack) == 1 && $token->value == END_VALUE) || 
           ($token->type == OPERAND && $token->value)) {
         if ($operand_no++) {
           $token->type = OPERATOR;
