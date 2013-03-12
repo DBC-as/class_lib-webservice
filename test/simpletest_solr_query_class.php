@@ -31,13 +31,20 @@ class TestOfSolrQueryClass extends UnitTestCase {
     $this->assertTrue(is_object($this->c2s));
   }
 
+  function test_basal() {
+    $tests = array('et' => 'et');
+    foreach ($tests as $send => $recieve) {
+      $this->assertEqual($this->get_edismax($send), $recieve);
+    }
+  }
+
   function test_bool() {
     $tests = array('et AND to' => 'et AND to',
-                   'et AND to OR tre' => 'et AND to OR tre',
-                   'et AND to OR tre AND fire' => 'et AND to OR tre AND fire',
-                   'et to OR tre fire' => 'et AND to OR tre AND fire',
-                   '(et AND to) OR tre' => 'et AND to OR tre',
-                   'et AND (to OR tre)' => 'to OR tre AND et',
+                   'et AND to OR tre' => '(et AND to) OR tre',
+                   'et AND to OR tre AND fire' => '((et AND to) OR tre) AND fire',
+                   'et to OR tre fire' => '((et AND to) OR tre) AND fire',
+                   '(et AND to) OR tre' => '(et AND to) OR tre',
+                   'et AND (to OR tre)' => '(to OR tre) AND et',
                    '(et AND to' => 'CQL-2: Unbalanced ()',
                    'et AND to)' => 'CQL-2: Unbalanced ()');
     foreach ($tests as $send => $recieve) {

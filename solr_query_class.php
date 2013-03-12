@@ -247,6 +247,7 @@ class SolrQuery extends tokenizer {
     return $folded;
   }
 
+
   /** \brief Unstacks and set solr-syntax depending on index-type
    */
   private function implode_indexed_stack($stack, $index, $adjacency = '') {
@@ -303,11 +304,11 @@ class SolrQuery extends tokenizer {
           $f->value = 'AND';
         }
         if (empty($edismax)) {
-          $edismax .= $stack[count($stack)-2] . ' ' . $f->value . ' ' . $stack[count($stack)-1] . ' ';
+          $edismax .= '(' . $stack[count($stack)-2] . ' ' . $f->value . ' ' . $stack[count($stack)-1] . ') ';
           unset($stack[count($stack)-1]);
         }
         else {
-          $edismax .= $f->value . ' ' . $stack[count($stack)-1] . ' ';
+          $edismax = '(' . $edismax . $f->value . ' ' . $stack[count($stack)-1] . ') ';
         }
         unset($stack[count($stack)-1]);
       }
@@ -316,8 +317,12 @@ class SolrQuery extends tokenizer {
     foreach ($stack as $s) {
       $edismax .= $s . ' ';
     }
+    $edismax = trim($edismax);
+    if (substr($edismax, 0, 1) == '(' && substr($edismax, -1) == ')') {
+      $edismax = substr($edismax, 1, -1);
+    }
     if (DEVELOP) { echo 'ed: ' . $edismax . "\n"; }
-    return trim($edismax);
+    return $edismax;
   }
 }
 
