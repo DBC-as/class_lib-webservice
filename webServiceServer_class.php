@@ -260,12 +260,23 @@ abstract class webServiceServer {
         list($key, $section) = explode('.', $var, 2);
         $val = $this->config->get_value($key, $section);
         if (is_array($val)) {
-          $val = implode(', ', $val);
+          $val = $this->implode_ini_array($val);
         }
-        $line = str_replace($var.'__', $val, $line);
+        $line = str_replace($var . '__', $val, $line);
       }
     }
     return $line;
+  }
+
+  private function implode_ini_array($arr, $prefix = '') {
+    $ret = "\n";
+    foreach ($arr as $key => $val) {
+      if (is_array($val)) {
+        $val = $this->implode_ini_array($val, ' - ' . $prefix);
+      }
+      $ret .= $prefix . ' - [' . $key . '] ' . $val . "\n";
+    }
+    return str_replace("\n\n", "\n", $ret);
   }
 
   /** \brief
