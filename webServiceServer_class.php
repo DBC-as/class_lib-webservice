@@ -103,7 +103,7 @@ abstract class webServiceServer {
   */
   public function handle_request() {
     if ($_SERVER['QUERY_STRING'] == 'ShowInfo')
-      $this->ShowInfo();
+      $this->ShowInfo($_REQUEST['ShowInfo']);
     if ($_SERVER['QUERY_STRING'] == 'Version') {
       die($this->version);
     }
@@ -240,10 +240,32 @@ abstract class webServiceServer {
   /** \brief
   *
   */
-  private function ShowInfo() {
-    $show_func = 'show_info';
-    if (method_exists($this, $show_func) && $this->in_house())
-      $this->$show_func();
+  private function ShowInfo($level) {
+    if (($showinfo = $this->config->get_value('showinfo', 'showinfo')) && $this->in_house()) {
+      foreach ($showinfo as $line) {
+        echo $this->showinfo_line($line) . "\n";
+      }
+    die();
+    }
+  }
+
+  /** \brief expands __var__ to the corresponding setting
+  *
+  */
+  private function showinfo_line($line) {
+    while (($s = strpos($line, '__')) !== FALSE) {
+      $line = substr($line, 0, $s) . substr($line, $s+2);
+      if (($e = strpos($line, '__')) !== FALSE) {
+        $var = substr($line, $s, $e - $s);
+        list($key, $section) = explode('.', $var, 2);
+        $val = $this->config->get_value($key, $section);
+        if (is_array($val)) {
+          $val = implode(', ', $val);
+        }
+        $line = str_replace($var.'__', $val, $line);
+      }
+    }
+    return $line;
   }
 
   /** \brief
