@@ -89,7 +89,7 @@ class bibdk_info {
 	  return $ret;
       }
 
-    $this->oci->bind("bind_bibno", &$bibno);
+    $this->oci->bind("bind_bibno", $bibno);
     $this->oci->set_query(
       "SELECT *
          FROM vip, vip_vsn, vip_danbib, vip_kat, vip_txt
