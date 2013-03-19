@@ -32,14 +32,17 @@ class SolrQuery extends tokenizer {
   // full set of escapes as seen in the solr-doc. We use those who so far has been verified
   //var $solr_escapes = array('+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\');
   var $solr_escapes = array('+', '-', ':', '!', '"');
+  var $solr_ignores = array('.');
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
   var $phrase_index = array();
+  var $near_match = FALSE;
 
   public function __construct($xml, $config='', $language='') {
     $this->dom = new DomDocument();
     $this->dom->Load($xml);
 
+    $this->near_match = ($language == 'nearMatch');
     $this->case_insensitive = TRUE;
     $this->split_expression = '/(<=|>=|[ <>=()[\]])/';
     $this->operators = $this->get_operators($language);
@@ -59,6 +62,10 @@ class SolrQuery extends tokenizer {
     foreach ($this->solr_escapes as $ch) {
       $this->solr_escapes_from[] = $ch;
       $this->solr_escapes_to[] = '\\' . $ch;
+    }
+    foreach ($this->solr_ignores as $ch) {
+      $this->solr_escapes_from[] = $ch;
+      $this->solr_escapes_to[] = '';
     }
   }
 
@@ -255,6 +262,9 @@ class SolrQuery extends tokenizer {
     if (in_array($idx_type, $this->phrase_index)) {
       return $index . ':"' . $this->implode_stack($stack) . '"' . $adjacency;
     }
+    elseif ($this->near_match) {
+      return $index . ':(' . $this->implode_stack($stack) . ')' . $adjacency;
+    }
     else {
       return $index . ':(' . $this->implode_stack($stack, 'AND') . ')' . $adjacency;
     }
@@ -290,8 +300,13 @@ class SolrQuery extends tokenizer {
   }
 
   /** \brief Unstack folded stack and produce solr-search
+   *         If nearMatch remove operators (for functionality) and parenthesis (for speed)
    */
   private function folded_2_edismax($folded) {
+    if (!$this->near_match) {
+      $start_paren = '(';
+      $end_paren = ')';
+    }
     $edismax = '';
     $stack = array();
     foreach ($folded as $f) {
@@ -300,15 +315,18 @@ class SolrQuery extends tokenizer {
         $stack[count($stack)] = $f->value;
       }
       if ($f->type == OPERATOR) {
-        if ($f->value == 'NO_OP') {
+        if ($this->near_match) {
+          $f->value = '';
+        }
+        elseif ($f->value == 'NO_OP') {
           $f->value = 'AND';
         }
         if (empty($edismax)) {
-          $edismax .= '(' . $stack[count($stack)-2] . ' ' . $f->value . ' ' . $stack[count($stack)-1] . ') ';
+          $edismax .= $start_paren . $stack[count($stack)-2] . ' ' . $f->value . ' ' . $stack[count($stack)-1] . $end_paren . ' ';
           unset($stack[count($stack)-1]);
         }
         else {
-          $edismax = '(' . $edismax . $f->value . ' ' . $stack[count($stack)-1] . ') ';
+          $edismax = $start_paren . $edismax . $f->value . ' ' . $stack[count($stack)-1] . $end_paren . ' ';
         }
         unset($stack[count($stack)-1]);
       }
