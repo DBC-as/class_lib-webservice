@@ -36,13 +36,13 @@ class SolrQuery extends tokenizer {
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
   var $phrase_index = array();
-  var $near_match = FALSE;
+  var $best_match = FALSE;
 
   public function __construct($xml, $config='', $language='') {
     $this->dom = new DomDocument();
     $this->dom->Load($xml);
 
-    $this->near_match = ($language == 'nearMatch');
+    $this->best_match = ($language == 'bestMatch');
     $this->case_insensitive = TRUE;
     $this->split_expression = '/(<=|>=|[ <>=()[\]])/';
     $this->operators = $this->get_operators($language);
@@ -262,7 +262,7 @@ class SolrQuery extends tokenizer {
     if (in_array($idx_type, $this->phrase_index)) {
       return $index . ':"' . $this->implode_stack($stack) . '"' . $adjacency;
     }
-    elseif ($this->near_match) {
+    elseif ($this->best_match) {
       return $index . ':(' . $this->implode_stack($stack) . ')' . $adjacency;
     }
     else {
@@ -300,10 +300,10 @@ class SolrQuery extends tokenizer {
   }
 
   /** \brief Unstack folded stack and produce solr-search
-   *         If nearMatch remove operators (for functionality) and parenthesis (for speed)
+   *         If bestMatch remove operators (for functionality) and parenthesis (for speed)
    */
   private function folded_2_edismax($folded) {
-    if (!$this->near_match) {
+    if (!$this->best_match) {
       $start_paren = '(';
       $end_paren = ')';
     }
@@ -315,7 +315,7 @@ class SolrQuery extends tokenizer {
         $stack[count($stack)] = $f->value;
       }
       if ($f->type == OPERATOR) {
-        if ($this->near_match) {
+        if ($this->best_match) {
           $f->value = '';
         }
         elseif ($f->value == 'NO_OP') {
