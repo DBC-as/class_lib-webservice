@@ -39,7 +39,7 @@ class TestOfSolrQueryClass extends UnitTestCase {
   }
 
   function test_bool() {
-    $tests = array('et AND to' => 'ett AND to',
+    $tests = array('et AND to' => 'et AND to',
                    'et AND to OR tre' => '(et AND to) OR tre',
                    'et AND to OR tre AND fire' => '((et AND to) OR tre) AND fire',
                    'et to OR tre fire' => '((et AND to) OR tre) AND fire',
