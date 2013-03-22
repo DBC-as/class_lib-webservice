@@ -24,7 +24,9 @@
  *
  * only the first two A's are supported, since there is currently no need for accounting
  *
- * need oci_class and memcache_class or memcachedb_class to be defined
+ * need oci_class and memcache_class to be defined
+ * 
+ * if aaa_fors_right is defined, then data is fetched from the webservice defined by the parameter
  *
 **/
 
