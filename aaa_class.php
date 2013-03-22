@@ -29,7 +29,6 @@
 **/
 
 require_once('OLS_class_lib/oci_class.php');
-//require_once('OLS_class_lib/memcachedb_class.php');
 require_once('OLS_class_lib/memcache_class.php');
 require_once('OLS_class_lib/ip_class.php');
 
@@ -47,7 +46,7 @@ class aaa {
   private $group;			    	// Group if any
   private $password;				// Password if any
   private $ip;			    	// IP address
-  private $aaa_fors_rights;     // url to forsRights server
+  private $fors_rights_url;     // url to forsRights server
   public $aaa_ip_groups = array();
 
   public function __construct($aaa_setup) {
@@ -58,7 +57,7 @@ class aaa {
         $this->cache_seconds = 3600;
       $this->error_cache_seconds = 60;
     }
-    $this->aaa_fors_rights = $aaa_setup['aaa_fors_rights'];
+    $this->fors_rights_url = $aaa_setup['aaa_fors_rights'];
     $this->ip_rights = $aaa_setup['aaa_ip_rights'];
     if (!$this->cache_key_prefix = $aaa_setup['aaa_cache_key_prefix']) {
       $this->cache_key_prefix = 'AAA';
@@ -92,7 +91,10 @@ class aaa {
       return TRUE;         // do no cache when found in ip-rights (ini-file)
     }
 
-    if (strpos($this->fors_credentials, '/') && strpos($this->fors_credentials, '@')) {
+    if ($this->fors_rights_url) {
+      $this->rights = $this->fetch_rights_from_fors_rights_ws($this->user, $this->group, $this->password, $this->ip, $this->fors_rights_url);
+    }
+    elseif (strpos($this->fors_credentials, '/') && strpos($this->fors_credentials, '@')) {
       $this->rights = $this->fetch_rights_from_ip_fors($this->ip, $this->fors_credentials);
       if (empty($this->rights)) {
         $this->rights = $this->fetch_rights_from_auth_fors($this->user, $this->group, $this->password, $this->fors_credentials);
@@ -143,6 +145,27 @@ class aaa {
     return TRUE;
   }
 
+
+  /**
+  * \brief set the rights array from the forsRight webservice
+  *
+  **/
+  private function fetch_rights_from_fors_rights_ws($user, $group, $password, $ip, $fors_rights_url) {
+    require_once('OLS_class_lib/curl_class.php');
+    $curl = new curl();
+    $url = sprintf($fors_rights_url, $user, $group, $password, $ip);
+    $reply = unserialize($curl->get($url));
+    if (isset($reply->forsRightsResponse->_value->ressource)) {
+      foreach ($reply->forsRightsResponse->_value->ressource as $ressource) {
+        $name = $ressource->_value->name->_value;
+        foreach ($ressource->_value->right as $right) {
+          $r = $right->_value;
+          $rights->$name->$r = TRUE;
+        }
+      }
+    }
+    return $rights;
+  }
 
   /**
   * \brief set the rights array from the ini-file
