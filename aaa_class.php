@@ -47,7 +47,7 @@ class aaa {
   private $group;			    	// Group if any
   private $password;				// Password if any
   private $ip;			    	// IP address
-  private $vip_credentials;     // connect to VIP
+  private $aaa_fors_rights;     // url to forsRights server
   public $aaa_ip_groups = array();
 
   public function __construct($aaa_setup) {
@@ -58,12 +58,10 @@ class aaa {
         $this->cache_seconds = 3600;
       $this->error_cache_seconds = 60;
     }
+    $this->aaa_fors_rights = $aaa_setup['aaa_fors_rights'];
     $this->ip_rights = $aaa_setup['aaa_ip_rights'];
     if (!$this->cache_key_prefix = $aaa_setup['aaa_cache_key_prefix']) {
       $this->cache_key_prefix = 'AAA';
-    }
-    if (isset($aaa_setup['aaa_use_vip']) and $aaa_setup['aaa_use_vip']) {
-      $this->vip_credentials = $this->fors_credentials;
     }
   }
 
@@ -90,134 +88,17 @@ class aaa {
       }
     }
 
-    if (!empty($this->vip_credentials)) {
-      if (empty($this->vip_oci)) $this->vip_oci = new Oci($this->vip_credentials);
-      try {
-        $this->vip_oci->connect();
-      }
-      catch (ociException $e) {
-        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->vip_oci->get_error_string());
-        return FALSE;
-      }
+    if ($this->rights = $this->fetch_rights_from_ip_rights($this->ip, $this->ip_rights)) {
+      return TRUE;         // do no cache when found in ip-rights (ini-file)
+    }
 
-      $q = "SELECT distinct d.domain 
-              FROM user_domains d, navision_tab n
-             WHERE d.bib_nr = to_number(n.kundenummer)
-               AND d.delete_date is null
-               AND n.navision_product = '37003100'";
-
-      $this->vip_oci->set_query($q);
-      while ($list = $this->vip_oci->fetch_into_assoc()) {
-        $this->vip_rights['dbc']['ip_list'] .= $list['DOMAIN'].';';
+    if (strpos($this->fors_credentials, '/') && strpos($this->fors_credentials, '@')) {
+      $this->rights = $this->fetch_rights_from_ip_fors($this->ip, $this->fors_credentials);
+      if (empty($this->rights)) {
+        $this->rights = $this->fetch_rights_from_auth_fors($this->user, $this->group, $this->password, $this->fors_credentials);
       }
     }
 
-    if ($this->ip && is_array($this->ip_rights)) {
-      foreach ($this->ip_rights as $aaa_group => $rights) {
-        if (ip_func::ip_in_interval($this->ip, $rights['ip_list'])) {
-          $this->aaa_ip_groups[$aaa_group] = TRUE;
-          if (isset($rights['ressource'])) {
-            foreach ($rights['ressource'] as $ressource => $right) {
-              $rights = explode(',', $right);
-              foreach ($rights as $r) {
-                $r = trim($r);
-                $this->rights->$ressource->$r = TRUE;
-              }
-            }
-          }
-        }
-      }
-      if ($this->rights)
-        return TRUE;   // do no cache when found in ip-rights (ini-file)
-    }
-
-    if (!strpos($this->fors_credentials, '/') || !strpos($this->fors_credentials, '@'))
-      return FALSE;
-
-    if (!empty($this->fors_credentials) && $this->ip) {
-      if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
-      try {
-        $this->fors_oci->connect();
-      }
-      catch (ociException $e) {
-        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->fors_oci->get_error_string());
-        return FALSE;
-      }
-      $int_ip = $this->ip2int($this->ip);
-      try {
-        $this->fors_oci->bind('bind_ipval', $int_ip,-1,SQLT_LNG);
-        $this->fors_oci->set_query('SELECT userid, ipend
-                                   FROM domuserid
-                                   WHERE ipstart <= :bind_ipval
-                                   AND (:bind_ipval <= ipend OR ipend IS NULL)');
-        $buf = $this->fors_oci->fetch_all_into_assoc();
-        foreach ($buf as $key => $val) {
-          if (empty($fors_userid) || $val['IPEND'])
-            $fors_userid = $val['USERID'];
-        }
-      }
-      catch (ociException $e) {
-        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
-        $error = $this->fors_oci->get_error();
-      }
-
-      if (!empty($fors_userid)) {
-        try {
-          $this->fors_oci->bind('bind_userid', $fors_userid);
-          $this->fors_oci->set_query('SELECT userids.userid, userids.state, logins_logingroup.groupname
-                                     FROM logins_logingroup, userids
-                                     WHERE userids.userid = logins_logingroup.userid
-                                     AND userids.userid = :bind_userid');
-          if ($buf = $this->fors_oci->fetch_into_assoc()) {
-            $userid = $buf['USERID'];
-            $state = $buf['STATE'];
-            $this->group = $buf['GROUPNAME'];
-          }
-        }
-        catch (ociException $e) {
-          verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
-          $error = $this->fors_oci->get_error();
-        }
-      }
-      if ($state == 'OK')
-        $this->rights = $this->fetch_rights_from_userid($userid, $this->group);
-    }
-
-    if (!$this->rights && !empty($this->fors_credentials) && $this->user) {
-      if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
-      try {
-        $this->fors_oci->connect();
-      }
-      catch (ociException $e) {
-        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->fors_oci->get_error_string());
-        return FALSE;
-      }
-      try {
-        $this->fors_oci->bind('bind_username', $this->user);
-        $this->fors_oci->bind('bind_usergroup', $this->group);
-        $this->fors_oci->set_query('SELECT userids.userid, userids.state, crypttype, password
-                                   FROM logins_logingroup, userids
-                                   WHERE userids.userid = logins_logingroup.userid
-                                   AND (administratorflag = 0 OR administratorflag IS NULL)
-                                   AND userids.login = :bind_username
-                                   AND groupname = :bind_usergroup');
-        $buf = $this->fors_oci->fetch_into_assoc();
-        $userid = &$buf['USERID'];
-        $crypttype = &$buf['CRYPTTYPE'];
-        $pwd = &$buf['PASSWORD'];
-        //$pwd = md5($this->password);			// test
-        $state = &$buf['STATE'];
-        if ($userid
-            && $state == 'OK'
-            && (($crypttype == 0 && $pwd == $this->password)
-                || ($crypttype == 2 && $pwd == md5($this->password))))
-          $this->rights = $this->fetch_rights_from_userid($userid, $this->group);
-      }
-      catch (ociException $e) {
-        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
-        $error = $this->fors_oci->get_error();
-      }
-    }
     if ($this->aaa_cache)
       $this->aaa_cache->set($cache_key, json_encode($this->rights), (isset($error) ? $this->error_cache_seconds : $this->cache_seconds));
     return !empty($this->rights);
@@ -263,10 +144,135 @@ class aaa {
   }
 
 
+  /**
+  * \brief set the rights array from the ini-file
+  *
+  **/
+  private function fetch_rights_from_ip_rights($ip, $ip_rights) {
+    if ($ip && is_array($ip_rights)) {
+      foreach ($ip_rights as $aaa_group => $aaa_par) {
+        if (ip_func::ip_in_interval($ip, $aaa_par['ip_list'])) {
+          $this->aaa_ip_groups[$aaa_group] = TRUE;
+          if (isset($aaa_par['ressource'])) {
+            foreach ($aaa_par['ressource'] as $ressource => $right_list) {
+              $right_val = explode(',', $right_list);
+              foreach ($right_val as $r) {
+                $r = trim($r);
+                $rights->$ressource->$r = TRUE;
+              }
+            }
+          }
+        }
+      }
+    }
+    return $rights;
+  }
 
 
+  /**
+  * \brief set the rights array from FORS using the ip of the caller
+  *
+  **/
+  private function fetch_rights_from_ip_fors($ip, $fors_credentials) {
+    if (!empty($fors_credentials) && $ip) {
+      if (empty($this->fors_oci)) $this->fors_oci = new Oci($fors_credentials);
+      try {
+        $this->fors_oci->connect();
+      }
+      catch (ociException $e) {
+        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->fors_oci->get_error_string());
+        return FALSE;
+      }
+      $long_ip = ip2long($ip);
+      try {
+        $this->fors_oci->bind('bind_ipval', $long_ip,-1,SQLT_LNG);
+        $this->fors_oci->set_query('SELECT userid, ipend
+                                   FROM domuserid
+                                   WHERE ipstart <= :bind_ipval
+                                   AND (:bind_ipval <= ipend OR ipend IS NULL)');
+        $buf = $this->fors_oci->fetch_all_into_assoc();
+        foreach ($buf as $key => $val) {
+          if (empty($fors_userid) || $val['IPEND'])
+            $fors_userid = $val['USERID'];
+        }
+      }
+      catch (ociException $e) {
+        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
+        $error = $this->fors_oci->get_error();
+      }
+
+      if (!empty($fors_userid)) {
+        try {
+          $this->fors_oci->bind('bind_userid', $fors_userid);
+          $this->fors_oci->set_query('SELECT userids.userid, userids.state, logins_logingroup.groupname
+                                     FROM logins_logingroup, userids
+                                     WHERE userids.userid = logins_logingroup.userid
+                                     AND userids.userid = :bind_userid');
+          if ($buf = $this->fors_oci->fetch_into_assoc()) {
+            $userid = $buf['USERID'];
+            $state = $buf['STATE'];
+            $this->group = $buf['GROUPNAME'];
+          }
+        }
+        catch (ociException $e) {
+          verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
+          $error = $this->fors_oci->get_error();
+        }
+      }
+      if ($state == 'OK')
+        $rights = $this->fetch_rights_from_userid($userid, $this->group);
+    }
+    return $rights;
+  }
+
+  /**
+  * \brief set the rights array from FORS using the authentication triple of the caller
+  *
+  **/
+  private function fetch_rights_from_auth_fors($user, $group, $password, $fors_credentials) {
+    if ($user &&  $fors_credentials) {
+      if (empty($this->fors_oci)) $this->fors_oci = new Oci($fors_credentials);
+      try {
+        $this->fors_oci->connect();
+      }
+      catch (ociException $e) {
+        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI connect error: ' . $this->fors_oci->get_error_string());
+        return FALSE;
+      }
+      try {
+        $this->fors_oci->bind('bind_username', $user);
+        $this->fors_oci->bind('bind_usergroup', $group);
+        $this->fors_oci->set_query('SELECT userids.userid, userids.state, crypttype, password
+                                   FROM logins_logingroup, userids
+                                   WHERE userids.userid = logins_logingroup.userid
+                                   AND (administratorflag = 0 OR administratorflag IS NULL)
+                                   AND userids.login = :bind_username
+                                   AND groupname = :bind_usergroup');
+        $buf = $this->fors_oci->fetch_into_assoc();
+        $userid = &$buf['USERID'];
+        $crypttype = &$buf['CRYPTTYPE'];
+        $pwd = &$buf['PASSWORD'];
+        //$pwd = md5($this->password);			// test
+        $state = &$buf['STATE'];
+        if ($userid
+            && $state == 'OK'
+            && (($crypttype == 0 && $pwd == $password)
+                || ($crypttype == 2 && $pwd == md5($password))))
+          $rights = $this->fetch_rights_from_userid($userid, $group);
+      }
+      catch (ociException $e) {
+        verbose::log(FATAL, 'AAA('.__LINE__.'):: OCI select error: ' . $this->fors_oci->get_error_string());
+        $error = $this->fors_oci->get_error();
+      }
+    }
+    return $rights;
+  }
 
 
+  /**
+  * \brief fecth rights from FORS given a FORS-userid and group
+  *
+  **/
   private function fetch_rights_from_userid($userid, $group) {
     $rights = new stdClass;
     if (empty($this->fors_oci)) $this->fors_oci = new Oci($this->fors_credentials);
@@ -305,11 +311,6 @@ class aaa {
     }
 
     return $rights;
-  }
-
-  private function ip2int($ip) {
-    list($a, $b, $c, $d) = explode('.', $ip);
-    return (($a * 256 + $b) * 256 + $c) * 256 + $d;
   }
 
 }
