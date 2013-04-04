@@ -33,6 +33,7 @@ class SolrQuery extends tokenizer {
   //var $solr_escapes = array('+','-','&&','||','!','(',')','{','}','[',']','^','"','~','*','?',':','\\');
   var $solr_escapes = array('+', '-', ':', '!', '"');
   var $solr_ignores = array('.');
+  //var $solr_ignores = array();
   var $solr_escapes_from = array();
   var $solr_escapes_to = array();
   var $phrase_index = array();
@@ -131,20 +132,23 @@ class SolrQuery extends tokenizer {
     return $operators;
   }
 
-
   /** \brief Makes an edismax query from the RPN-stack
    */
   private function rpn_2_edismax($rpn) {
+    $ret = array();
     $folded_rpn = $this->fold_operands($rpn);
-    $num_operands = 0;
+    $ret['operands'] = 0;
     foreach ($folded_rpn as $r) {
       if ($r->type == OPERAND) {
-        $num_operands++;
+        $ret['operands']++;
       }
     }
-    $edismax_q = $this->folded_2_edismax($folded_rpn);
+    $ret['edismax'] = $this->folded_2_edismax($folded_rpn);
 
-    return array('edismax' => $edismax_q, 'operands' => $num_operands);
+    if ($this->best_match) {
+      $ret['best_match'] = $this->remove_bool_and_expand_indexes($folded_rpn);
+    }
+    return $ret;
   }
 
   /** \brief folds OPERANDs bound to indexes depending on INDEX-type
@@ -178,10 +182,10 @@ class SolrQuery extends tokenizer {
           break;
         case OPERATOR:
           switch ($r->value) {
-            case '<';
-            case '>';
-            case '<=';
-            case '>=';
+            case '<':
+            case '>':
+            case '<=':
+            case '>=':
               if (empty($curr_index)) {
                 throw new Exception('CQL-4: Unknown register');
               }
@@ -204,7 +208,7 @@ class SolrQuery extends tokenizer {
               $curr_index = '';
               $index_stack = array();
               break;
-            case '=';
+            case '=':
               if (empty($curr_index)) {
                 throw new Exception('CQL-4: Unknown register');
               }
@@ -216,7 +220,7 @@ class SolrQuery extends tokenizer {
               $curr_index = '';
               $index_stack = array();
               break;
-            case 'adj';
+            case 'adj':
               if (empty($curr_index)) {
                 throw new Exception('CQL-4: Unknown register');
               }
@@ -254,6 +258,43 @@ class SolrQuery extends tokenizer {
     return $folded;
   }
 
+
+  /** \brief
+   */
+  private function remove_bool_and_expand_indexes($folded) {
+    $ret = array();
+    foreach ($folded as $f) {
+      if ($f->type == OPERAND) {
+        foreach ($this->explode_indexes($f->value) as $t)
+          $term[] = $t;
+      }
+    }
+    $fraction = floor(100 / count($term));
+    foreach ($term as $term_no => $t) {
+      $n = 't' . $term_no;
+      $ret[$n] = $t;
+      $sort .= $split . 'query%28$' . $n . ',' . $fraction . '%29';
+      $split = ',';
+    }
+    $ret['sort'] = 'sum%28' . $sort . '%29+asc';
+    return $ret;
+  }
+
+  /** \brief explode 'index:"A B"' or index:(A B) to index:A and index:B
+   */
+  private function explode_indexes($term) {
+    $parts = explode(':', $term, 2);
+    if (count($parts) == 1) {
+      $terms = array($term);
+    }
+    else {
+      $term_list = preg_replace('/["\()]/', '', $parts[1]);
+      foreach (explode(' ', $term_list) as $t) {
+        $terms[] = $parts[0] . ':' . $t;
+      }
+    }
+    return $terms;
+  }
 
   /** \brief Unstacks and set solr-syntax depending on index-type
    */
