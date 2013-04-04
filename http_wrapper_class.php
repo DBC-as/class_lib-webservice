@@ -98,7 +98,7 @@ abstract class http_wrapper {
 * @return array http responsen efter parsing af den abstrakte metode $this->parse
 * 
 */
-  public function request($url, $data) {
+  public function request($url, $data, $debug = FALSE) {
     if (empty($url)) return array("Problem" => array("Type" => "No URL given in Request"));
     if (empty($data["Ncip"])) return array("Problem" => array("Type" => "No Ncip Type given in Request"));
     
@@ -107,6 +107,9 @@ abstract class http_wrapper {
     $curl->set_post_xml($this->build($data));
     $res = $curl->get($url);
     $has_error = $curl->has_error();
+    if ($debug && $has_error) {
+      echo '<pre>' . print_r($curl->get_status(), TRUE) . '</pre>';
+    }
     $curl->close();
 
     if (empty($res)) return array("Problem" => array("Type" => "Empty response"));
