@@ -273,10 +273,10 @@ class SolrQuery extends tokenizer {
     foreach ($term as $term_no => $t) {
       $n = 't' . $term_no;
       $ret[$n] = $t;
-      $sort .= $split . 'query%28$' . $n . ',' . $fraction . '%29';
+      $sort .= $split . 'query($' . $n . ',' . $fraction . ')';
       $split = ',';
     }
-    $ret['sort'] = 'sum%28' . $sort . '%29+asc';
+    $ret['sort'] = 'sum(' . $sort . ') asc';
     return $ret;
   }
 
