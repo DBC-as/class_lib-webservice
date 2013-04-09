@@ -516,11 +516,11 @@ abstract class webServiceServer {
           }
 
           foreach ($reqs as $key => $req)
-            $options .= '<option value="' . $key . '">'.$names[$key].'</option>';
+            $options .= '<option value="' . $key . '">'.$names[$key].'</option>' . "\n";
           if ($_GET['debug'] && $this->in_house())
             $debug = '<input type="hidden" name="debug" value="' . $_GET['debug'] . '">';
 
-          $html = str_replace('__REQS__', implode('","', $reqs), $html); 
+          $html = str_replace('__REQS__', implode("\",\n\"", $reqs), $html); 
           $html = str_replace('__XML__', $_REQUEST['xml'], $html); 
           $html = str_replace('__OPTIONS__', $options, $html); 
         }
