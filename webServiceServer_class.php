@@ -486,10 +486,10 @@ abstract class webServiceServer {
     if ($sample_header = $this->config->get_value('sample_header', 'setup')) {
       $header_warning = '<p>Ensure that the character set of the request match your browser settings</p>';
     }
-    else
+    else {
       $sample_header = 'Content-type: text/html; charset=utf-8';
+    }
     header ($sample_header);
-    echo '<html><head>';
 
     // Open a known directory, and proceed to read its contents
     if (is_dir($this->xmldir.'/request')) {
@@ -504,6 +504,8 @@ abstract class webServiceServer {
         }
         closedir($dh);
 
+        $html = strpos($info, '__REQS__') ? $info : str_replace('__INFO__', $info, $this->sample_form());
+
         if ($info || count($fnames)) {
           asort($fnames);
           foreach ($fnames as $fname) {
@@ -513,28 +515,51 @@ abstract class webServiceServer {
             $names[]=$fname;
           }
 
-          echo '<script language="javascript">' . "\n" . 'var reqs = Array("' . implode('","', $reqs) . '");</script>';
-          echo '</head><body>' . $header_warning . '<form target="_blank" name="f" method="POST" accept-charset="utf-8"><textarea name="xml" rows=20 cols=90>';
-          echo $_REQUEST['xml'];
-          echo '</textarea><br><br>';
-          echo '<select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">';
-          echo '<option>Pick a test-request</option>';
-          foreach ($reqs as $key => $req) {
-            echo '<option value="' . $key . '">'.$names[$key].'</option>';
-          }
-          echo '</select> &nbsp; <input type="submit" name="subm" value="Try me">';
+          foreach ($reqs as $key => $req)
+            $options .= '<option value="' . $key . '">'.$names[$key].'</option>';
           if ($_GET['debug'] && $this->in_house())
-            echo '<input type="hidden" name="debug" value="' . $_GET['debug'] . '">';
-          echo '</form>';
-          echo $info;
+            $debug = '<input type="hidden" name="debug" value="' . $_GET['debug'] . '">';
+
+          $html = str_replace('__REQS__', implode('","', $reqs), $html); 
+          $html = str_replace('__XML__', $_REQUEST['xml'], $html); 
+          $html = str_replace('__OPTIONS__', $options, $html); 
         }
         else {
-          echo '</head><body>No example xml files found...';
+          $error = 'No example xml files found...';
         }
-        echo '<p style="font-size:0.6em">Version: ' . $this->version . '</p>';
+        $html = str_replace('__ERROR__', $error, $html); 
+        $html = str_replace('__DEBUG__', $debug, $html); 
+        $html = str_replace('__HEADER_WARNING__', $header_warning, $html); 
+        $html = str_replace('__VERSION__', $this->version, $html); 
       }
     }
-    echo '</body></html>';
+    echo $html;
+  }
+
+  private function sample_form() {
+    return 
+'<html><head>
+__HEADER_WARNING__
+<script language="javascript">
+  var reqs = Array("__REQS__");
+</script>
+</head><body>
+<form target="_blank" name="f" method="POST" accept-charset="utf-8">
+  <textarea name="xml" rows=20 cols=90>
+__XML__
+  </textarea>
+  <br /> <br />
+  <select name="no" onChange="if (this.selectedIndex) document.f.xml.value = reqs[this.options[this.selectedIndex].value];">
+    <option>Pick a test-request</option>
+    __OPTIONS__
+  </select>
+  <input type="submit" name="subm" value="Try me">
+  __DEBUG__
+  </form>
+  __INFO__
+  __ERROR__
+  <p style="font-size:0.6em">Version: __VERSION__</p>
+</body></html>';
   }
 
 }
