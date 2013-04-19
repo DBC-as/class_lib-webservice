@@ -45,20 +45,38 @@ class agency_type {
   }
 
   /**
-  * \brief Get a given agency_type for the agency
+  * \brief Get a given bracnh_type for the agency
   *
-  * @param $agency_name       name of agency
+  * @param $agency       name of agency
   *
-  * @returns agency_type if found, NULL otherwise
+  * @returns bracnh_type if found, NULL otherwise
   **/
   public function get_branch_type($agency) {
     if (empty($agency_type_tab)) {
-      $this->set_agency_type_tab();
+      $this->fetch_agency_type_tab();
     }
-    return $this->agency_type_tab[$agency];
+    return $this->agency_type_tab[$agency]['branchType'];
   }
 
-  private function set_agency_type_tab() {
+  /**
+  * \brief Get a given agency_type for the agency
+  *
+  * @param $agency       name of agency
+  *
+  * @returns agency_type if found, NULL otherwise
+  **/
+  public function get_agency_type($agency) {
+    if (empty($agency_type_tab)) {
+      $this->fetch_agency_type_tab();
+    }
+    return $this->agency_type_tab[$agency]['agencyType'];
+  }
+
+  /**
+  * \brief Fetch agencyType and branchType using openAgency::findLibrary
+  *
+  **/
+  private function fetch_agency_type_tab() {
     if ($this->agency_cache) {
       $cache_key = 'branch_types';
       $this->agency_type_tab = $this->agency_cache->get($cache_key);
@@ -79,8 +97,9 @@ class agency_type {
         $dom->preserveWhiteSpace = false;
         if (@ $dom->loadXML($res_xml)) {
           foreach ($dom->getElementsByTagName('pickupAgency') as $agency) {
-            $this->agency_type_tab[$agency->getElementsByTagName('branchId')->item(0)->nodeValue] =
-              $agency->getElementsByTagName('branchType')->item(0)->nodeValue;
+            $this->agency_type_tab[$this->node_value($agency, 'branchId')] =
+              array('agencyType' => $this->node_value($agency, 'agencyType'),
+                    'branchType' => $this->node_value($agency, 'branchType'));
           }
         }
         $curl->close();
@@ -89,6 +108,10 @@ class agency_type {
         $this->agency_cache->set($cache_key, $this->agency_type_tab);
       }
     }
+  }
+
+  private function node_value($node, $tag) {
+    return $node->getElementsByTagName($tag)->item(0)->nodeValue;
   }
 
 }
