@@ -85,7 +85,7 @@ class agency_type {
     if (!$this->agency_type_tab) {
       $curl = new curl();
       $curl->set_option(CURLOPT_TIMEOUT, 10);
-      $res_xml = $curl->get(sprintf($this->agency_uri));
+      $res_json = $curl->get(sprintf($this->agency_uri));
       $curl_err = $curl->get_status();
       if ($curl_err['http_code'] < 200 || $curl_err['http_code'] > 299) {
         if (method_exists('verbose','log')) {
@@ -93,13 +93,12 @@ class agency_type {
         }
       }
       else {
-        $dom = new DomDocument();
-        $dom->preserveWhiteSpace = false;
-        if (@ $dom->loadXML($res_xml)) {
-          foreach ($dom->getElementsByTagName('pickupAgency') as $agency) {
-            $this->agency_type_tab[$this->node_value($agency, 'branchId')] =
-              array('agencyType' => $this->node_value($agency, 'agencyType'),
-                    'branchType' => $this->node_value($agency, 'branchType'));
+        $libs = json_decode($res_json);
+        if (is_object($libs)) {
+          foreach ($libs->findLibraryResponse->pickupAgency as $agency) {
+            $this->agency_type_tab[$agency->branchId->{'$'}] =
+              array('agencyType' => $agency->agencyType->{'$'},
+                    'branchType' => $agency->branchType->{'$'});
           }
         }
         $curl->close();
@@ -108,10 +107,6 @@ class agency_type {
         $this->agency_cache->set($cache_key, $this->agency_type_tab);
       }
     }
-  }
-
-  private function node_value($node, $tag) {
-    return $node->getElementsByTagName($tag)->item(0)->nodeValue;
   }
 
 }
